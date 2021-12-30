@@ -1,0 +1,6 @@
+12.50
+enigma2-plugin-extensions-csfd_12-50-20180505_all.ipk
+Hlavní změny:
+- oprava přihlašování a hodnocení filmů dle nové struktury na csfd
+- oprava pro OpenPLI image
+- další vylepšení a opravy

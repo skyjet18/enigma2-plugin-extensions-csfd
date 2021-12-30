@@ -1,0 +1,459 @@
+HISTORIE  ZMĚN  V  PLUGINU  CSFD (autor: petrkl12, www.TVplugins.cz)
+$$$A¯
+$$$B_
+Verze 12.50  -  05.05. 2018
+$$$A¯
+- oprava přihlašování a hodnocení filmů dle nové struktury na csfd
+- oprava pro OpenPLI image
+- další vylepšení a opravy
+$$$B_
+Verze 12.20  -  06.12. 2017
+$$$A¯
+- oprava dlouhého načítání některých pořadů
+- oprava chyby v contextu SSL
+- úpravy pro urllib2 - rychlejší zobrazení základní obrazovky
+- úpravy pro test loginu do csfd
+- další vylepšení a opravy
+$$$B_
+Verze 12.00  -  17.11. 2017
+$$$A¯
+- oprava načítání videí
+- úpravy pro přechod na https na csfd
+- oprava načítání producentů
+- oprava načítání komentářů
+- možnost volby způsobu načítání informací z csfd
+- další vylepšení a opravy
+$$$B_
+Verze 11.70  -  22.04. 2017
+$$$A¯
+- zobrazení řad a epizod u seriálů (pokud jsou na csfd)
+- možnost zobrazení souvisejících pořadů
+- možnost zobrazení podobných pořadů
+- oprava hodnocení filmů
+- oprava načítání obsahu po změně na CSFD
+- oprava načítání informace o pořadí nejoblíbenějších filmů a seriálů
+- oprava načítání videí
+- zlepšení kompatibility s určitými imagemi
+$$$B_
+Verze 11.55  -  29.09. 2016
+$$$A¯
+- úpravy ve skinu pluginu pro lepší zobrazení
+- doplněna kontrola na existenci knihovny pro dekódování html
+- lepší kompatibilita s určitými imagemi
+- doplněny další TV kanály pro přednačítání pořadů
+- další vylepšení a opravy
+$$$B_
+Verze 11.50  -  24.08. 2016
+$$$A¯
+- oprava stahování filmů pokud není uživatel přihlášen
+- oprava možnosti hodnocení filmů
+- oprava volání IMDB pluginu (změna skinu v pluginu)
+- oprava zobrazování hodnocení z IMDB a Metacritic
+- přidáno přednačítání dalších TV programů
+- změna adresy pro aktualizaci pluginu
+- oprava parsování délky filmu a roku vydání
+$$$B_
+Verze 11.00  -  28.09. 2015
+$$$A¯
+- přidáno načítání produkce, střihu, zvuku, scénografie, masek a kostýmů
+- opraveno načítání komentářů
+- opraveno hodnocení filmů
+- opraveno načítání hodnocení uživatelů a fanclub filmu (nefungovalo stránkování)
+- oprava zobrazování a rotace fotek v případě, že tam nejsou žádné postery
+- přidáno parsování soukromých poznámek
+- přidány další úpravy názvů pořadů pro lepší výsledky vyhledávání
+- možnost nastavení kvality stahování posterů, fotek a video posterů
+- implementace cache pro porovnávání vyhledaných pořadů
+- další opravy a úpravy v kódu
+$$$B_
+Verze 10.85  -  29.04. 2015
+$$$A¯
+- vylepšení testu funkčnosti internetu včetně možnosti vypnutí v Nastaveních
+- přidán samostatně typ pořadu a zároveň je typ pořadu odstraněn z názvů
+- logování chyb během parsování
+- oprava názvu pořadu v menu
+- přidána korekce anglických názvů
+$$$B_
+Verze 10.80  -  21.04. 2015
+$$$A¯
+- oprava testu funkčnosti internetu
+- přidáno načítání stanice Kino Barrandov
+- oprava vyhledávání v seznamu nahraných pořadů
+$$$B_
+Verze 10.70  -  22.03. 2015
+$$$A¯
+- přidány ocenění filmů
+- výrazné zrychlení načítání posterů
+- zrychlení načítání videí
+- oprava načítání galerie fotek z filmů
+- oprava hodnocení filmů
+- změny v testu přihlašování na CSFD
+- pro OE1.6 přidána možnost hodnocení filmů (opravena implementace SSL)
+- úprava titulků pro FullHD rozlišení
+- další opravy a úpravy v kódu
+$$$B_
+Verze 10.60  -  09.03. 2015
+$$$A¯
+- načítání hodnocení IMDb a Metacritic včetně rotace hodnocení
+- plná podpora pro FullHD skiny
+- oprava vyhledávání filmů u kterých se nezobrazuje seznam na CSFD
+- oprava parsování obsahu a počtu hodnocení z důvodu změn na CSFD
+- oprava zajímovostí včetně možnosti výběru kategorie z menu)
+- v případě chyby při přihlašování se další pokus opakuje až po definovaném limitu
+- možnost hromadného resetování parametrů na výchozí hodnoty v Nastaveních
+- upraven Test přihlašování do CSFD.cz v Nastaveních
+- v Nastaveních je možné zobrazit menu a vybrat požadovanou akci
+- oprava ukládání změn v Nastaveních
+- další opravy a úpravy v kódu
+$$$B_
+Verze 10.10  -  03.01. 2015
+$$$A¯
+- další optimalizace vyhledávání
+- vytvoření emulačního IMDB pro volání CSFD z jiných pluginů
+- většina změn v Nastaveních se projeví i bez restartu GUI (po novém spuštění pluginu)
+- zobrazování instalačních logů a oprav knihoven pluginu
+- přejmenování některých interních knihoven pluginu
+- další drobné opravy a úpravy v kódu
+$$$B_
+Verze 10.02  -  30.11. 2014
+$$$A¯
+- oprava chyby při stisku INFO/EPG pokud není načten název pořadu v EPG
+- přidána podpora pro Dreambox 820 HD
+- rychlejší zobrazování celkového počtu posterů ve slideshow
+- zobrazování klávesy EPG pro možnost oprav pluginu v Nastaveních
+$$$B_
+Verze 10.00  -  19.11. 2014
+$$$A¯
+- přidána podpora pro novou enigmu (verze > 4.2 - dm7080)
+- oprava volání EPG uvnitř pluginu
+- oprava hlavního slideshow (v některých situacích nebylo funkční)
+- změna přednačítání TV pořadů z CSFD
+- úprava automatické aktualizace
+$$$B_
+Verze 9.72  -  17.11. 2014
+$$$A¯
+- přidána podpora pro OE2.2 image a .deb distribuci
+- zrychlení vyhledávání TV pořadů
+- změna způsobu načítání posterů, galerie a videí z důvodu zrychlení
+- oprava parsování externích recenzí
+- oprava parsování premiér
+- opravy chyb pro OpenATV a OpenVIX image
+- u ČT kanálů zvýšení pravděpodobnosti vyhledání správného pořadu
+- v EPG SubMenu v PLI image přidáno i zobrazení informací z EPG
+$$$B_
+Verze 9.50  -  18.02. 2014
+$$$A¯
+- oprava načítání videí z důvodu změn na CSFD
+- úprava vyhledávání pro zvýšení pravděpodobnosti nalezení správného pořadu např. Návrat do budoucnosti 2
+- přidány nové možnosti u zvětšení fontů
+- zrychlení startu pluginu v případě, že se neprovádí přihlašování do CSFD
+- možnost povolit EPG SubMenu v PLI image
+- opraven převod html do utf8
+- optimalizace využití paměti
+$$$B_
+Verze 9.45  -  25.01. 2014
+$$$A¯
+- oprava zobrazování obsahu vzhledem ke změnám na CSFD
+- odstranění přidaných fontů pro titulky z důvodu zmenšení velikosti instalace
+$$$B_
+Verze 9.42  -  05.12. 2013
+$$$A¯
+- oprava třídění výsledků v Nastaveních
+- oprava chyby při volání v EPG
+$$$B_
+Verze 9.40  -  17.11. 2013
+$$$A¯
+- kompletně přepracován způsob vyhledávání pořadů s cílem načíst okamžitě správně detail bez výběru z menu
+  (zohledňuje se např. i datum natočení filmu z EPG, detekují se správně slovenské názvy apod.)
+- změna způsobu volání obrázků
+- přidána možnost třídění podle data vydání filmu
+- oprava vyhledávání posterů
+- oprava chyby v případě nefunkčního internetu
+- oprava detekce nových verzí
+- optimalizace kódu a logů
+$$$B_
+Verze 9.35  -  15.06. 2013
+$$$A¯
+- oprava načítání hlavního posteru
+- oprava logování
+$$$B_
+Verze 9.30  -  09.06. 2013
+$$$A¯
+- možnost vytvoření vlastního skinu včetně parametrizace a výběru skinu přímo z pluginu
+- opraveno zobrazování posterů a galerie
+- opraveno parsování linku na IMDb
+- opraveno přehrávání video ukázek
+- přidána možnost automaticky stahovat a aktualizovat beta verze (defaultně vypnuto)
+- doplněna položka "Barvy stejné bez ohledu na hodnocení + zvýraznění kategorií" v Nastaveních u "Design CSFD obrazovek"
+$$$B_
+Verze 9.12  -  15.03. 2013
+$$$A¯
+- oprava načítání zajímavostí z důvodu změny na CSFD
+$$$B_
+Verze 9.11  -  03.03. 2013
+$$$A¯
+- přidáno parsování autorů předlohy, autorů scénáře a kameramanů
+- změna parsování externích recenzí z důvodu změny na CSFD
+- přidáno zobrazení přístupnosti filmu
+- posunutí horního okraje (na některých boxech se nezobrazovalo korektně)
+- přidána možnost logovat funkčnost twisted-web (používá se pro stahování obsahu z CSFD)
+- logování funkčnosti pluginu je opět defaultně vypnuté
+- změna ovládání v Nastaveních
+$$$B_
+Verze 9.00 beta7  -  21.01. 2013
+$$$A¯
+- oprava "zaseknutí" slideshow v případě, že nějaký soubor se z CSFD nestáhnul
+- úprava parsování videí z důvodu změn na CSFD
+- oprava načítání videí na některých IPboxech
+- oprava práce s unicode znaky na některých místech kódu
+- změna testu loginu v Nastaveních
+- nová verze titulků 0.35 (thx mx3L)
+- oprava načítání některých filmů
+$$$B_
+Verze 9.00 beta6  -  12.01. 2013
+$$$A¯
+- oprava nahrazení volání IMDb za CSFD např. pro CoolTVGuide
+- úprava importu unicodedata, pokud tam tato knihovna není (hlavně na některých IPboxech)
+- možnost v Nastaveních spustit volbu Opravit, která doinstaluje nebo přeinstaluje potřebné moduly (twisted-web a openSSL) pro CSFD
+- plugin lze nyní spustit i když není nainstalován twisted-web a je zároveň nabídnuta možnost jeho dodatečné instalace
+- další drobné opravy a úpravy v kódu
+$$$B_
+Verze 9.00 beta5  -  07.01. 2013
+$$$A¯
+- oprava instalace na některých boxech (zrušeny dependens)
+- přidáno detailnější logování
+$$$B_
+Verze 9.00 beta4  -  06.01. 2013
+$$$A¯
+- možnost stahování nových verzí pluginu přes web včetně automatické detekce nových verzí
+- možnost otestovat v Nastaveních login do CSFD včetně výpisu, kde může být chyba
+- upraveno logovaní pro přihlášení do CSFD
+- optimalizace uvolňování paměti v přehrávači videoukázek i na dalších místech
+- odstraněna možnost měnit AspectRatio z důvodu problémů na různých boxech
+$$$B_
+Verze 9.00 beta2  -  05.01. 2013
+$$$A¯
+- upravena instalace pluginu (thx shamann)
+- oprava změny poměru stran v přehrávači videí (AspectRatio)
+- úprava logu
+$$$B_
+Verze 9.00 beta1  -  03.01. 2013
+$$$A¯
+- kompletně přepracovaný vnitřní kód a parsování včetně optimalizací rychlosti načítání
+- možnost zadat vaše uživatelské jméno a heslo, které máte na CSFD
+    - v případě úspěšného přihlášení se zobrazuje toto jméno v titulní liště
+    - pokud máte vyhledaný pořad již ohodnocen, tak se zobrazí váš počet hvězdiček v detailu
+    - máte možnost ohodnotit vyhledaný pořad (včetně změn hodnocení popř. i jeho smazání)
+- přepracované přehrávání videí (nové struktura stránek na CSFD, titulky (thx mx3L), zobrazování fotky při výběru apod.)
+- přidány externí recenze
+- nastavitelný timeout pro stahování informací (již by se nemělo zasekávat)
+- přidána možnost zobrazit CSFD v hlavním menu - default vypnuto (thx shamann)
+- v Menu a při použití tl.bouquet se zobrazují jen nabídky (např. komentáře, zajímavosti, postery apod.), které mají alespoň jeden příspěvek/fotku/poster/video
+- nastavena automatická kontrola "zamrznutí" pluginu (lze vypnout v Nastaveních)
+- Opraveno:
+    - spouštění CSFD pluginu z různých EPG obrazovek (na některých imagích to mohlo způsobit nefunkčnost pluginu)
+    - načítání obrázků a posterů, pokud jich měl pořad velký počet
+    - pokud se nenačetl žádný film, tak šlo přejít na detail
+    - opraveno načítání některých názvů filmů
+ - spousta dalších optimalizací a oprav
+$$$B_
+Verze 8.20  -  5.5. 2012
+$$$A¯
+- úpravy knihoven dle nové verze OE2.0
+$$$B_
+Verze 8.10  -  18.4. 2012
+$$$A¯
+- oprava pádu při výběru pořadu ze seznamu kanálů
+- pokud je nastaveno cz nebo sk locale, tak je využito v pluginu
+- změna způsobu posunu v historii
+- oprava zobrazování virtuální klávesnice na některých images (např. Merlin)
+$$$B_
+Verze 8.00 Final  -  11.3. 2012
+$$$A¯
+- výrazné zrychlení vyhledání a načítání pořadu (optimalizace kódu, odložené načítání posterů a fotek, komentáře se načítají až na vyžádání atd.)
+- výrazné změny v designu (obarvování dle hodnocení a to jak ve výběru pořadů, tak i v detailu (možnost vypnout v Nastavení), grafická hotkeys, změna vzhledu jednotlivých detailů jako např. komentářů, hodnocení apod.)
+- možnost načíst detail o pořadu z IMDB a to za využití přímého odkazu z CSFD (naprosto přesné načtení pořadu z IMDB)
+- vzhled IMDB je nyní prakticky stejný jako CSFD
+- zobrazování počtu hodnotitelů u celkového hodnocení
+- zobrazování tipů (co vše lze zobrazit/dělat v pluginu - dá se vypnout v Nastaveních))
+- v detailu se zobrazují i informace z EPG (pokud je lze načíst a zobrazit)
+- přidána historie vývoje pluginu
+- možnost definování hotkeys pro dlouhý stisk barevných tlačítek (zelená, modrá, červená, žlutá - velké L v grafickém symbolu tlačítka)
+- pro hotkeys možnost nezvolit žádnou akci (v Nastaveních)
+- možnost procházení všech informacích o pořadu přes tlačítka Bouquet + a - (jaké informace se dají zobrazit a v jakém pořadí lze zvolit v Nastavení)
+- možnost zobrazení nápovědy přes tlačítko Help (jde o nápovědu vždy k aktuálnímu kontextu v pluginu)
+- standardně se vyhledává pouze zkrácený seznam pořadů z důvodu rychlosti (lze donačíst přes Menu nebo přenastavit v Nastaveních)
+- změny v Nastavování (záložky, nové možnosti co nastavit, změna textace apod.)
+- přepracována logika skinů (sjednocení vzhledu na různých platformách, pokud chcete přeskinovat ve skin.xml musíte to povolit v Nastaveních, možnost použít více názvů ve skin.xml apod.)
+- nově implementovány dva způsoby, jak získat název pořadu z EPG s cílem minimalizovat chybu, že daný pořad nelze načíst
+- přidán nový způsob na pozadí, jak obejít nemožnost stáhnout některé pořady z CSFD
+- oprava chyb v načítání velkých seznamů fotek, posterů a videí (velký počet paralelních downloadů)
+- spousta dalších optimalizací a oprav
+$$$B_
+Verze 7.20  -  29.12. 2011
+$$$A¯
+- nyní by mělo být funkční i na 1.5 imagích (pokud si při instalaci vypnou závislosti a je nainstalován twisted-web plugin)
+- oprava pádu při volání Nastavení na některých linux strojích
+- optimalizace práce s CZ&SK znaky na starších imagích
+- změna skinu pro player + nová verze playeru pro SD skiny
+- přidáno zobrazování, kde aktuálně pořad běží (pokud je uvedeno)
+- nyní by mělo být funkční i na 1.5 imagích (pokud si při instalaci vypnou závislosti a je nainstalován twisted-web plugin)
+- změna načítání pořadu z EPG
+$$$B_
+Verze 7.00  -  24.12. 2011
+$$$A¯
+- možnost přehrávání videoukázek (v pluginu je vše hotovo, bohužel zatím nevím o videokodeku, který by uměl přehrávat obraz, pro zvuk nainstalujte plugin: gst-plugin-flv např. z http://dreamboxupdate.com/ )
+- možnost stáhnout videoukázky (můžete vyzkoušet i jiné přehrávače, zda to v nich nepůjde)
+- načítání pořadí v žebříčku nejoblíbenějších/nejhorších filmů a seriálů (pokud tam pořad je)
+- načítání všech obsahů (pokud jsou)
+- přidány další možnosti v Nastavení (např. možnost logování do konzoly)
+- upraveny CSFD skiny a keymap.xml
+- změna logiky pro tlačítko Zpět
+- načítání informací o premiérách (pokud jsou)
+- přidání volání CSFD do přehrávače videí (po stisku tl. Info)
+- upraveny a doplněny informace o pluginu
+$$$B_
+Verze 6.10  -  17.11. 2011
+$$$A¯
+- oprava pádu po stisku tl. OK na některých verzích E2
+- drobná úprava vzhledu
+$$$B_
+Verze 6.00  -  15.11. 2011
+$$$A¯
+- možnost zobrazit galerii fotek a jejich popisků včetně možnosti slideshow
+- možnost zobrazit postery včetně slideshow
+- hledání v IMDb včetně možnosti odstranění diakritiky pro lepší výsledky hledání
+- oprava třídění komentářů
+- přidán soubor keymap.xml
+- k názvu načítané pořadu byl přidán jazyk/země
+- upraven skin pro možnost zobrazení fotek
+- možnost změny adresáře pro ukládání dočasných souborů a logů (def. /tmp/)
+- možnost nadefinovat "hotkeys" v nastavení
+- změny funkčností některých tlačítek a hotkeys pro položky v menu
+- na hlavní obrazovce se nyní prolínají nejen postery, ale i fotky z pořadu
+- plugin po sobě nyní "uklízí" - maže dočasné soubory
+$$$B_
+Verze 5.02  -  29.10. 2011
+$$$A¯
+- doplněno načítání autorů hudby (pokud je uvedeno u filmu)
+- během výběru z EPG lze přímo nastavit časování pro nahrávání
+- pokud dojde k výběru z EPG, tak při ukončení pluginu dojde k návratu do EPG na stejnou pozici a je možné pokračovat ve výběru
+- opravena virtuální klávesnice
+- plugin upraven pro volání z ext.pluginů (stejný formát jako IMDB)
+- pokud je nainstalován IMDB plugin, tak se jeho volání nahradí CSFD pluginem (lze vypnout v nastavení pluginu CSFD)
+  (pozn. nedochází přitom k žádné modifikaci IMDB pluginu - tzn. lze dělat bez problémů updaty)
+- upraven návrat z pluginu v případě, že je přímo načten detail vyhledaného pořadu (již se nevrací na vyhledaný seznam)
+- došlo k doplnění možnosti spuštění CSFD do prakticky všech obrazovek, kde se pracuje s EPG (včetně nahrazení volání MultiEPG) 
+  (lze vypnout pro každou obrazovku v nastavení pluginu CSFD) (pozn. nedochází přitom k žádné modifikaci enigmy - tzn. lze dělat bez problémů updaty)
+- BONUS: třídění v EPG a to i mimo plugin je nyní podle cz a sk abecedy (lze vypnout v nastavení pluginu)
+$$$B_
+Verze 4.50  -  14.05. 2011
+$$$A¯
+- upraveno načítání herců a režie podle nové struktury stránek CSFD
+- pokud je více posterů (plakátů) k filmu, tak dochází k jejich automatické změně podle nastaveného intervalu (např. M*A*S*H)
+- je možné změnit vzhled obrazovky v souboru CSFD_Skins.py 
+- oprava chyby při detekci rozlišení
+- oprava chyby při detekci nainstalovaného twisted-web pluginu
+$$$B_
+Verze 4.21  -  13.04. 2011
+$$$A¯
+- oprava chyby při instalaci na některých images/linux přijímačích - (i když byl nainstalován plugin twisted-web, tak ho to někdy nedetekovalo)
+$$$B_
+Verze 4.20  -  03.04. 2011
+$$$A¯
+- přidána možnost nastavit kde chcete plugin spouštět (v menu pluginů, po dlouhém stisku EPG/INFO nebo v extension menu - default je ve všech seznamech)
+- přidána možnost nastavit prioritu pluginu v seznamu - funkční jen na nejnovějších verzích Enigma2 a to v menu pluginů a EPG/INFO
+- oprava chyby při zadávání znaků opakovaným stiskem klávesy
+- oprava chyby při načítání modulu ScrollLabel
+$$$B_
+Verze 4.00  -  05.03. 2011
+$$$A¯
+- přidána možnost načítat další stránky komentářů uživatelů
+- přidána možnost načítat diskuzi uživatelů
+- přidána možnost načítat zajímavosti o pořadu
+- přidána možnost načítat detailní seznam hodnocení uživatelů
+- přidána možnost načítat fanoušky pořadu
+- některé položky lze vyvolat přes hotkeys (jsou uvedeny i v MENU)
+- komentáře lze třídit stejně jako na CSFD
+- další spousta vylepšení a oprav 
+$$$B_
+Verze 3.10  -  13.02. 2011
+$$$A¯
+- upraveno načítání pokud je vyhledán pouze 1 film - dojde k doplnění seznamu o názvy pořadů v různých jazycích
+- v případě seriálů se ve více případech automaticky načte detail
+$$$B_
+Verze 3.00  -  10.02. 2011
+$$$A¯
+- upraveno parsování pro novou verzi stránek na CSFD.cz (nižší verze pluginu nejsou a nebudou funkční!!!)
+- možnost v nastavení změnit velikost fontu u detailu
+- komentáře mají nově i datum, kdy byly vytvořeny
+- upraveno ovládání a scrolling - šipky nahoru a dolu = posun o jeden řádek, šipky doleva a doprava = posun o celou stránku
+$$$B_
+Verze 2.10  -  06.02. 2011
+$$$A¯
+- oprava chyby pokud byla zvolena slovenština při OE1.5 a na IPBox
+- možnost nastavit jazyk pro menu (automaticky, čeština a slovenština)
+$$$B_
+Verze 2.00  -  13.01. 2011
+$$$A¯
+- automatické přizpůsobení rozlišení
+- po stisku MENU se zobrazí nabídka s možností:
+    - výběr pořadu z EPG aktuálního pořadu
+    - výběr pořadu ze všech kanálů
+    - manuální zadání pořadu
+    - nastavení
+    - info o pluginu
+- automatické načtení detailu při plné shodě s hledaným názvem
+- zavedení cache pro zobrazení (pokud se vrátím zpět a opět na stejný pořad, tak se neprovádí stahování)
+- v Nastavení je možno měnit tyto defaultní položky:
+    - defaultní způsob třídění
+    - zda načítat detail při plné shodě právě pro jeden pořad
+    - chování tlačítka INFO (rovnou načíst aktuální pořad, výběr z EPG akt. kanálu, výběr ze všech kanálů)
+    - zda logovat
+    - zda načítat poster (obrázek k pořadu) 
+    - změna rozlišení (automaticky, 720, 1024, 1280)
+    - zda zadávat znaky přes virtuální klávesnici nebo opakovaným stiskem klávesy
+    - zda při zadávání znaků nabízet poslední hledaný pořad
+- opraveno načítání některých filmů
+- neprovádí se zbytečně parsování v html redirectu
+- pro alternativní názvy pořadů - pokud jsou stejné zobrazí se pouze jeden
+- upravevo zobrazování na OLED displeji včetně barev pro 800SE
+- opraveno mazání znaků s diakritikou u virtuální klávesnice
+- změna zobrazování kláves - mohlo dojít k zamrznutí
+- změna funkčnosti tlačítka INFO
+- oprava chyb v pluginu
+- spousta dalších menších vylepšení :)
+$$$B_
+Verze 1.80  -  19.12. 2010
+$$$A¯
+- oprava chyby v enigma2 - pokud bylo více jak 16 stránek informací, tak se nic ve scrollboxu nezobrazovalo
+- další optimalizace vyhledávání
+- opraveno vyhledání filmů/pořadů složené pouze z čísel např. 112 (zobrazení končilo chybou)
+- opraveno načítání některých informací (např. žánr apod.) z důvodu změny formátu na CSFD
+$$$B_
+Verze 1.70  -  21.11. 2010
+$$$A¯
+- přepracována práce s unicode z důvodu podpory 1.5 imagů
+- optimalizace vyhledávání
+- spousta dalších drobných úprav a vylepšení
+$$$B_
+Verze 1.50  -  12.11. 2010
+$$$A¯
+- možnost zadat název pořadu a vyhledat ho na CSFD
+- upraveno zobrazování na OLED panelu
+- přidána vlastní logika pro setřídění výsledku hledání (na CSFD není vždy nejpravděpodobnější výsledek na prvním místě) 
+- možnost měnit setřídění vyhledaných pořadů pomocí kláves 1 a 3 (rotuje třídění podle vhodnosti názvu, CZ/SK abecedy a podle výsledku na CSFD)
+- odstranění duplicit ve výsledku hledání (pokud se shoduje název filmu i url) 
+- lokalizace do SK
+- spousta dalších drobných úprav a vylepšení
+$$$B_
+Verze 1.10  -  05.10. 2010
+$$$A¯
+- kompletní změna designu
+- neprovádí se automatický restart po instalaci
+- není již nutný html plugin
+- zvětšeno písmo
+$$$B_
+Verze 1.00  -  03.10. 2010
+$$$A¯
+- první veřejná verze

@@ -1,0 +1,218 @@
+<keymap>
+	<map context="CSFDActions">
+		<key id="KEY_RED" mapto="CSFDS1Red" flags="b" />
+		<key id="KEY_RED" mapto="CSFDS1RedLong" flags="l" />
+		<key id="KEY_GREEN" mapto="CSFDS2Green" flags="b" />
+		<key id="KEY_GREEN" mapto="CSFDS2GreenLong" flags="l" />
+		<key id="KEY_YELLOW" mapto="CSFDS3Yellow" flags="b" />
+		<key id="KEY_YELLOW" mapto="CSFDS3YellowLong" flags="l" />
+		<key id="KEY_BLUE" mapto="CSFDS4Blue" flags="b" />
+		<key id="KEY_BLUE" mapto="CSFDS4BlueLong" flags="l" />
+		<key id="KEY_MENU" mapto="CSFDMenu" flags="m" />
+		<key id="KEY_ENTER" mapto="CSFDOK" flags="m" />
+		<key id="KEY_OK" mapto="CSFDOK" flags="m" />
+		<key id="KEY_OK" mapto="CSFDOKLong" flags="l" />
+		<key id="KEY_EXIT" mapto="CSFDExit" flags="b" />
+		<key id="KEY_EXIT" mapto="CSFDExitLong" flags="l" />
+		<key id="KEY_ESC" mapto="CSFDEsc" flags="b" /> 
+		<key id="KEY_ESC" mapto="CSFDEscLong" flags="l" /> 
+		<key id="\x0a" mapto="CSFDOK" flags="m" />
+		<key id="\x1b" mapto="CSFDExit" flags="m" />
+		<key id="KEY_INFO" mapto="CSFDInfo" flags="m" />
+		<key id="KEY_INFO" mapto="CSFDInfoLong" flags="l" />
+		<key id="KEY_TEXT" mapto="CSFDSetUp" flags="m" />
+		<key id="KEY_VIDEO" mapto="CSFDVideo" flags="m" />
+		<key id="KEY_DELETE" mapto="CSFDKeyForward" flags="mr" />
+		<key id="KEY_BACKSPACE" mapto="CSFDKeyBackward" flags="mr" />
+		<key id="KEY_NEXT" mapto="CSFDKeyForward" flags="mr" />
+		<key id="KEY_PREVIOUS" mapto="CSFDKeyBackward" flags="mr" />
+		<key id="KEY_UP" mapto="CSFDUp" flags="m" />
+		<key id="KEY_DOWN" mapto="CSFDDown" flags="m" />
+		<key id="KEY_LEFT" mapto="CSFDLeft" flags="m" />
+		<key id="KEY_RIGHT" mapto="CSFDRight" flags="m" />
+		<key id="KEY_UP" mapto="CSFDUpRepeated" flags="r" />
+		<key id="KEY_DOWN" mapto="CSFDDownRepeated" flags="r" />
+		<key id="KEY_LEFT" mapto="CSFDLeftRepeated" flags="r" />
+		<key id="KEY_RIGHT" mapto="CSFDRightRepeated" flags="r" />
+		<key id="KEY_CHANNELUP" mapto="CSFDbqNext" flags="m" />
+		<key id="KEY_CHANNELDOWN" mapto="CSFDbqPrev" flags="m" /> 
+		<key id="KEY_1" mapto="1" flags="m" />
+		<key id="KEY_2" mapto="2" flags="m" />
+		<key id="KEY_3" mapto="3" flags="m" />
+		<key id="KEY_4" mapto="4" flags="m" />
+		<key id="KEY_5" mapto="5" flags="m" />
+		<key id="KEY_6" mapto="6" flags="m" />
+		<key id="KEY_7" mapto="7" flags="m" />
+		<key id="KEY_8" mapto="8" flags="m" />
+		<key id="KEY_9" mapto="9" flags="m" />
+		<key id="KEY_0" mapto="0" flags="m" />
+		<device name="dreambox advanced remote control (native)">
+			<key id="KEY_PLAY" mapto="CSFDplaypause" flags="m" />
+		</device>
+		<device name="dreambox ir keyboard">
+			<key id="KEY_PLAY" mapto="CSFDplay" flags="m" />
+			<key id="KEY_PAUSE" mapto="CSFDpause" flags="m" />
+		</device>
+	</map>
+	<map context="CSFDVirtualKeyboard">
+		<device name="Console">
+			<key id="KEY_ASCII" mapto="gotAsciiCode" flags="mr" />
+		</device>
+		<device name="SDL">
+			<key id="KEY_ASCII" mapto="gotAsciiCode" flags="mr" />
+		</device>
+		<key id="KEY_RED" mapto="red" flags="m" />
+		<key id="KEY_RED" mapto="red" flags="l" />
+		<key id="KEY_GREEN" mapto="green" flags="m" />
+		<key id="KEY_GREEN" mapto="green" flags="l" />
+		<key id="KEY_YELLOW" mapto="yellow" flags="m" />
+		<key id="KEY_YELLOW" mapto="yellow" flags="l" />
+		<key id="KEY_BLUE" mapto="blue" flags="m" />
+		<key id="KEY_BLUE" mapto="blue" flags="l" />
+		<key id="KEY_ENTER" mapto="ok" flags="m" />
+		<key id="KEY_OK" mapto="ok" flags="m" />
+		<key id="KEY_OK" mapto="ok" flags="l" />
+		<key id="\x0a" mapto="ok" flags="m" />
+		<key id="\x1b" mapto="cancel" flags="m" />
+		<key id="KEY_EXIT" mapto="back" flags="m" />
+		<key id="KEY_ESC" mapto="back" flags="m" /> 
+		<key id="KEY_BACKSPACE" mapto="deleteBackward" flags="mr" />
+		<key id="KEY_PREVIOUS" mapto="deleteBackward" flags="mr" />
+		<key id="KEY_UP" mapto="up" flags="m" />
+		<key id="KEY_DOWN" mapto="down" flags="m" />
+		<key id="KEY_LEFT" mapto="left" flags="m" />
+		<key id="KEY_RIGHT" mapto="right" flags="m" />
+		<key id="KEY_UP" mapto="up" flags="r" />
+		<key id="KEY_DOWN" mapto="down" flags="r" />
+		<key id="KEY_LEFT" mapto="left" flags="r" />
+		<key id="KEY_RIGHT" mapto="right" flags="r" />
+	</map>
+	<map context="CSFDSetupActions">
+		<key id="\x0a" mapto="ok" flags="m" />
+		<key id="\x1b" mapto="cancel" flags="m" />
+		<key id="KEY_ENTER" mapto="ok" flags="m" />
+		<key id="KEY_OK" mapto="ok" flags="m" />
+		<key id="KEY_EXIT" mapto="cancel" flags="m" />
+		<key id="KEY_ESC" mapto="cancel" flags="m" />
+		<key id="KEY_LEFT" mapto="left" flags="mr" />
+		<key id="KEY_RIGHT" mapto="right" flags="mr" />
+		<key id="KEY_RED" mapto="keyRed" flags="m" />
+		<key id="KEY_GREEN" mapto="keyGreen" flags="m" />
+		<key id="KEY_BLUE" mapto="keyBlue" flags="m" />
+		<key id="KEY_YELLOW" mapto="keyYellow" flags="m" />
+		<key id="KEY_INFO" mapto="keyInfo" flags="m" />
+		<key id="KEY_CHANNELUP" mapto="tabNext" flags="m" />
+		<key id="KEY_CHANNELDOWN" mapto="tabPrev" flags="m" /> 
+		<key id="KEY_MENU" mapto="keyMenu" flags="m" />
+		<device name="dreambox remote control (native)">
+			<key id="KEY_MUTE" mapto="deleteForward" flags="mr" />
+			<key id="KEY_NEXT" mapto="deleteForward" flags="mr" />
+			<key id="KEY_PREVIOUS" mapto="deleteBackward" flags="mr" />
+		</device>
+		<device name="dreambox advanced remote control (native)">
+			<key id="KEY_MUTE" mapto="deleteForward" flags="mr" />
+			<key id="KEY_NEXT" mapto="deleteForward" flags="mr" />
+			<key id="KEY_PREVIOUS" mapto="deleteBackward" flags="mr" />
+		</device>
+		<key id="KEY_1" mapto="1" flags="m" />
+		<key id="KEY_2" mapto="2" flags="m" />
+		<key id="KEY_3" mapto="3" flags="m" />
+		<key id="KEY_4" mapto="4" flags="m" />
+		<key id="KEY_5" mapto="5" flags="m" />
+		<key id="KEY_6" mapto="6" flags="m" />
+		<key id="KEY_7" mapto="7" flags="m" />
+		<key id="KEY_8" mapto="8" flags="m" />
+		<key id="KEY_9" mapto="9" flags="m" />
+		<key id="KEY_0" mapto="0" flags="m" />
+	</map>
+	<map context="CSFDHistoryActions">
+		<key id="\x0a" mapto="ok" flags="m" />
+		<key id="\x1b" mapto="cancel" flags="m" />
+		<key id="KEY_ENTER" mapto="ok" flags="m" />
+		<key id="KEY_OK" mapto="ok" flags="m" />
+		<key id="KEY_EXIT" mapto="cancel" flags="m" />
+		<key id="KEY_ESC" mapto="cancel" flags="m" />
+		<key id="KEY_UP" mapto="up" flags="mr" />
+		<key id="KEY_DOWN" mapto="down" flags="mr" />
+		<key id="KEY_LEFT" mapto="up" flags="mr" />
+		<key id="KEY_RIGHT" mapto="down" flags="mr" />
+		<key id="KEY_RED" mapto="red" flags="m" />
+		<key id="KEY_GREEN" mapto="green" flags="m" />
+	</map>
+	<map context="CSFDSkinSelection">
+		<key id="\x0a" mapto="ok" flags="m" />
+		<key id="\x1b" mapto="cancel" flags="m" />
+		<key id="KEY_ENTER" mapto="ok" flags="m" />
+		<key id="KEY_OK" mapto="ok" flags="m" />
+		<key id="KEY_EXIT" mapto="cancel" flags="m" />
+		<key id="KEY_ESC" mapto="cancel" flags="m" />
+		<key id="KEY_UP" mapto="up" flags="m" />
+		<key id="KEY_DOWN" mapto="down" flags="m" />
+		<key id="KEY_LEFT" mapto="left" flags="m" />
+		<key id="KEY_RIGHT" mapto="right" flags="m" />
+		<key id="KEY_RED" mapto="red" flags="m" />
+		<key id="KEY_GREEN" mapto="green" flags="m" />
+		<key id="KEY_BLUE" mapto="blue" flags="m" />
+	</map>
+	<map context="CSFDConsole">
+		<key id="\x0a" mapto="ok" flags="m" />
+		<key id="\x1b" mapto="back" flags="m" />
+		<key id="KEY_ENTER" mapto="ok" flags="m" />
+		<key id="KEY_OK" mapto="ok" flags="m" />
+		<key id="KEY_EXIT" mapto="back" flags="m" />
+		<key id="KEY_ESC" mapto="back" flags="m" />
+		<key id="KEY_UP" mapto="up" flags="mr" />
+		<key id="KEY_DOWN" mapto="down" flags="mr" />
+		<key id="KEY_LEFT" mapto="pageUp" flags="mr" />
+		<key id="KEY_RIGHT" mapto="pageDown" flags="mr" />
+		<key id="KEY_RED" mapto="back" flags="m" />
+		<key id="KEY_GREEN" mapto="ok" flags="m" />
+	</map>
+	<map context="EventViewEPGActionsATV">
+		<key id="KEY_RED" mapto="openCSFD" flags="m" />
+		<key id="KEY_YELLOW" mapto="openSingleServiceEPG" flags="m" />
+		<key id="KEY_BLUE" mapto="openMultiServiceEPG" flags="m" />
+		<key id="KEY_EPG" mapto="openSingleServiceEPG" flags="m" />
+	</map>
+	<map context="CSFDPlayerActions">
+		<device name="dreambox advanced remote control (native)">
+			<key id="KEY_PLAY" mapto="playpause" flags="m" />
+		</device>
+		<device name="dreambox ir keyboard">
+			<key id="KEY_PLAY" mapto="play" flags="m" />
+			<key id="KEY_PAUSE" mapto="pause" flags="m" />
+		</device>
+		<key id="KEY_YELLOW" mapto="pause" flags="m" />
+		<key id="KEY_GREEN" mapto="play" flags="m" />
+		<key id="KEY_TV" mapto="stop" flags="m" />
+		<key id="KEY_RADIO" mapto="record" flags="m" />
+		<key id="KEY_PREVIOUS" mapto="previous" flags="m" />
+		<key id="KEY_NEXT" mapto="next" flags="m" />
+		<key id="KEY_RED" mapto="previous" flags="m" />
+		<key id="KEY_BLUE" mapto="next" flags="m" />
+		<key id="KEY_PREVIOUSSONG" mapto="previous" flags="m" />
+		<key id="KEY_NEXTSONG" mapto="next" flags="m" />
+		<key id="KEY_SPACE" mapto="menu" flags="m" />
+		<key id="KEY_F1" mapto="previous" flags="m" />
+		<key id="KEY_F2" mapto="play" flags="m" />
+		<key id="KEY_F3" mapto="pause" flags="m" />
+		<key id="KEY_F4" mapto="next" flags="m" />
+		<key id="KEY_RECORD" mapto="record" flags="m" />
+		<key id="KEY_STOP" mapto="stop" flags="m" />
+		<key id="KEY_MENU" mapto="menu" flags="m" />
+		<key id="KEY_CHANNELUP" mapto="next" flags="m" />
+		<key id="KEY_CHANNELDOWN" mapto="previous" flags="m" />
+		<key id="KEY_VIDEO" mapto="menu" flags="m" />
+		<key id="KEY_TEXT" mapto="subtitles" flags="m" /> 
+		<key id="KEY_INFO" mapto="videoInfo" flags="m" /> 
+		<key id="\x0a" mapto="ok" flags="m" />
+		<key id="\x1b" mapto="cancel" flags="m" />
+		<key id="KEY_OK" mapto="ok" flags="m" />
+		<key id="KEY_ENTER" mapto="ok" flags="m" />
+		<key id="KEY_EXIT" mapto="cancel" flags="m" />
+		<key id="KEY_ESC" mapto="cancel" flags="m" /> 
+		<key id="KEY_BACKSPACE" mapto="previous" flags="mr" />
+		<key id="KEY_LEFT" mapto="previous" flags="m" />
+		<key id="KEY_RIGHT" mapto="next" flags="m" />
+	</map>
+</keymap>
