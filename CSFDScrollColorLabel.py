@@ -136,13 +136,13 @@ class CSFDScrollColorLabel(HTMLComponent, GUIComponent):
 			self.long_text.move(ePoint(0, 0))
 			self.long_textCol.move(ePoint(0, 0))
 			self.long_textHead.move(ePoint(0, 0))
-			self.long_text.setText(self.message)
+			self.long_text.setText(str(self.message))
 			length = len(self.message)
 			if length > 0:
 				if self.message[(length - 1)] == '\n':
-					self.long_textCalc.setText(self.message + 'A')
+					self.long_textCalc.setText(str(self.message + 'A'))
 				else:
-					self.long_textCalc.setText(self.message + '\nA')
+					self.long_textCalc.setText(str(self.message + '\nA'))
 			text_height = self.long_textCalc.calculateSize().height()
 			if text_height < 0:
 				text_height = 0
@@ -173,12 +173,12 @@ class CSFDScrollColorLabel(HTMLComponent, GUIComponent):
 
 	def setTextCol(self, text):
 		if self.long_textCol is not None:
-			self.long_textCol.setText(text)
+			self.long_textCol.setText(str(text))
 		return
 
 	def setTextHead(self, text):
 		if self.long_textHead is not None:
-			self.long_textHead.setText(text)
+			self.long_textHead.setText(str(text))
 		return
 
 	def appendText(self, text):
@@ -241,9 +241,9 @@ class CSFDScrollColorLabel(HTMLComponent, GUIComponent):
 		if length > 0:
 			text = text.replace(' \n', 'i\n')
 			if text[(length - 1)] == '\n':
-				self.long_textCalc.setText(text + 'A')
+				self.long_textCalc.setText(str(text + 'A'))
 			else:
-				self.long_textCalc.setText(text + '\nA')
+				self.long_textCalc.setText(str(text + '\nA'))
 		else:
 			return (0, 0)
 		text_height = self.long_textCalc.calculateSize().height()
@@ -276,7 +276,7 @@ class CSFDScrollColorLabel(HTMLComponent, GUIComponent):
 				self.ASize = self.DefaultASize
 			if self.SpaceSize <= 0:
 				self.SpaceSize = self.DefaultSpaceSize
-		self.long_textCalc.setText(text + 'A')
+		self.long_textCalc.setText(str(text + 'A'))
 		vel = self.long_textCalc.calculateSize().width() - self.ASize
 		if vel < 0:
 			vel = 0
@@ -285,7 +285,7 @@ class CSFDScrollColorLabel(HTMLComponent, GUIComponent):
 			numberOfSpace += 1
 		space = ''
 		space = space.rjust(numberOfSpace, ' ')
-		self.long_textCalc.setText(space + 'A')
+		self.long_textCalc.setText(str(space + 'A'))
 		newvel = self.long_textCalc.calculateSize().width() - self.ASize
 		if newvel < 0:
 			newvel = 0
@@ -301,11 +301,11 @@ class CSFDScrollColorLabel(HTMLComponent, GUIComponent):
 				self.ASize = self.DefaultASize
 			if self.SpaceSize <= 0:
 				self.SpaceSize = self.DefaultSpaceSize
-		self.long_textCalc.setText(maintext + 'A')
+		self.long_textCalc.setText(str(maintext + 'A'))
 		vel = self.long_textCalc.calculateSize().width() - self.ASize
 		if vel < 0:
 			vel = 0
-		self.long_textCalc.setText(formattext + 'A')
+		self.long_textCalc.setText(str(formattext + 'A'))
 		vel1 = self.long_textCalc.calculateSize().width() - self.ASize
 		if vel1 < 0:
 			vel1 = 0
@@ -318,7 +318,7 @@ class CSFDScrollColorLabel(HTMLComponent, GUIComponent):
 		space = ''
 		space = space.rjust(numberOfSpace, ' ')
 		space = maintext + space
-		self.long_textCalc.setText(space + 'A')
+		self.long_textCalc.setText(str(space + 'A'))
 		newvel = self.long_textCalc.calculateSize().width() - self.ASize
 		if newvel < 0:
 			newvel = 0
@@ -428,3 +428,4 @@ class CSFDScrollColorLabel(HTMLComponent, GUIComponent):
 
 	def produceHTML(self):
 		return self.getText()
+

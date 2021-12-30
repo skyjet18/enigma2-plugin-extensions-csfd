@@ -37,6 +37,7 @@ from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 from os import path as os_path
 from random import randint, seed
 import time, urllib, traceback
+from CSFDAndroidClient import CSFDAndroidClient
 LogCSFD.WriteToFile('[CSFD] Iniciace modulu CSFD.py* - zacatek\n')
 deletetmpfiles()
 
@@ -410,6 +411,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self['servicemenu'].hide()
 		self.onLayoutFinish.append(self.layoutFinished)
 		SKIN_Setup()
+		
+		self.csfdAndroidClient = CSFDAndroidClient()
 		LogCSFD.WriteToFile('[CSFD] CSFDClass - init - konec\n')
 		return
 
@@ -1715,7 +1718,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					return
 			else:
 				self.exitServiceMenu()
-			searchresults = ParserCSFD.parserListOfRelatedMovies()
+			searchresults = ParserCSFD.parserListOfRelatedMovies(self.csfdAndroidClient )
 			if len(searchresults) > 0:
 				self.Detail100Exit = False
 				self.Detail100Pozice = 0
@@ -1742,7 +1745,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					return
 			else:
 				self.exitServiceMenu()
-			searchresults = ParserCSFD.parserListOfSimilarMovies()
+			searchresults = ParserCSFD.parserListOfSimilarMovies( self.csfdAndroidClient )
 			if len(searchresults) > 0:
 				self.Detail100Exit = False
 				self.Detail100Pozice = 0
@@ -1769,7 +1772,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					return
 			else:
 				self.exitServiceMenu()
-			searchresults = ParserCSFD.parserListOfSeries()
+			searchresults = ParserCSFD.parserListOfSeries( self.csfdAndroidClient )
 			if len(searchresults) > 0:
 				self.Detail100Exit = False
 				self.Detail100Pozice = 0
@@ -1796,7 +1799,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					return
 			else:
 				self.exitServiceMenu()
-			searchresults = ParserCSFD.parserListOfEpisodes()
+			searchresults = ParserCSFD.parserListOfEpisodes( self.csfdAndroidClient )
 			if len(searchresults) > 0:
 				self.Detail100Exit = False
 				self.Detail100Pozice = 0
@@ -1891,6 +1894,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 	def CallBouquet(self, nextP=True):
 		LogCSFD.WriteToFile('[CSFD] CallBouquet - zacatek\n')
+		poc = 0
 		if len(self.BouquetMenuRot) < 1:
 			return
 		if self.Page == 1:
@@ -2673,7 +2677,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				LogCSFD.WriteToFile('[CSFD] showMenu - konec\n')
 		return
 
-	@defer.inlineCallbacks
+#	@defer.inlineCallbacks
 	def DownloadDetailMovie(self):
 
 		def SetNotFind(textInfo='', textStatus=''):
@@ -2696,39 +2700,19 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 		LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - zacatek\n', 2)
 		LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - linkGlobal ' + self.linkGlobal + '\n', 2)
-		fetchurl = CSFDGlobalVar.getHTTP() + const_csfd_http_film + self.linkGlobal + const_quick_page
-		LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - stahuji z url ' + fetchurl + '\n', 2)
-		if CSFDGlobalVar.getWebDownload() == 0:
-			page = yield getPage(fetchurl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addErrback(self.fetchFailedDownloadDetailMovie, fetchurl)
-		else:
-			page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-		ParserCSFD.setHTML2utf8(page)
-		if ParserCSFD.parserTestCSFDFinding():
-			LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - RedirectPage\n', 2)
-			LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - linkGlobal ' + self.linkGlobal + '\n', 2)
-			Redirecttext = ParserCSFD.parserRedirectPage()
-			if Redirecttext is not None and Redirecttext != '':
-				LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - Redirecttext ' + Redirecttext + '\n', 2)
-				self.linkGlobal = Redirecttext
-				fetchurl = CSFDGlobalVar.getHTTP() + const_csfd_http_film + self.linkGlobal + const_quick_page
-				LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - stahuji z redirect url ' + fetchurl + '\n', 2)
-				if CSFDGlobalVar.getWebDownload() == 0:
-					page = yield getPage(fetchurl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addErrback(self.fetchFailedDownloadDetailMovie, fetchurl)
-				else:
-					page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-				ParserCSFD.setHTML2utf8(page)
-			LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - Skryty obsah\n', 2)
-			LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - linkGlobal ' + self.linkGlobal + '\n', 2)
-			Hidetext = ParserCSFD.parserHiddenContent()
-			if Hidetext is not None and Hidetext != '':
-				LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - Hidetext ' + Hidetext + '\n', 2)
-				fetchurl = CSFDGlobalVar.getHTTP() + const_csfd_http_film + self.linkGlobal + const_quick_page + '?' + Hidetext
-				LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - stahuji vcetne skryteho obsahu url ' + fetchurl + '\n', 2)
-				if CSFDGlobalVar.getWebDownload() == 0:
-					page = yield getPage(fetchurl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addErrback(self.fetchFailedDownloadDetailMovie, fetchurl)
-				else:
-					page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-				ParserCSFD.setHTML2utf8(page)
+		
+		fetchurl = self.linkGlobal
+		data = self.csfdAndroidClient.get_json_by_uri( fetchurl )
+		ParserCSFD.setJson( data )
+		
+#		if CSFDGlobalVar.getWebDownload() == 0:
+#			page = yield getPage(fetchurl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addErrback(self.fetchFailedDownloadDetailMovie, fetchurl)
+#		else:
+#			page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
+			
+#		ParserCSFD.setHTML2utf8(page)
+		if ParserCSFD.testJson():
+
 			try:
 				self.CSFDparseUser()
 			except:
@@ -2786,11 +2770,14 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 	def ReDownloadMovieAndParseMainPart(self):
 		LogCSFD.WriteToFile('[CSFD] ReDownloadMovieAndParseMainPart - zacatek\n', 3)
 		LogCSFD.WriteToFile('[CSFD] ReDownloadMovieAndParseMainPart - stahuji z url ' + self.LastDownloadedMovieUrl + '\n', 3)
-		if CSFDGlobalVar.getWebDownload() == 0:
-			page = yield getPage(self.LastDownloadedMovieUrl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addErrback(self.fetchFailedReDownloadDetailMovie, self.LastDownloadedMovieUrl)
-		else:
-			page = requestCSFD(self.LastDownloadedMovieUrl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-		ParserCSFD.setHTML2utf8(page)
+#		if CSFDGlobalVar.getWebDownload() == 0:
+#			page = yield getPage(self.LastDownloadedMovieUrl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addErrback(self.fetchFailedReDownloadDetailMovie, self.LastDownloadedMovieUrl)
+#		else:
+#			page = requestCSFD(self.LastDownloadedMovieUrl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
+#		ParserCSFD.setHTML2utf8(page)
+		data = self.csfdAndroidClient.get_json_by_uri( self.LastDownloadedMovieUrl )
+		ParserCSFD.setJson( data )
+
 		self.CSFDParseMainPart()
 		LogCSFD.WriteToFile('[CSFD] ReDownloadMovieAndParseMainPart - konec\n', 3)
 
@@ -3334,20 +3321,33 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					err = traceback.format_exc()
 					LogCSFD.WriteToFile(err)
 
+#				if self.FindAllItems:
+#					fetchurl = CSFDGlobalVar.getHTTP() + const_www_csfd + '/hledat/complete-films/?q=' + eventNameUrllib
+#				elif self.eventMovieSourceOfDataEPG == False and len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
+#					yr = urllib.quote(strUni(' (' + str(self.eventMovieYears[0]) + ')'))
+#					fetchurl = CSFDGlobalVar.getHTTP() + const_www_csfd + '/hledat/?q=' + eventNameUrllib + yr
+#				else:
+#					fetchurl = CSFDGlobalVar.getHTTP() + const_www_csfd + '/hledat/?q=' + eventNameUrllib
+
 				if self.FindAllItems:
-					fetchurl = CSFDGlobalVar.getHTTP() + const_www_csfd + '/hledat/complete-films/?q=' + eventNameUrllib
+					fetchurl = '#search_movie#' + eventNameUrllib
 				elif self.eventMovieSourceOfDataEPG == False and len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
-					yr = urllib.quote(strUni(' (' + str(self.eventMovieYears[0]) + ')'))
-					fetchurl = CSFDGlobalVar.getHTTP() + const_www_csfd + '/hledat/?q=' + eventNameUrllib + yr
+					yr = ' (' + str(self.eventMovieYears[0]) + ')'
+					fetchurl = '#search_movie#' + eventNameUrllib + yr
 				else:
-					fetchurl = CSFDGlobalVar.getHTTP() + const_www_csfd + '/hledat/?q=' + eventNameUrllib
+					fetchurl = '#search_movie#' + eventNameUrllib
+
 				LogCSFD.WriteToFile('[CSFD] getCSFD - stahuji z url ' + fetchurl + '\n')
-				if CSFDGlobalVar.getWebDownload() == 0:
-					getPage(fetchurl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addCallback(self.CSFDquery).addErrback(self.fetchFailed, fetchurl)
-				else:
-					page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-					CSFDGlobalVar.setParalelDownload(self.CSFDquery, page)
-					self.DownloadTimer.start(10, True)
+				
+#				if CSFDGlobalVar.getWebDownload() == 0:
+#					getPage(fetchurl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addCallback(self.CSFDquery).addErrback(self.fetchFailed, fetchurl)
+#				else:
+#					page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
+				
+				page = self.csfdAndroidClient.get_json_by_uri( fetchurl )	
+				CSFDGlobalVar.setParalelDownload(self.CSFDquery, page)
+				self.DownloadTimer.start(10, True)
+				
 				LogCSFD.WriteToFile('[CSFD] getCSFD - stahnuto\n')
 		else:
 			if not is_Internet_OK:
@@ -3544,6 +3544,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				else:
 					porovnejTexty = TextCompare
 					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TextCompare\n')
+					
+			if True:
 				zohlednitDiacr = False
 				if self.eventMovieSourceOfDataEPG == True and config.misc.CSFD.FindInclDiacrEPG.getValue():
 					zohlednitDiacr = True
@@ -3707,10 +3709,13 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				link = pol[0]
 				if link not in stahnuto:
 					stahnuto.append(link)
-					fetchurl = CSFDGlobalVar.getHTTP() + const_csfd_http_film + link + const_quick_page
+#					fetchurl = CSFDGlobalVar.getHTTP() + const_csfd_http_film + link + const_quick_page
+					fetchurl = link
 					LogCSFD.WriteToFile('[CSFD] GetOtherMovieNamesFromDetail - stahuji z url ' + Uni8(fetchurl) + '\n')
-					res = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-					ParserOstCSFD.setHTML2utf8(res)
+#					res = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
+					res = self.csfdAndroidClient.get_json_by_uri( fetchurl )
+#					ParserOstCSFD.setHTML2utf8(res)
+					ParserOstCSFD.setJson( res)
 					res_name = ParserOstCSFD.parserOtherMovieTitleWOCountry()
 					if res_name is not None:
 						for x in res_name:
@@ -3720,7 +3725,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					nacteno += 1
 				index += 1
 
-			ParserOstCSFD.setParserHTML('')
+#			ParserOstCSFD.setParserHTML('')
+			ParserOstCSFD.setJson( {} )
 		LogCSFD.WriteToFile('[CSFD] GetOtherMovieNamesFromDetail - konec\n')
 		return (searchresults, searchresultsAdd)
 
@@ -3760,7 +3766,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self['page'].setText('')
 			self['page'].hide()
 
-		def SearchAgain():
+		def XXX_SearchAgain():
 			LogCSFD.WriteToFile('[CSFD] CSFDquery - SearchAgain - zacatek\n')
 			evName = char2Allowchar(self.eventNameLocal)
 			lastRoman = False
@@ -3806,11 +3812,13 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD]	 CSFDquery - SearchAgain - konec\n')
 
 		LogCSFD.WriteToFile('[CSFD] CSFDquery - hledany film3 ' + self.eventNameLocal + '\n')
-		ParserCSFD.setHTML2utf8(string)
+#		ParserCSFD.setHTML2utf8(string)
+		ParserCSFD.setJson(string)
 		self.CSFDparseUser()
 		self.resultlist = []
 		self.SortType = int(config.misc.CSFD.Default_Sort.getValue())
-		if ParserCSFD.parserTestCSFDFinding():
+#		if ParserCSFD.parserTestCSFDFinding():
+		if ParserCSFD.testJson():
 			if ParserCSFD.parserMoviesFound():
 				if self.FindAllItems:
 					LogCSFD.WriteToFile('[CSFD] CSFDquery - parsuji cely seznam vyhledanych filmu\n')
@@ -3822,6 +3830,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					searchresultsOrig = ParserCSFD.parserListOfMovies(1)
 					searchresults, searchresultsAdd = self.GetOtherMovieNamesFromDetail(searchresultsOrig)
 					self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults, True)
+					
 					if not shoda or not TVshoda and self.CSFDTestingTV():
 						LogCSFD.WriteToFile('[CSFD] CSFDquery - parsuji zbytek nazvu filmu\n')
 						searchresults1 = ParserCSFD.parserListOfMovies(0)
@@ -3836,8 +3845,10 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 							LogCSFD.WriteToFile('[CSFD] CSFDquery - seznamy jsou ruzne 2\n')
 							searchresults1 = searchresults1 + searchresultsAdd
 							self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults1)
+				
 				LogCSFD.WriteToFile('[CSFD] CSFDquery - konec upravy seznamu\n')
 				self.SortTypeChange(change_s=False)
+				
 				if len(self.resultlist) > 0:
 					LogCSFD.WriteToFile('[CSFD] CSFDquery - vyhledano vice zaznamu nez 0\n')
 					self['menu'].moveToIndex(0)
@@ -3854,39 +3865,17 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						self.Page = 1
 						self.showMenu()
 				else:
-					Redirecttext = ParserCSFD.parserListOfMoviesRedirect()
-					if Redirecttext is not None and Redirecttext != '':
-						LogCSFD.WriteToFile('[CSFD] CSFDquery - Redirecttext1 ' + Redirecttext + '\n')
-						self.linkGlobal = Redirecttext
-						self.resultlist.append((self.eventNameLocal, Redirecttext, char2DiacriticSort(self.eventNameLocal).upper(), char2Diacritic(self.eventNameLocal).upper(), 500, 0, '91', char2Allowchar(self.eventNameLocal), 'c0', ''))
-						self.SortTypeChange(change_s=False)
-						self['sortlabel'].hide()
-						LogCSFD.WriteToFile('[CSFD] CSFDquery - Redirect1 - vyhledan pouze jeden zaznam\n')
-						self.NacistNazevPoradu = True
-						self.ReadDetailName()
-					else:
-						LogCSFD.WriteToFile('[CSFD] CSFDquery - Redirecttext1 - nenacteno\n')
-						if self.FindAllItems == False:
-							SearchAgain()
-						else:
-							SetNotFind(_('Žádná shoda na CSFD pro film: '), _('Žádná shoda na CSFD.'))
+					LogCSFD.WriteToFile('[CSFD] CSFDquery - Redirecttext1 - nenacteno\n')
+#					if self.FindAllItems == False:
+#						SearchAgain()
+#					else:
+					SetNotFind(_('Žádná shoda na CSFD pro film: '), _('Žádná shoda na CSFD.'))
 			else:
-				Redirecttext = ParserCSFD.parserListOfMoviesRedirect()
-				if Redirecttext is not None and Redirecttext != '':
-					LogCSFD.WriteToFile('[CSFD] CSFDquery - Redirecttext2 ' + Redirecttext + '\n')
-					self.linkGlobal = Redirecttext
-					self.resultlist.append((self.eventNameLocal, Redirecttext, char2DiacriticSort(self.eventNameLocal).upper(), char2Diacritic(self.eventNameLocal).upper(), 500, 0, '91', char2Allowchar(self.eventNameLocal), 'c0', ''))
-					self.SortTypeChange(change_s=False)
-					self['sortlabel'].hide()
-					LogCSFD.WriteToFile('[CSFD] CSFDquery - Redirect2 - vyhledan pouze jeden zaznam\n')
-					self.NacistNazevPoradu = True
-					self.ReadDetailName()
-				else:
 					LogCSFD.WriteToFile('[CSFD] CSFDquery - Redirecttext2 - nenacteno\n')
-					if self.FindAllItems == False:
-						SearchAgain()
-					else:
-						SetNotFind(_('Žádná shoda na CSFD pro film: '), _('Žádná shoda na CSFD.'))
+#					if self.FindAllItems == False:
+#						SearchAgain()
+#					else:
+					SetNotFind(_('Žádná shoda na CSFD pro film: '), _('Žádná shoda na CSFD.'))
 		else:
 			LogCSFD.WriteToFile('[CSFD] CSFDquery -	 chyba dotazu!\n')
 			SetNotFind(_('CSFD - chyba dotazu! - film: '), '')
@@ -4003,7 +3992,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 	def CSFDparseUser(self):
 		LogCSFD.WriteToFile('[CSFD] parseUser - zacatek\n')
-		resultText = ParserCSFD.parserLoggedUser()
+#		resultText = ParserCSFD.parserLoggedUser()
+		resultText = None
 		if resultText is not None and resultText != '':
 			LogCSFD.WriteToFile('[CSFD] parseUser - Logged User: ' + Uni8(resultText) + '\n')
 			self.LoggedUser = resultText
@@ -4023,6 +4013,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - Nazev\n')
 		Titeltext = '???'
 		PridejText = ''
+		
 		resultText = ParserCSFD.parserMovieTitleInclYear()
 		if resultText is not None and resultText is not '':
 			Titeltext = char2Allowchar(resultText)
@@ -4033,21 +4024,26 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			elif len(Titeltext) > 60:
 				PridejText = Titeltext
 				Titeltext = Titeltext[0:60] + ' ...'
+				
 		self['titellabel'].setText(strUni(char2Allowchar(Titeltext)))
 		self['sortlabel'].setText('')
+		
 		Detailstext = ''
 		if PridejText != '':
 			jme = PridejText.split(' / ', 1)
 			Detailstext = strUni(char2Allowchar(NameMovieCorrectionExtensions(jme[0].strip()))) + '\n'
 			if len(jme) > 1:
 				Detailstext += strUni(char2Allowchar(NameMovieCorrectionExtensions(jme[1].strip()))) + '\n'
+		
 		ss = self.selectedMenuRow[7].strip()
 		if ss is not None and ss is not '':
 			jme = ss.split(' / ', 1)
 			Detailstext = strUni(char2Allowchar(NameMovieCorrectionExtensions(jme[0].strip()))) + '\n'
 			if len(jme) > 1:
 				Detailstext += strUni(char2Allowchar(NameMovieCorrectionExtensions(jme[1].strip()))) + '\n'
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - Jmeno\n')
+		
 		resultText = ParserCSFD.parserMovieTitle()
 		if resultText is not None and resultText is not '':
 			self.ActName = char2Allowchar(NameMovieCorrectionExtensions(resultText))
@@ -4055,43 +4051,55 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		if self.ActName == '':
 			ss = Titeltext.split(' / ', 1)
 			self.ActName = char2Allowchar(ss[0].strip())
+			
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - ActName: ' + self.ActName + '\n')
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - Jmeno serialu v epizode\n')
-		resultText = ParserCSFD.parserSeriesNameInEpisode()
-		if resultText is not None and resultText is not '':
-			Detailstext += strUni(char2Allowchar(resultText))
+		
+#		LogCSFD.WriteToFile('[CSFD] ParseMainPart - Jmeno serialu v epizode\n')
+#		resultText = ParserCSFD.parserSeriesNameInEpisode()
+#		if resultText is not None and resultText is not '':
+#			Detailstext += strUni(char2Allowchar(resultText))
+			
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - Ostatni jmena\n')
-		resultText = ParserCSFD.parserOtherMovieTitle()[1]
-		if resultText is not None and resultText is not '':
-			Detailstext += strUni(char2Allowchar(resultText))
+		
+#		resultText = ParserCSFD.parserOtherMovieTitle()[1]
+#		if resultText is not None and resultText is not '':
+#			Detailstext += strUni(char2Allowchar(resultText))
 		Detailstext = OdstranitDuplicityRadku(Detailstext)
 		textCol1 = self['detailslabel'].AddRowIntoText(Detailstext, '')
 		textCol = Detailstext
 		Detailstext = textCol1
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - typ poradu\n')
 		resultText = ParserCSFD.parserTypeOfMovie()
 		if resultText is not None and resultText is not '':
 			Detailstext += resultText + '\n'
+			
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - zanr\n')
 		resultText = ParserCSFD.parserGenre()
 		if resultText is not None and resultText is not '':
 			Detailstext += resultText + '\n'
 			self.callbackGenre = resultText
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - origin\n')
 		resultText = ParserCSFD.parserOrigin()
 		if resultText is not None and resultText is not '':
 			Detailstext += resultText + '\n'
+			
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - zebricky\n')
 		resultText = ParserCSFD.parserCSFDRankings()
 		if resultText is not None and resultText is not '':
 			Detailstext += resultText
+			
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - info, kde film bezi\n')
 		resultText = ParserCSFD.parserWherePlaying()
 		if resultText is not None and resultText is not '':
 			Detailstext += resultText + '\n'
+			
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - vlastni hodnoceni\n')
-		resultText = ParserCSFD.parserOwnRating()[0]
+#		resultText = ParserCSFD.parserOwnRating()[0]
+		resultText = None
 		if resultText is not None and resultText is not '':
 			ss = ParserCSFD.parserDateOwnRating()
 			if ss is not None and ss is not '':
@@ -4102,8 +4110,10 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - soukroma poznamka\n')
-		resultText = ParserCSFD.parserPrivateComment()
+#		resultText = ParserCSFD.parserPrivateComment()
+		resultText = None
 		if resultText is not None and resultText is not '':
 			coltextpart = _('Soukromá poznámka: ')
 			textCol = textCol + coltextpart + '\n'
@@ -4111,6 +4121,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - rezije\n')
 		resultText = ParserCSFD.parserDirector()
 		if resultText is not None and resultText is not '':
@@ -4120,6 +4131,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - predloha\n')
 		resultText = ParserCSFD.parserDraft()
 		if resultText is not None and resultText is not '':
@@ -4129,6 +4141,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - scenar\n')
 		resultText = ParserCSFD.parserScenario()
 		if resultText is not None and resultText is not '':
@@ -4138,6 +4151,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - kamera\n')
 		resultText = ParserCSFD.parserCamera()
 		if resultText is not None and resultText is not '':
@@ -4147,6 +4161,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - hudba\n')
 		resultText = ParserCSFD.parserMusic()
 		if resultText is not None and resultText is not '':
@@ -4156,6 +4171,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - produkce\n')
 		resultText = ParserCSFD.parserProduction()
 		if resultText is not None and resultText is not '':
@@ -4165,6 +4181,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - strih\n')
 		resultText = ParserCSFD.parserCutting()
 		if resultText is not None and resultText is not '':
@@ -4174,6 +4191,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - zvuk\n')
 		resultText = ParserCSFD.parserSound()
 		if resultText is not None and resultText is not '':
@@ -4183,6 +4201,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - scenografie\n')
 		resultText = ParserCSFD.parserScenography()
 		if resultText is not None and resultText is not '':
@@ -4192,6 +4211,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - masky\n')
 		resultText = ParserCSFD.parserMakeUp()
 		if resultText is not None and resultText is not '':
@@ -4201,6 +4221,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - kostymy\n')
 		resultText = ParserCSFD.parserCostumes()
 		if resultText is not None and resultText is not '':
@@ -4210,6 +4231,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - hraji\n')
 		resultText = ParserCSFD.parserCasting()
 		if resultText is not None and resultText is not '':
@@ -4219,16 +4241,20 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - tagy\n')
-		resultText = ParserCSFD.parserTags()
+#		resultText = ParserCSFD.parserTags()
+		resultText = None
 		if resultText is not None and resultText is not '':
 			coltextpart = _('Tagy: ')
 			textCol = textCol + coltextpart + '\n'
 			coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
 			Detailstext += coltextspace
 			Detailstext += resultText + '\n'
+		
 		Detailstext = char2Allowchar(Detailstext)
 		self.callbackData += Detailstext
+		
 		self['detailslabel'].setText(strUni(Detailstext))
 		self['detailslabel'].setTextCol(textCol)
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - konec\n')
@@ -4330,7 +4356,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] Parse - obsah\n')
 		Obsahtext = ParserCSFD.parserContent()
 		if Obsahtext != '':
+			LogCSFD.WriteToFile('[CSFD] Parse - obsah1: ' + Obsahtext + '\n')
 			Obsahtext = char2Allowchar(Obsahtext)
+			LogCSFD.WriteToFile('[CSFD] Parse - obsah2: ' + Obsahtext + '\n')
 			coltext = _('Obsah: ')
 			coltextspace = self['contentlabel'].CalculateSizeInSpace(coltext)[0]
 			coltextspace = Uni8(coltextspace)
@@ -4426,6 +4454,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self['contentlabel'].SetColColor(CSFDratingColor_HighlightKeyWords)
 			self['extralabel'].SetColColor(CSFDratingColor_HighlightKeyWords)
 			self['extralabel'].SetHeadColor(CSFDratingColor_HighlightKeyWords)
+		LogCSFD.WriteToFile('[CSFD] Parse - titulok: ' + Titeltext + '\n')
 		self.summaries.setText(strUni(char2Allowchar(Titeltext)), GetItemColourRateN(self.ratingstars))
 		self['statusbar'].setText(_('Autor pluginu: ') + 'petrkl12@tvplugins.cz')
 		self['key_red'].setText(_('Zpět'))
@@ -4437,7 +4466,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] Parse - konec\n')
 		return
 
-	def CSFDshowSpec(self):
+	def XXX_CSFDshowSpec(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - zacatek\n')
 		self['statusbar'].setText('')
 		if self.querySpecAkce == 'UserGallery' or self.querySpecAkce == 'UserPoster' or self.querySpecAkce == 'UserVideo':
@@ -4480,8 +4509,58 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				getPage(fetchurl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addCallback(self.CSFDquerySpec).addErrback(self.fetchFailed, fetchurl)
 			else:
 				page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-				CSFDGlobalVar.setParalelDownload(self.CSFDquerySpec, page)
-				self.DownloadTimer.start(10, True)
+			CSFDGlobalVar.setParalelDownload(self.CSFDquerySpec, page)
+			self.DownloadTimer.start(10, True)
+		LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - konec\n')
+
+	def CSFDshowSpec(self):
+		LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - zacatek\n')
+		
+		movie_id = self.linkGlobal[7:]
+		
+		self['statusbar'].setText('')
+		if self.querySpecAkce == 'UserGallery' or self.querySpecAkce == 'UserPoster' or self.querySpecAkce == 'UserVideo':
+			self.CSFDquerySpec('')
+		else:
+			if CSFDGlobalVar.getCSFDDesktopWidth() > 1250:
+				self['statusbar'].setText(_('CSFD - stahování dalších informací probíhá ...'))
+				self['statusbar'].show()
+			else:
+				LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - nadpis NE\n')
+				self['statusbar'].setText('')
+			sss = str(self.PageSpec)
+			if self.querySpecAkce == 'UserComments':
+#				self.linkComment obsahuje sposob ako zoradit komentare
+				self.linkSpec = '#movie_comments#' +  movie_id
+			elif self.querySpecAkce == 'UserExtReviews':
+				self.linkSpec = 'recenze/strana-%s/' % sss
+			elif self.querySpecAkce == 'UserPremiery':
+				self.linkSpec = self.linkComment
+				self.linkSpec = 'komentare/' + self.linkSpec + 'strana-%s/' % sss
+			elif self.querySpecAkce == 'UserDiscussion':
+				self.linkSpec = 'diskuze/strana-%s/' % sss
+			elif self.querySpecAkce == 'UserInteresting':
+				self.linkSpec = '#movie_trivia#' +  movie_id
+			elif self.querySpecAkce == 'UserAwards':
+				self.linkSpec = 'oceneni/strana-%s/' % sss
+			elif self.querySpecAkce == 'UserReviews':
+				self.linkSpec = const_quick_page + '?expandUserList=1&ratings-page=%s' % sss
+			elif self.querySpecAkce == 'UserFans':
+				self.linkSpec = const_quick_page + '?expandUserList=1&fanclub-page=%s' % sss
+			fetchurl = CSFDGlobalVar.getHTTP() + const_csfd_http_film + self.linkGlobal + self.linkSpec
+			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - stahuji z url ' + fetchurl + '\n')
+			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - linkGlobal ' + self.linkGlobal + '\n')
+			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - linkSpec ' + self.linkSpec + '\n')
+#			if CSFDGlobalVar.getWebDownload() == 0:
+#				getPage(fetchurl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addCallback(self.CSFDquerySpec).addErrback(self.fetchFailed, fetchurl)
+#			else:
+#				page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
+#				CSFDGlobalVar.setParalelDownload(self.CSFDquerySpec, page)
+#				self.DownloadTimer.start(10, True)
+
+			if self.linkSpec.startswith('#'):
+				page = self.csfdAndroidClient.get_json_by_uri(self.linkSpec, self.PageSpec )
+				self.CSFDquerySpec(page)
 		LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - konec\n')
 
 	def CSFDquerySpec(self, string):
@@ -4576,7 +4655,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			if not self['statusbar'].instance.isVisible():
 				self['statusbar'].show()
 			LogCSFD.WriteToFile('[CSFD] CSFDquerySpec - html2utf8\n')
-			ParserCSFD.setHTML2utf8(string)
+#			ParserCSFD.setHTML2utf8(string)
 			self.CSFDparseUser()
 			LogCSFD.WriteToFile('[CSFD] CSFDquerySpec - pred parse' + '\n')
 			if CSFDGlobalVar.getCSFDDesktopWidth() > 1250:
@@ -4585,7 +4664,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self['statusbar'].setText('')
 			LogCSFD.WriteToFile('[CSFD] CSFDquerySpec - querySpecAkce - ' + self.querySpecAkce + '\n')
 			if self.querySpecAkce == 'UserComments':
-				self.CSFDParseUserComments()
+				self.CSFDParseUserComments( string )
 			elif self.querySpecAkce == 'UserExtReviews':
 				self.CSFDParseUserExtReviews()
 			elif self.querySpecAkce == 'UserPremiery':
@@ -4593,7 +4672,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			elif self.querySpecAkce == 'UserDiscussion':
 				self.CSFDParseUserDiscussion()
 			elif self.querySpecAkce == 'UserInteresting':
-				self.CSFDParseUserInteresting()
+				self.CSFDParseUserInteresting( string )
 			elif self.querySpecAkce == 'UserAwards':
 				self.CSFDParseUserAwards()
 			elif self.querySpecAkce == 'UserReviews':
@@ -4604,7 +4683,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self['page'].setText(_('Strana č.%s' % sss))
 		LogCSFD.WriteToFile('[CSFD] CSFDquerySpec - konec\n')
 
-	def CSFDParseUserComments(self):
+	def CSFDParseUserComments(self, data ):
 		LogCSFD.WriteToFile('[CSFD] CSFDParseUserComments - zacatek\n')
 		Extratext = ''
 		ExtratextCol = ''
@@ -4612,11 +4691,12 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		coltextspaceUzivatel = self['extralabel'].CalculateSizeInSpace(coltextUzivatel)[0]
 		coltextHodnoceni = _('	 Hodnocení: ')
 		coltextspaceHodnoceni = self['extralabel'].CalculateSizeInSpace(coltextHodnoceni)[0]
-		extraresult = ParserCSFD.parserUserComments()
+		extraresult = ParserCSFD.parserUserComments( data )
 		if extraresult is not None:
 			for x in extraresult:
 				uzivtext = self['extralabel'].CalculateSizeAddSpaceDiff(x[0], 'AAAAAAAAAAAA')
-				Extratext += coltextspaceUzivatel + uzivtext + coltextspaceHodnoceni + x[1] + '	 ' + x[2] + ' \n' + strUni(char2Allowchar(x[3] + '\n' + '\n'))
+				
+				Extratext += coltextspaceUzivatel + uzivtext + coltextspaceHodnoceni + '	' + x[1] + '	 ' + x[2] + ' \n' + strUni(char2Allowchar(x[3] + '\n' + '\n'))
 				ExtratextCol += coltextUzivatel + self['extralabel'].CalculateSizeInSpaceSimple(uzivtext) + coltextHodnoceni + ' \n'
 				ExtratextCol = self['extralabel'].AddRowIntoText(Extratext, ExtratextCol)
 
@@ -4717,14 +4797,14 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] CSFDParseUserDiscussion - konec\n')
 		return
 
-	def CSFDParseUserInteresting(self):
+	def CSFDParseUserInteresting(self, data):
 		LogCSFD.WriteToFile('[CSFD] CSFDParseUserInteresting - zacatek\n')
 		Extratext = ''
 		ExtratextCol = ''
 		coltextUzivatel = _('Uživatel: ')
 		coltextspaceUzivatel = self['extralabel'].CalculateSizeInSpace(coltextUzivatel)[0]
 		coltextUzivatel += '\n'
-		extraresult = ParserCSFD.parserInterest()
+		extraresult = ParserCSFD.parserInterest( data )
 		if extraresult is not None:
 			for x in extraresult:
 				Extratext += coltextspaceUzivatel + x[1] + '\n' + strUni(char2Allowchar(x[0] + '\n' + '\n'))
@@ -4870,94 +4950,72 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] CSFDParseUserFans - konec\n')
 		return
 
-	@defer.inlineCallbacks
+#	@defer.inlineCallbacks
 	def CSFDAllVideoDownload(self):
 		self.VideoDwnlIsNotStarted = False
 		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - zacatek\n')
 		downl_timeout = config.misc.CSFD.DownloadTimeOut.getValue()
 		video_res = config.misc.CSFD.VideoResolution.getValue()
-		url = CSFDGlobalVar.getHTTP() + const_csfd_http_film + self.linkGlobal + 'videa/?type=1&all=1'
-		listOfTypeVideo = None
-		next_list = 0
-		error_count = 0
+		
+		try:
+			id_filmu = self.linkGlobal
+				
+			if id_filmu.startswith('#movie#') == False:
+				raise ValueError("Nespravny format ID filmu")
+				
+			id_filmu = id_filmu[7:]
+		except:
+			id_filmu = ''
+			LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - chyba self.linkGlobal - konec\n', 5)
+			err = traceback.format_exc()
+			LogCSFD.WriteToFile(err, 5)
+			return
+
 		porVF = 0
-		while url is not None:
-			LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - stahuji z url ' + Uni8(url) + '\n')
-			try:
-				if CSFDGlobalVar.getWebDownload() == 0:
-					result = yield CSFDdownloader.getPage(url, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=downl_timeout, cookies=self.getCookies(), headers=std_headers)
-				else:
-					result = requestCSFD(url, headers=std_headers_UL2, timeout=downl_timeout)
-			except:
-				LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - Chyba pri stahovani videi\n')
-				err = traceback.format_exc()
-				LogCSFD.WriteToFile(err)
-				LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - Chyba - nedokoncene stahovani videi - pocet:' + str(error_count) + '\n')
-				print '[CSFD] CSFDAllVideoDownload - Error:', err
-				error_count += 1
-				if error_count > 5:
-					LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - Chyba - nedokoncene stahovani videi\n')
-					break
-				else:
-					LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - zkousim znovu stahnout\n')
-					downl_timeout = config.misc.CSFD.DownloadTimeOut.getValue() + 20
-					continue
+		
+		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - stahuji z url ' + id_filmu + '\n')
+		result = self.csfdAndroidClient.get_json_by_uri( '#movie_videos#' + id_filmu )
 
-			downl_timeout = config.misc.CSFD.DownloadTimeOut.getValue()
-			error_count = 0
-			LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - 1\n')
-			ParserVideoCSFD.setHTML2utf8(result)
-			results = ParserVideoCSFD.parserVideoDetail(config.misc.CSFD.QualityVideoPoster.getValue())
-			LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - parserVideoDetail\n')
-			if results is not None:
-				for x in results:
-					if video_res == 'hd':
-						videoklipurl = x[1] or x[0]
-					else:
-						videoklipurl = x[0] or x[1]
-					if CSFDGlobalVar.getCSFDlang() == 'sk':
-						videotitulkyurl = x[3] or x[2]
-					else:
-						videotitulkyurl = x[2] or x[3]
-					if videoklipurl != '':
-						ss = strUni(char2Allowchar(x[4]))
-						porVF += 1
-						s_video = 'V' + str(porVF).zfill(7)
-						localfile = CSFDGlobalVar.getCSFDadresarTMP() + 'CSFDVPoster' + str(porVF).zfill(7) + '_' + str(randint(1, 99999)) + '.jpg'
-						LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - videoposter: ' + x[5] + '\n')
-						downloaded = False
-						self.VideoSlideList.append([url, porVF, ss, s_video, videoklipurl, videotitulkyurl, x[5], char2DiacriticSort(ss), localfile, downloaded])
-						self.VideoCountPix += 1
-
-			LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - VideoCountPix ' + str(self.VideoCountPix) + '\n')
-			if self.Page == 2 and self.querySpecAkce == 'UserVideo':
-				self.VideoSlideList.sort(key=lambda z: z[7])
-				if self.VideoIsNotFullyRead:
-					self.VideoIsNotFullyRead = False
-					if self['extralabel'].instance.isVisible():
-						self['extralabel'].hide()
-					if not self['playbutton'].instance.isVisible():
-						self['playbutton'].show()
-					if not self['photolabel'].instance.isVisible():
-						self['photolabel'].show()
-					self.CSFDVideoShow()
+		ParserVideoCSFD.setJson(result)
+		results = ParserVideoCSFD.parserVideoDetail(config.misc.CSFD.QualityVideoPoster.getValue())
+		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - parserVideoDetail\n')
+		if results is not None:
+			for x in results:
+				if video_res == 'hd':
+					videoklipurl = x[1] or x[0]
 				else:
-					idx = self.VideoActIdx
-					ss = str(idx + 1) + '/' + str(self.VideoCountPix) + '  ' + strUni(self.VideoSlideList[idx][2])
-					self['statusbar'].setText(ss)
-			url1 = ParserVideoCSFD.parserVideoListNextPage()
-			if url1 is None or url1 == '':
-				url = None
-				if next_list == 0:
-					listOfTypeVideo = ParserVideoCSFD.parserVideoTypeList()
-				next_list += 1
-				if listOfTypeVideo is not None and next_list < len(listOfTypeVideo):
-					url1 = listOfTypeVideo[next_list][0]
-					if len(url1) > 1:
-						url = CSFDGlobalVar.getHTTP() + const_www_csfd + url1
-						LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - dalsi typ videi ' + url + '\n')
+					videoklipurl = x[0] or x[1]
+				if CSFDGlobalVar.getCSFDlang() == 'sk':
+					videotitulkyurl = x[3] or x[2]
+				else:
+					videotitulkyurl = x[2] or x[3]
+				if videoklipurl != '':
+					ss = strUni(char2Allowchar(x[4]))
+					porVF += 1
+					s_video = 'V' + str(porVF).zfill(7)
+					localfile = CSFDGlobalVar.getCSFDadresarTMP() + 'CSFDVPoster' + str(porVF).zfill(7) + '_' + str(randint(1, 99999)) + '.jpg'
+					LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - videoposter: ' + x[5] + '\n')
+					downloaded = False
+					url = ""
+					self.VideoSlideList.append([url, porVF, ss, s_video, videoklipurl, videotitulkyurl, x[5], char2DiacriticSort(ss), localfile, downloaded])
+					self.VideoCountPix += 1
+
+		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - VideoCountPix ' + str(self.VideoCountPix) + '\n')
+		if self.Page == 2 and self.querySpecAkce == 'UserVideo':
+			self.VideoSlideList.sort(key=lambda z: z[7])
+			if self.VideoIsNotFullyRead:
+				self.VideoIsNotFullyRead = False
+				if self['extralabel'].instance.isVisible():
+					self['extralabel'].hide()
+				if not self['playbutton'].instance.isVisible():
+					self['playbutton'].show()
+				if not self['photolabel'].instance.isVisible():
+					self['photolabel'].show()
+				self.CSFDVideoShow()
 			else:
-				url = CSFDGlobalVar.getHTTP() + const_www_csfd + url1
+				idx = self.VideoActIdx
+				ss = str(idx + 1) + '/' + str(self.VideoCountPix) + '  ' + strUni(self.VideoSlideList[idx][2])
+				self['statusbar'].setText(ss)
 
 		self.VideoSlideList.sort(key=lambda z: z[7])
 		self.VideoIsNotFullyRead = False
@@ -4983,7 +5041,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] CSFDgetEntryVideo - spouteni playeru\n')
 			self.AntiFreezeTimerWorking = False
 			acname = strUni(self.ActName)
-			self.myreference = eServiceReference(4097, 0, self.videoklipurl)
+			self.myreference = eServiceReference(4097, 0, str(self.videoklipurl))
 			self.myreference.setName(acname + ' - ' + self.VideoSlideList[self.VideoActIdx][2])
 			self.session.open(CSFDPlayer, self.myreference, self.lastservice, self.videotitulkyurl, infoCallback=self.CSFDshowVideoInfo, nextCallback=self.CSFDgetNextEntryVideo, prevCallback=self.CSFDgetPrevEntryVideo, exitCallback=self.CSFDPlayerExit, existPrevOrNextCallback=self.CSFDexistPrevOrNextVideo, downloadVideo=self.CSFDopenVideoDownload, colorOLED=GetItemColourRateN(self.ratingstars))
 			sss = str(self.VideoActIdx + 1)
@@ -5097,13 +5155,18 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 	def CSFDAllGalleryDownload(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDAllGalleryDownload - zacatek\n', 5)
 
-		@defer.inlineCallbacks
 		def GalleryFiles():
 			LogCSFD.WriteToFile('[CSFD] GalleryFiles - zacatek\n', 5)
+			
 			porGF = 0
 			porGFtyp = 0
 			try:
 				id_filmu = self.linkGlobal
+				
+				if id_filmu.startswith('#movie#') == False:
+					raise ValueError("Nespravny format ID filmu")
+				
+				id_filmu = id_filmu[7:]
 			except:
 				id_filmu = ''
 				LogCSFD.WriteToFile('[CSFD] GalleryFiles - chyba self.linkGlobal - konec\n', 5)
@@ -5111,96 +5174,47 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				LogCSFD.WriteToFile(err, 5)
 				return
 
-			url = '/film/' + id_filmu + 'galerie/strana-1/?type=1'
-			next_list = 0
-			error_count = 0
-			listOfTypeGall = None
-			timeoutGall = config.misc.CSFD.DownloadTimeOut.getValue()
-			while url is not None:
-				fetchurl = CSFDGlobalVar.getHTTP() + const_www_csfd + url
-				LogCSFD.WriteToFile('[CSFD] GalleryFiles - stahuji z url ' + fetchurl + '\n', 5)
-				try:
-					if CSFDGlobalVar.getWebDownload() == 0:
-						result = yield CSFDdownloader.getPage(fetchurl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=timeoutGall, cookies=self.getCookies(), headers=std_headers)
-					else:
-						result = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=timeoutGall)
-				except:
-					LogCSFD.WriteToFile('[CSFD] GalleryFiles - Chyba pri stahovani galerie\n', 5)
-					err = traceback.format_exc()
-					LogCSFD.WriteToFile(err, 5)
-					print '[CSFD] GalleryFiles - Erorr:', err
-					error_count += 1
-					if error_count > 5:
-						LogCSFD.WriteToFile('[CSFD] GalleryFiles - Chyba - nedokoncene stahovani galerie\n', 5)
-						break
-					else:
-						LogCSFD.WriteToFile('[CSFD] GalleryFiles - zkousim znovu stahnout\n', 5)
-						timeoutGall = config.misc.CSFD.DownloadTimeOut.getValue() + 20
-						continue
+#			timeoutGall = config.misc.CSFD.DownloadTimeOut.getValue()
+			
+			result = self.csfdAndroidClient.get_json_by_uri( '#movie_photos#' + id_filmu )
+			
+			self.PosterBasicCountPixAllG = 0
+			for photo in result["photos"]:
+				photo_url = photo["url"]
+				
+#				qidx = photo_url.rfind('?w')
+#				if qidx != -1:
+#					photo_url = photo_url[:qidx]
+				
+				porGF += 1
+				porGFtyp += 1
+				s_porGF = str(porGF)
+				popis_gal = str(porGFtyp)
 
-				try:
-					if id_filmu != self.linkGlobal:
-						LogCSFD.WriteToFile('[CSFD] GalleryFiles - zruseno - nacitani jineho poradu\n', 5)
-						return
-				except AttributeError:
-					return
+				localfile = CSFDGlobalVar.getCSFDadresarTMP() + 'CSFDGallery' + str(porGF).zfill(7) + '_' + str(randint(1, 99999)) + '.jpg'
+				sort_gallery = 'B' + s_porGF.zfill(7)
+				popis_gal = _('Galerie: ') + "Fotky" + ' - ' + popis_gal
 
-				timeoutGall = config.misc.CSFD.DownloadTimeOut.getValue()
-				error_count = 0
-				ParserGallCSFD.setHTML2utf8(result)
-				if self.PosterBasicCountPixAllG < 0:
-					pocetPaG = ParserGallCSFD.parserGalleryNumber()
-					if pocetPaG is not None:
-						self.PosterBasicCountPixAllG = pocetPaG
-					else:
-						self.PosterBasicCountPixAllG = 0
-				popis_type = ParserGallCSFD.parserGallerySelectedTypeList()[1]
-				LogCSFD.WriteToFile('[CSFD] GalleryFiles - pocet fotek v galerii: ' + str(self.PosterBasicCountPixAllG) + '\n')
-				result = ParserGallCSFD.parserGalleryList(config.misc.CSFD.QualityGallery.getValue())
-				if result is not None:
-					for x in result:
-						porGF += 1
-						porGFtyp += 1
-						s_porGF = str(porGF)
-						if x[1] == '':
-							popis_gal = str(porGFtyp)
-						else:
-							popis_gal = str(porGFtyp) + ' - ' + x[1]
-						localfile = CSFDGlobalVar.getCSFDadresarTMP() + 'CSFDGallery' + str(porGF).zfill(7) + '_' + str(randint(1, 99999)) + '.jpg'
-						sort_gallery = 'B' + s_porGF.zfill(7)
-						popis_gal = _('Galerie: ') + popis_type + ' - ' + popis_gal
-						if id_filmu != self.linkGlobal:
-							LogCSFD.WriteToFile('[CSFD] GalleryFiles - details - zruseno - nacitani jineho poradu\n', 5)
-							return
-						self.PosterBasicSlideList.append([x[0], porGF, popis_gal, sort_gallery, localfile])
-						self.PosterBasicSlideList.sort(key=lambda z: z[3])
-						self.GallerySlideList.append([x[0], porGF, popis_gal, sort_gallery, localfile])
-						self.GallerySlideList.sort(key=lambda z: z[3])
-						self.PosterBasicCountPix += 1
-						if self.PosterBasicCountPix > 0:
-							if self.PosterBasicSlideStop == True:
-								self.PosterBasicSlideStop = False
-						LogCSFD.WriteToFile('[CSFD] GalleryFiles - PosterBasicsList: ' + localfile + ' - ' + str(porGF) + ' - ' + Uni8(popis_gal) + ' - ' + sort_gallery + '\n', 5)
-						self.GalleryCountPix += 1
-						if self.GalleryCountPix > 0:
-							if self.GallerySlideStop == True:
-								self.GallerySlideStop = False
-							if self.GalleryCountPix == 1 and 'postery' in self.FunctionExists and self.Page == 1:
-								self['poster'].show()
-								self.CSFDPosterBasicSlideShowEvent()
-						LogCSFD.WriteToFile('[CSFD] GalleryFiles - GalleryList: ' + localfile + ' - ' + str(porGF) + ' - ' + Uni8(popis_gal) + ' - ' + sort_gallery + '\n', 5)
+				self.PosterBasicSlideList.append([photo_url, porGF, popis_gal, sort_gallery, localfile])
+				self.PosterBasicSlideList.sort(key=lambda z: z[3])
+				self.GallerySlideList.append([photo_url, porGF, popis_gal, sort_gallery, localfile])
+				self.GallerySlideList.sort(key=lambda z: z[3])
+				self.PosterBasicCountPix += 1
 
-				url = ParserGallCSFD.parserGalleryListNextPage()
-				if url is None or url == '':
-					if next_list == 0:
-						listOfTypeGall = ParserGallCSFD.parserGalleryTypeList()
-					next_list += 1
-					if listOfTypeGall is not None and next_list < len(listOfTypeGall):
-						ur = listOfTypeGall[next_list][0].split('?')
-						if len(ur) > 1:
-							url = '/film/' + id_filmu + 'galerie/strana-1/?' + str(ur[1])
-							porGFtyp = 0
-							LogCSFD.WriteToFile('[CSFD] GalleryFiles - dalsi typ galerie ' + url + '\n', 5)
+				if self.PosterBasicCountPix > 0:
+					if self.PosterBasicSlideStop == True:
+						self.PosterBasicSlideStop = False
+						
+				LogCSFD.WriteToFile('[CSFD] GalleryFiles - PosterBasicsList: ' + localfile + ' - ' + str(porGF) + ' - ' + Uni8(popis_gal) + ' - ' + sort_gallery + '\n', 5)
+				self.GalleryCountPix += 1
+				if self.GalleryCountPix > 0:
+					if self.GallerySlideStop == True:
+						self.GallerySlideStop = False
+					if self.GalleryCountPix == 1 and 'postery' in self.FunctionExists and self.Page == 1:
+						self['poster'].show()
+						self.CSFDPosterBasicSlideShowEvent()
+				LogCSFD.WriteToFile('[CSFD] GalleryFiles - GalleryList: ' + localfile + ' - ' + str(porGF) + ' - ' + Uni8(popis_gal) + ' - ' + sort_gallery + '\n', 5)
+
 
 			self.GalleryIsNotFullyRead = False
 			ParserGallCSFD.setParserHTML('')
@@ -5241,7 +5255,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				if self.stahnutoCSFDImage == resultText:
 					LogCSFD.WriteToFile('[CSFD] CSFDPosterBasic - poster - neni nutne znovu stahovat poster\n', 6)
 				else:
-					self['statusbar'].setText(_('Stahuji obal k filmu: ') + resultText)
+					self['statusbar'].setText(str( _('Stahuji obal k filmu: ') + resultText) )
 					LogCSFD.WriteToFile('[CSFD] CSFDPosterBasic - download main poster: ' + resultText + '\n', 6)
 					try:
 						if CSFDGlobalVar.getWebDownload() == 0:
@@ -5312,7 +5326,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		return
 
 	def AddPoster(self, posterfile, localfile, porPF, sort_poster):
-		LogCSFD.WriteToFile('[CSFD] AddPoster - zacatek\n', 7)
+		LogCSFD.WriteToFile('[CSFD] AddPoster - zacatek %s\n' % posterfile, 7)
 		s_poster = _('Poster: ') + str(porPF)
 		self.PosterBasicSlideList.append([posterfile, porPF, s_poster, sort_poster, localfile])
 		self.PosterBasicSlideList.sort(key=lambda z: z[3])

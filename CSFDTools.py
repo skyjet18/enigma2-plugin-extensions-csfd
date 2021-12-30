@@ -814,6 +814,8 @@ def char2DiacriticSort(text):
 charAllowed = '1234567890QWERTZUIOPASDFGHJKLYXCVBNMqwertzuiopasdfghjklyxcvbnm?:./\\+ -()!@;*#$^&[]\'%|;{}",<>=»«_ÁÄĄÀÂČĆÇĎÉĚËĘÈÊÍÏÎĹĽŁŇŃÓÔÖŐŒŔŘŠŚŤÚŮÜŰÙÛÝŸŽŻŹáäąàâčćçďéěëęèêíïîĺľłňńóöôőœřŕšśťúůüűùûýÿžżź\n'
 
 def char2Allowchar(mystring, typeControl=0):
+	if True:
+		return mystring
 	if isinstance(mystring, str):
 		mystring = unicode(mystring, 'utf-8')
 	if typeControl == 1:

@@ -868,4 +868,3 @@ def Plugins(**kwargs):
 
 
 LogCSFD.WriteToFile('[CSFD] Iniciace modulu plugin.py* - konec\n')
-# global TVTimerConn ## Warning: Unused global

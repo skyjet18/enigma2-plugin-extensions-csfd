@@ -260,3 +260,4 @@ class CSFDConfigListScreen:
 			self.session.openWithCallback(self.cancelConfirm, MessageBox, _('Really close without saving settings?'))
 		else:
 			self.close()
+

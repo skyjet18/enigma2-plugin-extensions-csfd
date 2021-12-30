@@ -54,10 +54,12 @@ def LoginToCSFD():
 		url = CSFDGlobalVar.getHTTP() + const_www_csfd + '/prihlaseni/'
 		page = ''
 		try:
-			if CSFDGlobalVar.getWebDownload() == 0:
-				page = yield getPage(url, contextFactory=ClientContextFactoryCSFD, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), cookies=CSFDGlobalVar.getCSFDCookies(), headers=std_login_header)
-			else:
-				page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), saveCookie=True)
+			raise NameError('#1 Login do csfd nie je podporovany')
+		
+#			if CSFDGlobalVar.getWebDownload() == 0:
+#				page = yield getPage(url, contextFactory=ClientContextFactoryCSFD, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), cookies=CSFDGlobalVar.getCSFDCookies(), headers=std_login_header)
+#			else:
+#				page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), saveCookie=True)
 		except:
 			LogCSFD.WriteToFile('[CSFD] LogToWeb - get token - chyba - konec\n', 1)
 			config.misc.CSFD.LastLoginError.setValue(int(time.time()))
@@ -105,9 +107,10 @@ def LoginToCSFD():
 						   '_do': 'form-submit'}
 						data = urllib.urlencode(values)
 						url = url_login
-						page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False, saveCookie=True)
-						url = 'https://www.csfd.cz/'
-						page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
+						raise NameError('#2 Login do csfd nie je podporovany')
+#						page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False, saveCookie=True)
+#						url = 'https://www.csfd.cz/'
+#						page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
 				except:
 					LogCSFD.WriteToFile('[CSFD] LogToWeb - login - chyba - konec\n', 1)
 					config.misc.CSFD.LastLoginError.setValue(int(time.time()))
@@ -163,7 +166,7 @@ def GetMoviesForTVChannels(t_channName, t_typechannName=0, t_downlTimeout=3, t_i
 		LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - konec\n', 20)
 		return
 
-	@defer.inlineCallbacks
+#	@defer.inlineCallbacks
 	def GetMovies(s_channName, s_typechannName=0, s_downlTimeout=3, s_ignoreNetErr=False):
 		channName = s_channName
 		typechannName = s_typechannName
@@ -198,10 +201,11 @@ def GetMoviesForTVChannels(t_channName, t_typechannName=0, t_downlTimeout=3, t_i
 				general_chyba = chyba
 				if not chyba:
 					try:
-						if CSFDGlobalVar.getWebDownload() == 0:
-							page = yield getPage(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=0', contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=downlTimeout, cookies=cookies1, headers=std_tv_post_header)
-						else:
-							page = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=0', headers=std_tv_post_header_UL2, timeout=downlTimeout)
+						raise NameError('#1 Ziskavanie TV tipov pre stanicu nie je podporovane')
+#						if CSFDGlobalVar.getWebDownload() == 0:
+#							page = yield getPage(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=0', contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=downlTimeout, cookies=cookies1, headers=std_tv_post_header)
+#						else:
+#							page = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=0', headers=std_tv_post_header_UL2, timeout=downlTimeout)
 					except:
 						page = ''
 						chyba = True
@@ -214,10 +218,12 @@ def GetMoviesForTVChannels(t_channName, t_typechannName=0, t_downlTimeout=3, t_i
 
 				if not chyba:
 					try:
-						if CSFDGlobalVar.getWebDownload() == 0:
-							page_tomm = yield getPage(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=1', contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=downlTimeout, cookies=cookies1, headers=std_tv_post_header)
-						else:
-							page_tomm = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=1', headers=std_tv_post_header_UL2, timeout=downlTimeout)
+						raise NameError('#2 Ziskavanie TV tipov pre stanicu nie je podporovane')
+					
+#						if CSFDGlobalVar.getWebDownload() == 0:
+#							page_tomm = yield getPage(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=1', contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=downlTimeout, cookies=cookies1, headers=std_tv_post_header)
+#						else:
+#							page_tomm = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=1', headers=std_tv_post_header_UL2, timeout=downlTimeout)
 					except:
 						page_tomm = ''
 						chyba = True
@@ -230,10 +236,11 @@ def GetMoviesForTVChannels(t_channName, t_typechannName=0, t_downlTimeout=3, t_i
 
 				if not chyba:
 					try:
-						if CSFDGlobalVar.getWebDownload() == 0:
-							page_yest = yield getPage(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=-1', contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=downlTimeout, cookies=cookies1, headers=std_tv_post_header)
-						else:
-							page_yest = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=-1', headers=std_tv_post_header_UL2, timeout=downlTimeout)
+						raise NameError('#3 Ziskavanie TV tipov pre stanicu nie je podporovane')
+#						if CSFDGlobalVar.getWebDownload() == 0:
+#							page_yest = yield getPage(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=-1', contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=downlTimeout, cookies=cookies1, headers=std_tv_post_header)
+#						else:
+#							page_yest = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=-1', headers=std_tv_post_header_UL2, timeout=downlTimeout)
 					except:
 						page_yest = ''
 						chyba = True

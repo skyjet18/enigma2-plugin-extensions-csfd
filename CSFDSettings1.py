@@ -235,3 +235,4 @@ class CSFDGlobalVarDef:
 
 
 CSFDGlobalVar = CSFDGlobalVarDef()
+
