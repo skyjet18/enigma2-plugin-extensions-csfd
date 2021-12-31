@@ -908,7 +908,11 @@ class CSFDParser():
 		searchresults = []
 		
 		for movie in self.json_data["films"]:
-			searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], '(%d)' % movie["year"], 'c' + movie["rating_category"] ) )
+			if movie["year"] != None:
+				year = '(%d)' % movie["year"]
+			else:
+				year = ""
+			searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], year, 'c' + movie["rating_category"] ) )
 
 		LogCSFD.WriteToFile('[CSFD] parserListOfMovies - konec\n')
 		return searchresults
