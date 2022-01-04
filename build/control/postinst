@@ -1,0 +1,16 @@
+#!/bin/sh
+
+PLUGINPATH=/usr/lib/enigma2/python/Plugins/Extensions/CSFD
+
+end_inst () {
+   echo "******************************************"
+   echo "Instalace ukoncena"
+   echo "******************************************"
+   echo "Prosim restartujte GUI pro aktivaci zmen! "
+   echo "******************************************"
+}
+
+$PLUGINPATH/addon/addon.sh
+end_inst
+
+exit 0

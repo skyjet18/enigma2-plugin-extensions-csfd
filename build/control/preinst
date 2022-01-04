@@ -1,0 +1,12 @@
+#!/bin/sh
+
+echo "******************************************************************"
+echo "*                           C S F D                              *"
+echo "******************************************************************"
+
+PLUGINPATH=/usr/lib/enigma2/python/Plugins/Extensions/CSFD
+rm -rf $PLUGINPATH/*.py
+rm -rf $PLUGINPATH/*.pyo
+rm -rf $PLUGINPATH/*.pyc
+
+exit 0

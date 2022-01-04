@@ -9,8 +9,8 @@ from datetime import datetime
 from CSFDLog import LogCSFD
 from CSFDSettings1 import CSFDGlobalVar
 import gettext, locale
-CSFDVersion = '12.50'
-CSFDVersionData = '05.05. 2018'
+CSFDVersion='15.00'
+CSFDVersionData='04.01.2022'
 config.misc.CSFD = ConfigSubsection()
 config.misc.CSFD.Log = ConfigYesNo(default=True)
 config.misc.CSFD.LogConsole = ConfigYesNo(default=False)
@@ -113,6 +113,7 @@ std_login_header_UL2 = [
  ('Connection', 'keep-alive'),
  ('Content-Type', 'application/x-www-form-urlencoded')]
 MainUpdateUrl = 'http://downloads.tvplugins.cz/csfd/'
+# MainUpdateUrl = 'https://raw.githubusercontent.com/skyjet18/enigma2-plugin-extensions-csfd/master/'
 
 def PathTMPInit():
 	LogCSFD.WriteToFile('[CSFD] CSFDSettings2 - PathTMPInit - zacatek\n')

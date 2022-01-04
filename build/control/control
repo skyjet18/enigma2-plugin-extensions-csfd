@@ -1,0 +1,11 @@
+Package: enigma2-plugin-extensions-csfd
+Version: 15-00-20220104
+Description: Filmova databaze CSFD.cz
+Architecture: all
+Section: base
+Priority: optional
+Maintainer: petrkl12@tvplugins.cz
+License: unknown
+OE: enigma2-plugins
+Homepage: http://www.tvplugins.cz
+Source: None

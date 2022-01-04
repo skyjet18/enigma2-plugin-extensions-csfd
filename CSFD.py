@@ -6595,7 +6595,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self.appClosed_conn = None
 		else:
 			self.appClosed_conn = self.container.appClosed.connect(self.UpdateViaCURLfinished)
-		exc = 'curl -k -L -o ' + output + ' ' + url
+		exc = 'curl -m 10 -k -L -o ' + output + ' ' + url
 		LogCSFD.WriteToFile('[CSFD] UpdateViaCURL - instalacni prikaz: ' + exc + '\n', 10)
 		LogCSFD.WriteToFileWithoutTime(exc + '\n')
 		self.container.execute(exc)
