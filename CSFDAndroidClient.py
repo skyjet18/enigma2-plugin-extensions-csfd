@@ -10,6 +10,7 @@ except:
 
 
 from CSFDLog import LogCSFD
+from CSFDSettings2 import config
 
 # ######################################################################################
 
@@ -25,10 +26,10 @@ class CSFDAndroidClient:
 		
 		self.oauth = OAuth1Session( self.client_key, client_secret=self.client_secret )
 
-	# ######################################################################################	
+	# ######################################################################################
 	
 	def do_request( self, params ):
-		response = self.oauth.get( self.api_url + params, headers=self.headers )
+		response = self.oauth.get( self.api_url + params, headers=self.headers, timeout=config.misc.CSFD.DownloadTimeOut.getValue() )
 		
 		if response.status_code == 200:
 			LogCSFD.WriteToFile( "Status: %d, Response: %s\n" % (response.status_code, response.text), 2 )
@@ -141,7 +142,12 @@ class CSFDAndroidClient:
 			data1 = self.get_movie_info( uri[7:])["info"]
 			data2 = self.get_movie_creators( uri[7:], 0, 30 )["creators"]
 			
-			return { "info": data1, "creators" : data2 }
+			ret = { "info": data1, "creators" : data2 }
+			
+			if "root_id" in data1:
+				ret["root_info"] = self.get_movie_info( data1["root_id"] )["info"]
+				
+			return ret 
 
 		elif uri.startswith('#movie_photos#'):
 			LogCSFD.WriteToFile( "Requesting movie photos for \"%s\"\n" % uri[14:], 2 )
@@ -159,6 +165,10 @@ class CSFDAndroidClient:
 			LogCSFD.WriteToFile( "Requesting movie trivia for \"%s\"\n" % uri[14:], 2 )
 
 			return self.get_movie_trivia( uri[14:], (page - 1) * 10, 10 )
+		elif uri.startswith('#movie_premiere#'):
+			LogCSFD.WriteToFile( "Requesting movie premiere for \"%s\"\n" % uri[16:], 2 )
+
+			return {}
 		elif uri.startswith('#creator#'):
 			return self.get_creator_info( uri[9:])
 		

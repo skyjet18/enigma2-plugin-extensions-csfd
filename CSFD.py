@@ -2,8 +2,8 @@
 
 from enigma import eTimer, ePicLoad, eServiceCenter, eServiceReference, eConsoleAppContainer, gPixmapPtr, gRGB, RT_HALIGN_LEFT, RT_VALIGN_CENTER
 from CSFDLog import LogCSFD
-from CSFDTools import defer, getPage, twistedwebExist, ItemList, ItemListServiceMenu, TextSimilarityBigram, TextSimilarityLD, TextCompare, max_positions, request, requestCSFD, requestFileCSFD, internet_on, fromRomanStr, StrtoRoman, IsTwistedFollowRedirect, ClientContextFactoryCSFD
-from CSFDTools import CSFDdownloader, IsHTTPSWorking, IsHTTPSWorkingTwistedWeb, intWithSeparator, char2Diacritic, char2DiacriticSort, char2Allowchar, char2AllowcharNumbers, strUni, Uni8, deletetmpfiles, OdstranitDuplicityRadku, loadPixmapCSFD, picStartDecodeCSFD
+from CSFDTools import ItemList, ItemListServiceMenu, TextSimilarityBigram, TextSimilarityLD, TextCompare, max_positions, request, requestCSFD, requestFileCSFD, internet_on, fromRomanStr, StrtoRoman
+from CSFDTools import IsHTTPSWorking, intWithSeparator, char2Diacritic, char2DiacriticSort, char2Allowchar, char2AllowcharNumbers, strUni, Uni8, deletetmpfiles, OdstranitDuplicityRadku, loadPixmapCSFD, picStartDecodeCSFD
 from CSFDMenu import CSFDIconMenu
 from CSFDParser import ParserCSFD, ParserOstCSFD, ParserVideoCSFD, ParserGallCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions
 from CSFDClasses import LoginToCSFD, GetMoviesForTVChannels, CSFDChannelSelection, CSFDEPGSelection, CSFDLCDSummary, CSFDSetup, CSFDInputText, CSFDAbout, CSFDHistory, CSFDVideoInfoScreen, CSFDPlayer, RefreshPlugins
@@ -445,10 +445,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		return
 
 	def getCookies(self):
-		if CSFDGlobalVar.getWebDownload() == 0:
-			cookies = CSFDGlobalVar.getCSFDCookies()
-		else:
-			cookies = CSFDGlobalVar.getCSFDCookiesUL2()
+		cookies = CSFDGlobalVar.getCSFDCookiesUL2()
 		LogCSFD.WriteToFile('[CSFD] Cookies: ' + str(cookies) + '\n')
 		return cookies
 
@@ -736,19 +733,21 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		if config.misc.CSFD.TestVersion.getValue():
 			mainServiceMenu.append((ar + _('Testovací položka'), 'test'))
 		if self.Page == 0:
-			if not self.FindAllItems and (twistedwebExist or CSFDGlobalVar.getWebDownload() != 0) and internet:
+			if not self.FindAllItems and internet:
 				mainServiceMenu.append((ar + _('Vyhledat všechny položky'), 'findall'))
 			if self.resultlist is not None and len(self.resultlist) > 0:
 				mainServiceMenu.append((ar + _('Setřídit položky podle CSFD'), 'sortbyCSFD'))
 				mainServiceMenu.append((ar + _('Setřídit položky podle vhodnosti názvu'), 'sortbyscore'))
 				mainServiceMenu.append((ar + _('Setřídit položky podle data vydání'), 'sortbydate'))
 				mainServiceMenu.append((ar + _('Setřídit položky podle abecedy'), 'sortbyabc'))
-		if twistedwebExist or CSFDGlobalVar.getWebDownload() != 0:
-			mainServiceMenu.append((ar + _('Výběr pořadu z EPG akt.programu'), 'aktEPG'))
-			mainServiceMenu.append((ar + _('Výběr pořadu ze všech kanálů'), 'vyberEPG'))
-			mainServiceMenu.append((ar + _('Zadání pořadu'), 'zadejporad'))
+
+		mainServiceMenu.append((ar + _('Výběr pořadu z EPG akt.programu'), 'aktEPG'))
+		mainServiceMenu.append((ar + _('Výběr pořadu ze všech kanálů'), 'vyberEPG'))
+		mainServiceMenu.append((ar + _('Zadání pořadu'), 'zadejporad'))
+		
 		if CSFDGlobalVar.getIMDBexist() and internet:
 			mainServiceMenu.append((ar + _('Vyhledat pořad v IMDB'), 'spustitIMDB'))
+			
 		if self.Page > 0 and self.stahnutoCSFD2 != '':
 			if 'serie' not in self.FunctionExists:
 				mainServiceMenu.append((ar + _('Řady v seriálu'), 'serie'))
@@ -1294,28 +1293,19 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		localfilevideo = config.misc.CSFD.DirectoryVideoDownload.getValue() + nazevvideo
 		LogCSFD.WriteToFile('[CSFD] UlozitVideoDownload - stahuji z url ' + videourl + ' do ' + localfilevideo + '\n')
 		self.session.open(MessageBox, _('Video bude staženo do : %s') % localfilevideo, type=MessageBox.TYPE_INFO, timeout=10)
-		if CSFDGlobalVar.getWebDownload() == 0:
-			if CSFDGlobalVar.getIsTwistedWithCookies():
-				CSFDdownloader.downloadPage(videourl, localfilevideo, contextFactory=ClientContextFactoryCSFD, headers=std_media_header, cookies=self.getCookies()).addCallback(self.closeUlozitVideo).addErrback(self.fetchFailedDwnlVideo, videourl, localfilevideo)
-			else:
-				CSFDdownloader.downloadPage(videourl, localfilevideo, contextFactory=ClientContextFactoryCSFD, headers=std_media_header).addCallback(self.closeUlozitVideo).addErrback(self.fetchFailedDwnlVideo, videourl, localfilevideo)
-		else:
-			requestFileCSFD(videourl, localfilevideo, headers=std_media_header_UL2)
-			self.closeUlozitVideo('')
+		
+		requestFileCSFD(videourl, localfilevideo, headers=std_media_header_UL2)
+		self.closeUlozitVideo('')
+		
 		if titulkyurl != '':
 			ss = titulkyurl.rsplit('.', 1)
 			ss1 = nazevvideo.rsplit('.', 1)
 			nazevtitulky = ss1[0] + '.' + ss[1]
 			localfiletitulky = config.misc.CSFD.DirectoryVideoDownload.getValue() + nazevtitulky
 			LogCSFD.WriteToFile('[CSFD] UlozitVideoDownload - stahuji z url ' + titulkyurl + ' do ' + localfiletitulky + '\n')
-			if CSFDGlobalVar.getWebDownload() == 0:
-				if CSFDGlobalVar.getIsTwistedWithCookies():
-					CSFDdownloader.downloadPage(titulkyurl, localfiletitulky, contextFactory=ClientContextFactoryCSFD, headers=std_media_header, cookies=self.getCookies()).addCallback(self.closeUlozitTitulky).addErrback(self.fetchFailedDwnlTitulky, titulkyurl, localfiletitulky)
-				else:
-					CSFDdownloader.downloadPage(titulkyurl, localfiletitulky, contextFactory=ClientContextFactoryCSFD, headers=std_media_header).addCallback(self.closeUlozitTitulky).addErrback(self.fetchFailedDwnlTitulky, titulkyurl, localfiletitulky)
-			else:
-				requestFileCSFD(titulkyurl, localfiletitulky, headers=std_media_header_UL2)
-				self.closeUlozitTitulky('')
+			requestFileCSFD(titulkyurl, localfiletitulky, headers=std_media_header_UL2)
+			self.closeUlozitTitulky('')
+			
 		LogCSFD.WriteToFile('[CSFD] UlozitVideoDownload - konec\n')
 
 	def closeUlozitVideo(self, string):
@@ -2677,7 +2667,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				LogCSFD.WriteToFile('[CSFD] showMenu - konec\n')
 		return
 
-#	@defer.inlineCallbacks
 	def DownloadDetailMovie(self):
 
 		def SetNotFind(textInfo='', textStatus=''):
@@ -2705,12 +2694,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		data = self.csfdAndroidClient.get_json_by_uri( fetchurl )
 		ParserCSFD.setJson( data )
 		
-#		if CSFDGlobalVar.getWebDownload() == 0:
-#			page = yield getPage(fetchurl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addErrback(self.fetchFailedDownloadDetailMovie, fetchurl)
-#		else:
-#			page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-			
+#		page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
 #		ParserCSFD.setHTML2utf8(page)
+
 		if ParserCSFD.testJson():
 
 			try:
@@ -2766,15 +2752,13 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - konec\n', 2)
 		return
 
-	@defer.inlineCallbacks
 	def ReDownloadMovieAndParseMainPart(self):
 		LogCSFD.WriteToFile('[CSFD] ReDownloadMovieAndParseMainPart - zacatek\n', 3)
 		LogCSFD.WriteToFile('[CSFD] ReDownloadMovieAndParseMainPart - stahuji z url ' + self.LastDownloadedMovieUrl + '\n', 3)
-#		if CSFDGlobalVar.getWebDownload() == 0:
-#			page = yield getPage(self.LastDownloadedMovieUrl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addErrback(self.fetchFailedReDownloadDetailMovie, self.LastDownloadedMovieUrl)
-#		else:
-#			page = requestCSFD(self.LastDownloadedMovieUrl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
+		
+#		page = requestCSFD(self.LastDownloadedMovieUrl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
 #		ParserCSFD.setHTML2utf8(page)
+
 		data = self.csfdAndroidClient.get_json_by_uri( self.LastDownloadedMovieUrl )
 		ParserCSFD.setJson( data )
 
@@ -3259,7 +3243,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 				LogCSFD.WriteToFile('[CSFD] getCSFD - getServiceName - pokus2 - konec\n')
 		is_Internet_OK = internet_on()
-		if self.eventName is not '' and (twistedwebExist or CSFDGlobalVar.getWebDownload() != 0) and is_Internet_OK:
+		
+		if self.eventName is not '' and is_Internet_OK:
 			LogCSFD.WriteToFile('[CSFD] getCSFD - eventName - zacatek\n')
 			if isinstance(self.eventName, str):
 				self.eventName = Uni8(self.eventName)
@@ -3339,11 +3324,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 				LogCSFD.WriteToFile('[CSFD] getCSFD - stahuji z url ' + fetchurl + '\n')
 				
-#				if CSFDGlobalVar.getWebDownload() == 0:
-#					getPage(fetchurl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addCallback(self.CSFDquery).addErrback(self.fetchFailed, fetchurl)
-#				else:
-#					page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-				
+#				page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
 				page = self.csfdAndroidClient.get_json_by_uri( fetchurl )	
 				CSFDGlobalVar.setParalelDownload(self.CSFDquery, page)
 				self.DownloadTimer.start(10, True)
@@ -3357,14 +3338,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self['detailslabel'].setText(_('Není funkční internet!'))
 				self['key_green'].setText('')
 				self['key_blue'].setText('')
-			elif not twistedwebExist and CSFDGlobalVar.getWebDownload() == 0:
-				LogCSFD.WriteToFile('[CSFD] getCSFD - chyba - Neni nainstalovan twisted-web plugin\n')
-				self.summaries.setText(_('Není nainstalován Twisted-Web plugin!'), 10)
-				self['statusbar'].setText(_('Není nainstalován Twisted-Web plugin!'))
-				self['detailslabel'].setText(_('Není nainstalován Twisted-Web plugin!'))
-				self['key_green'].setText('')
-				self['key_blue'].setText('')
-				self.PluginRepairTimer.start(3000, True)
 			elif self.eventName == '':
 				LogCSFD.WriteToFile('[CSFD] getCSFD - Nemuzu nacist nazev poradu\n')
 				self.summaries.setText(_('Nemůžu načíst název pořadu'), 10)
@@ -3709,23 +3682,21 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				link = pol[0]
 				if link not in stahnuto:
 					stahnuto.append(link)
-#					fetchurl = CSFDGlobalVar.getHTTP() + const_csfd_http_film + link + const_quick_page
+
 					fetchurl = link
 					LogCSFD.WriteToFile('[CSFD] GetOtherMovieNamesFromDetail - stahuji z url ' + Uni8(fetchurl) + '\n')
-#					res = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
+
 					res = self.csfdAndroidClient.get_json_by_uri( fetchurl )
-#					ParserOstCSFD.setHTML2utf8(res)
 					ParserOstCSFD.setJson( res)
-					res_name = ParserOstCSFD.parserOtherMovieTitleWOCountry()
+					res_name = ParserOstCSFD.parserOrigMovieTitle()
 					if res_name is not None:
-						for x in res_name:
-							searchresults.append((pol[0], x, pol[2], pol[3]))
-							searchresultsAdd.append((pol[0], x, pol[2], pol[3]))
+						searchresults.append((pol[0], res_name, pol[2], pol[3]))
+						searchresultsAdd.append((pol[0], res_name, pol[2], pol[3]))
 
 					nacteno += 1
 				index += 1
 
-#			ParserOstCSFD.setParserHTML('')
+
 			ParserOstCSFD.setJson( {} )
 		LogCSFD.WriteToFile('[CSFD] GetOtherMovieNamesFromDetail - konec\n')
 		return (searchresults, searchresultsAdd)
@@ -3766,58 +3737,13 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self['page'].setText('')
 			self['page'].hide()
 
-		def XXX_SearchAgain():
-			LogCSFD.WriteToFile('[CSFD] CSFDquery - SearchAgain - zacatek\n')
-			evName = char2Allowchar(self.eventNameLocal)
-			lastRoman = False
-			pp = ParserCSFD.parserGetRomanNumbers(evName)
-			pocet_pp = len(pp)
-			if pocet_pp > 0:
-				dodat = pp[(pocet_pp - 1)]
-				dodat1 = ' ' + dodat
-				vv = -1 * len(dodat1)
-				if evName[vv:].upper() == dodat1:
-					evName = evName[:vv].strip()
-					LogCSFD.WriteToFile('[CSFD] CSFDquery - SearchAgain - korekce1 ' + evName + '\n')
-					lastRoman = True
-			if not lastRoman:
-				pp = ParserCSFD.parserGetNumbers(evName)
-				pocet_pp = len(pp)
-				if pocet_pp > 0:
-					dodat = pp[(pocet_pp - 1)]
-					dodat1 = ' ' + dodat
-					vv = -1 * len(dodat1)
-					if evName[vv:].upper() == dodat1:
-						evName = evName[:vv].strip()
-						LogCSFD.WriteToFile('[CSFD] CSFDquery - SearchAgain - korekce2 ' + evName + '\n')
-			try:
-				evNamePuv = evName
-				evName = urllib.quote(strUni(evName))
-			except:
-				LogCSFD.WriteToFile('[CSFD] CSFDquery - SearchAgain - chyba\n')
-				LogCSFD.WriteToFile('getCSFD - hledany film - chyba ' + evNamePuv + '\n')
-				evName = urllib.quote(strUni(char2Diacritic(char2Allowchar(self.eventName)).strip()))
-				err = traceback.format_exc()
-				LogCSFD.WriteToFile(err)
-
-			self.FindAllItems = True
-			fetchurl = CSFDGlobalVar.getHTTP() + const_www_csfd + '/hledat/complete-films/?q=' + evName
-			LogCSFD.WriteToFile('[CSFD] CSFDquery - SearchAgain - stahuji z url ' + fetchurl + '\n')
-			if CSFDGlobalVar.getWebDownload() == 0:
-				getPage(fetchurl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addCallback(self.CSFDquery).addErrback(self.fetchFailed, fetchurl)
-			else:
-				page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-				CSFDGlobalVar.setParalelDownload(self.CSFDquery, page)
-				self.DownloadTimer.start(10, True)
-			LogCSFD.WriteToFile('[CSFD]	 CSFDquery - SearchAgain - konec\n')
-
 		LogCSFD.WriteToFile('[CSFD] CSFDquery - hledany film3 ' + self.eventNameLocal + '\n')
 #		ParserCSFD.setHTML2utf8(string)
 		ParserCSFD.setJson(string)
 		self.CSFDparseUser()
 		self.resultlist = []
 		self.SortType = int(config.misc.CSFD.Default_Sort.getValue())
-#		if ParserCSFD.parserTestCSFDFinding():
+
 		if ParserCSFD.testJson():
 			if ParserCSFD.parserMoviesFound():
 				if self.FindAllItems:
@@ -3866,19 +3792,14 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						self.showMenu()
 				else:
 					LogCSFD.WriteToFile('[CSFD] CSFDquery - Redirecttext1 - nenacteno\n')
-#					if self.FindAllItems == False:
-#						SearchAgain()
-#					else:
 					SetNotFind(_('Žádná shoda na CSFD pro film: '), _('Žádná shoda na CSFD.'))
 			else:
-					LogCSFD.WriteToFile('[CSFD] CSFDquery - Redirecttext2 - nenacteno\n')
-#					if self.FindAllItems == False:
-#						SearchAgain()
-#					else:
-					SetNotFind(_('Žádná shoda na CSFD pro film: '), _('Žádná shoda na CSFD.'))
+				LogCSFD.WriteToFile('[CSFD] CSFDquery - Redirecttext2 - nenacteno\n')
+				SetNotFind(_('Žádná shoda na CSFD pro film: '), _('Žádná shoda na CSFD.'))
 		else:
 			LogCSFD.WriteToFile('[CSFD] CSFDquery -	 chyba dotazu!\n')
 			SetNotFind(_('CSFD - chyba dotazu! - film: '), '')
+			
 		LogCSFD.WriteToFile('[CSFD] CSFDquery - konec\n')
 		return
 
@@ -4054,16 +3975,17 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - ActName: ' + self.ActName + '\n')
 		
-#		LogCSFD.WriteToFile('[CSFD] ParseMainPart - Jmeno serialu v epizode\n')
-#		resultText = ParserCSFD.parserSeriesNameInEpisode()
-#		if resultText is not None and resultText is not '':
-#			Detailstext += strUni(char2Allowchar(resultText))
+		LogCSFD.WriteToFile('[CSFD] ParseMainPart - Jmeno serialu v epizode\n')
+		resultText = ParserCSFD.parserSeriesNameInEpisode()
+		if resultText is not None and resultText is not '':
+			Detailstext += strUni(char2Allowchar(resultText))
 			
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - Ostatni jmena\n')
 		
-#		resultText = ParserCSFD.parserOtherMovieTitle()[1]
-#		if resultText is not None and resultText is not '':
-#			Detailstext += strUni(char2Allowchar(resultText))
+		resultText = ParserCSFD.parserOtherMovieTitle()
+		if resultText is not None and resultText is not '':
+			Detailstext += strUni(char2Allowchar(resultText))
+			
 		Detailstext = OdstranitDuplicityRadku(Detailstext)
 		textCol1 = self['detailslabel'].AddRowIntoText(Detailstext, '')
 		textCol = Detailstext
@@ -4083,7 +4005,17 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - origin\n')
 		resultText = ParserCSFD.parserOrigin()
 		if resultText is not None and resultText is not '':
-			Detailstext += resultText + '\n'
+			delim = ', '
+			Detailstext += resultText
+		else:
+			delim = ''
+
+		LogCSFD.WriteToFile('[CSFD] ParseMainPart - length\n')
+		resultText = ParserCSFD.parserMovieDuration()
+		if resultText is not None and resultText is not '':
+			Detailstext += delim + resultText + '\n'
+		elif delim != '':
+			Detailstext += '\n'
 			
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - zebricky\n')
 		resultText = ParserCSFD.parserCSFDRankings()
@@ -4337,6 +4269,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				LogCSFD.WriteToFile('[CSFD] Parse - Existuji postery - NE\n')
 				self.PosterBasicCountPixAllP = 0
 				self.PosterIsNotFullyRead = False
+
 			if 'galerie' not in self.FunctionExists:
 				LogCSFD.WriteToFile('[CSFD] Parse - Existuji fotky v galerii - ANO\n')
 				if adTime > 0:
@@ -4505,12 +4438,11 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - stahuji z url ' + fetchurl + '\n')
 			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - linkGlobal ' + self.linkGlobal + '\n')
 			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - linkSpec ' + self.linkSpec + '\n')
-			if CSFDGlobalVar.getWebDownload() == 0:
-				getPage(fetchurl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addCallback(self.CSFDquerySpec).addErrback(self.fetchFailed, fetchurl)
-			else:
-				page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
+			
+			page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
 			CSFDGlobalVar.setParalelDownload(self.CSFDquerySpec, page)
 			self.DownloadTimer.start(10, True)
+			
 		LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - konec\n')
 
 	def CSFDshowSpec(self):
@@ -4535,8 +4467,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			elif self.querySpecAkce == 'UserExtReviews':
 				self.linkSpec = 'recenze/strana-%s/' % sss
 			elif self.querySpecAkce == 'UserPremiery':
-				self.linkSpec = self.linkComment
-				self.linkSpec = 'komentare/' + self.linkSpec + 'strana-%s/' % sss
+#				self.linkSpec = self.linkComment
+				self.linkSpec = '#movie_premiere#'
 			elif self.querySpecAkce == 'UserDiscussion':
 				self.linkSpec = 'diskuze/strana-%s/' % sss
 			elif self.querySpecAkce == 'UserInteresting':
@@ -4551,12 +4483,10 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - stahuji z url ' + fetchurl + '\n')
 			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - linkGlobal ' + self.linkGlobal + '\n')
 			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - linkSpec ' + self.linkSpec + '\n')
-#			if CSFDGlobalVar.getWebDownload() == 0:
-#				getPage(fetchurl, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.DownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers).addCallback(self.CSFDquerySpec).addErrback(self.fetchFailed, fetchurl)
-#			else:
-#				page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-#				CSFDGlobalVar.setParalelDownload(self.CSFDquerySpec, page)
-#				self.DownloadTimer.start(10, True)
+			
+#			page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
+#			CSFDGlobalVar.setParalelDownload(self.CSFDquerySpec, page)
+#			self.DownloadTimer.start(10, True)
 
 			if self.linkSpec.startswith('#'):
 				page = self.csfdAndroidClient.get_json_by_uri(self.linkSpec, self.PageSpec )
@@ -4696,7 +4626,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			for x in extraresult:
 				uzivtext = self['extralabel'].CalculateSizeAddSpaceDiff(x[0], 'AAAAAAAAAAAA')
 				
-				Extratext += coltextspaceUzivatel + uzivtext + coltextspaceHodnoceni + '	' + x[1] + '	 ' + x[2] + ' \n' + strUni(char2Allowchar(x[3] + '\n' + '\n'))
+				Extratext += coltextspaceUzivatel + uzivtext + coltextspaceHodnoceni + '\t' + x[1] + '	 ' + x[2] + ' \n' + strUni(char2Allowchar(x[3] + '\n' + '\n'))
 				ExtratextCol += coltextUzivatel + self['extralabel'].CalculateSizeInSpaceSimple(uzivtext) + coltextHodnoceni + ' \n'
 				ExtratextCol = self['extralabel'].AddRowIntoText(Extratext, ExtratextCol)
 
@@ -4950,11 +4880,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] CSFDParseUserFans - konec\n')
 		return
 
-#	@defer.inlineCallbacks
 	def CSFDAllVideoDownload(self):
 		self.VideoDwnlIsNotStarted = False
 		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - zacatek\n')
-		downl_timeout = config.misc.CSFD.DownloadTimeOut.getValue()
 		video_res = config.misc.CSFD.VideoResolution.getValue()
 		
 		try:
@@ -5053,7 +4981,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self.session.open(MessageBox, _('Video není bohužel dostupné!'), MessageBox.TYPE_ERROR, timeout=10)
 		LogCSFD.WriteToFile('[CSFD] CSFDgetEntryVideo - konec\n')
 
-	@defer.inlineCallbacks
 	def CSFDRefreshVideoInformation(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDRefreshVideoInformation - zacatek\n')
 		idx = self.VideoActIdx
@@ -5067,13 +4994,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] CSFDRefreshVideoInformation - video poster - url: ' + videoposterfile + '\n')
 			try:
 				idx1 = idx
-				if CSFDGlobalVar.getWebDownload() == 0:
-					if CSFDGlobalVar.getIsTwistedWithCookies():
-						yield CSFDdownloader.downloadPage(videoposterfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header, cookies=self.getCookies())
-					else:
-						yield CSFDdownloader.downloadPage(videoposterfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header)
-				else:
-					requestFileCSFD(videoposterfile, localfile, headers=std_media_header_UL2, errHandling=False)
+				requestFileCSFD(videoposterfile, localfile, headers=std_media_header_UL2, errHandling=False)
+				
 				if videoposterfile == self.VideoSlideList[idx1][6]:
 					self.VideoSlideList[idx1][6] = localfile
 					videoposterfile = localfile
@@ -5231,7 +5153,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self.CSFDAllGalleryDownload()
 		return
 
-	@defer.inlineCallbacks
 	def CSFDPosterBasic(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDPosterBasic - zacatek\n', 6)
 		try:
@@ -5258,13 +5179,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					self['statusbar'].setText(str( _('Stahuji obal k filmu: ') + resultText) )
 					LogCSFD.WriteToFile('[CSFD] CSFDPosterBasic - download main poster: ' + resultText + '\n', 6)
 					try:
-						if CSFDGlobalVar.getWebDownload() == 0:
-							if CSFDGlobalVar.getIsTwistedWithCookies():
-								yield CSFDdownloader.downloadPage(resultText, filename, contextFactory=ClientContextFactoryCSFD, headers=std_media_header, cookies=self.getCookies())
-							else:
-								yield CSFDdownloader.downloadPage(resultText, filename, contextFactory=ClientContextFactoryCSFD, headers=std_media_header)
-						else:
-							requestFileCSFD(resultText, filename, headers=std_media_header_UL2, errHandling=False)
+						requestFileCSFD(resultText, filename, headers=std_media_header_UL2, errHandling=False)
 						self.stahnutoCSFDImage = resultText
 					except:
 						LogCSFD.WriteToFile('[CSFD] CSFDPosterBasic - chyba - download\n', 6)
@@ -5353,6 +5268,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 	def paintPosterBasicPixmap(self, image_path=''):
 		if self.Page == 1:
+			LogCSFD.WriteToFile('[CSFD] paintPosterBasicPixmap - showing poster file: ' + Uni8(image_path) + '\n')
 			try:
 				self['poster'].instance.setPixmap(gPixmapPtr())
 				if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
@@ -5514,15 +5430,11 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self.ReDownloadMovieAndParseMainPart()
 			LogCSFD.WriteToFile('[CSFD] reloadMovieAfterRating - konec\n', 8)
 
-		@defer.inlineCallbacks
 		def DeleteRatingOnWeb():
 			LogCSFD.WriteToFile('[CSFD] DeleteRatingOnWeb - zacatek\n', 8)
 			try:
 				url = CSFDGlobalVar.getHTTP() + const_csfd_http_film + linkG
-				if CSFDGlobalVar.getWebDownload() == 0:
-					page = yield getPage(url, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers)
-				else:
-					page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
+				page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
 				ParserOstCSFD.setHTML2utf8(page)
 				del_url = ParserOstCSFD.parserDeleteRatingUrl()
 			except:
@@ -5535,10 +5447,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				try:
 					del_url = CSFDGlobalVar.getHTTP() + const_www_csfd + del_url
 					LogCSFD.WriteToFile('[CSFD] DeleteRatingOnWeb - url: %s \n' % del_url, 8)
-					if CSFDGlobalVar.getWebDownload() == 0:
-						page = yield getPage(del_url, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers)
-					else:
-						page = requestCSFD(del_url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
+					
+					page = requestCSFD(del_url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
+					
 					if linkG == self.linkGlobal:
 						reloadMovieAfterRating(True)
 					else:
@@ -5555,16 +5466,12 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] DeleteRatingOnWeb - konec\n', 8)
 			return
 
-		@defer.inlineCallbacks
 		def SaveRatingOnWeb(value_rating):
 			LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - zacatek\n', 8)
 			try:
 				url = CSFDGlobalVar.getHTTP() + const_csfd_http_film + linkG + 'komentare/'
 				LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - reload url : ' + url + '\n', 8)
-				if CSFDGlobalVar.getWebDownload() == 0:
-					page = yield getPage(url, contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_headers)
-				else:
-					page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
+				page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
 				ParserOstCSFD.setHTML2utf8(page)
 				token = ParserOstCSFD.parserTokenRating()
 				time.sleep(2)
@@ -5582,22 +5489,13 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - token: %s\n' % token, 8)
 				LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - rating: %s\n' % value_rating, 8)
 				try:
-					if CSFDGlobalVar.getWebDownload() == 0:
-						url = CSFDGlobalVar.getHTTP() + const_csfd_http_film + linkG + 'komentare/' + '?do=ratingForm-submit'
-						LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - url: ' + url + '\n', 8)
-						values = {'rating': value_rating, 'film_comment': '', 
-						   '_token_': token}
-						LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - postdata: ' + str(values) + '\n', 8)
-						data = urllib.urlencode(values)
-						page = yield getPage(url, contextFactory=ClientContextFactoryCSFD, method='POST', postdata=data, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), cookies=self.getCookies(), headers=std_post_header)
-					else:
-						url = CSFDGlobalVar.getHTTP() + const_csfd_http_film + linkG + 'komentare/' + '?do=ratingForm-submit'
-						LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - url: ' + url + '\n', 8)
-						values = {'rating': value_rating, 'film_comment': '', 
-						   '_token_': token}
-						LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - postdata: ' + str(values) + '\n', 8)
-						data = urllib.urlencode(values)
-						page = requestCSFD(url, headers=std_post_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False)
+					url = CSFDGlobalVar.getHTTP() + const_csfd_http_film + linkG + 'komentare/' + '?do=ratingForm-submit'
+					LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - url: ' + url + '\n', 8)
+					values = {'rating': value_rating, 'film_comment': '',  '_token_': token}
+					LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - postdata: ' + str(values) + '\n', 8)
+					data = urllib.urlencode(values)
+					page = requestCSFD(url, headers=std_post_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False)
+						
 					if linkG == self.linkGlobal:
 						reloadMovieAfterRating(True)
 					else:
@@ -5962,7 +5860,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] CSFDPosterBasicSlideShowStart - konec\n')
 		return
 
-	@defer.inlineCallbacks
 	def CSFDPosterBasicSlideShowEvent(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDPosterBasicSlideShowEvent - zacatek\n')
 		if self.PosterBasicSlideShowTimer is not None:
@@ -5989,13 +5886,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 									posterfile = self.PosterBasicSlideList[idx][0]
 								else:
 									try:
-										if CSFDGlobalVar.getWebDownload() == 0:
-											if CSFDGlobalVar.getIsTwistedWithCookies():
-												yield CSFDdownloader.downloadPage(posterfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header, cookies=self.getCookies())
-											else:
-												yield CSFDdownloader.downloadPage(posterfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header)
-										else:
-											requestFileCSFD(posterfile, localfile, headers=std_media_header_UL2, errHandling=False)
+										requestFileCSFD(posterfile, localfile, headers=std_media_header_UL2, errHandling=False)
 										self.PosterBasicSlideList[idx][0] = self.PosterBasicSlideList[idx][4]
 										posterfile = self.PosterBasicSlideList[idx][0]
 									except AttributeError:
@@ -6034,7 +5925,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] CSFDPosterBasicSlideShowEvent - konec\n')
 		return
 
-	@defer.inlineCallbacks
 	def CSFDGallerySlideShowStart(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDGallerySlideShowStart - zacatek\n')
 		if self.PosterSlideShowTimer.isActive():
@@ -6057,13 +5947,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						gallfile = pol[0]
 					else:
 						try:
-							if CSFDGlobalVar.getWebDownload() == 0:
-								if CSFDGlobalVar.getIsTwistedWithCookies():
-									yield CSFDdownloader.downloadPage(gallfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header, cookies=self.getCookies())
-								else:
-									yield CSFDdownloader.downloadPage(gallfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header)
-							else:
-								requestFileCSFD(gallfile, localfile, headers=std_media_header_UL2, errHandling=False)
+							requestFileCSFD(gallfile, localfile, headers=std_media_header_UL2, errHandling=False)
 							self.GallerySlideList[idx][0] = pol[4]
 							pol = self.GallerySlideList[idx]
 							gallfile = pol[0]
@@ -6085,7 +5969,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self.GallerySlideShowTimer.start(config.misc.CSFD.GallerySlideTime.getValue() * 500, True)
 		LogCSFD.WriteToFile('[CSFD] CSFDGallerySlideShowStart - konec\n')
 
-	@defer.inlineCallbacks
 	def CSFDGallerySlideShowEvent(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDGallerySlideShowEvent - zacatek\n')
 		if self.GallerySlideShowTimer is not None:
@@ -6113,13 +5996,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 								gallfile = pol[0]
 							else:
 								try:
-									if CSFDGlobalVar.getWebDownload() == 0:
-										if CSFDGlobalVar.getIsTwistedWithCookies():
-											yield CSFDdownloader.downloadPage(gallfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header, cookies=self.getCookies())
-										else:
-											yield CSFDdownloader.downloadPage(gallfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header)
-									else:
-										requestFileCSFD(gallfile, localfile, headers=std_media_header_UL2, errHandling=False)
+									requestFileCSFD(gallfile, localfile, headers=std_media_header_UL2, errHandling=False)
 									self.GallerySlideList[idx][0] = pol[4]
 									pol = self.GallerySlideList[idx]
 									gallfile = pol[0]
@@ -6144,7 +6021,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] CSFDGallerySlideShowEvent - konec\n')
 		return
 
-	@defer.inlineCallbacks
 	def CSFDGalleryShow(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDGalleryShow - zacatek\n')
 		if not self.GallerySlideStop:
@@ -6166,13 +6042,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 							gallfile = pol[0]
 						else:
 							try:
-								if CSFDGlobalVar.getWebDownload() == 0:
-									if CSFDGlobalVar.getIsTwistedWithCookies():
-										yield CSFDdownloader.downloadPage(gallfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header, cookies=self.getCookies())
-									else:
-										yield CSFDdownloader.downloadPage(gallfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header)
-								else:
-									requestFileCSFD(gallfile, localfile, headers=std_media_header_UL2, errHandling=False)
+								requestFileCSFD(gallfile, localfile, headers=std_media_header_UL2, errHandling=False)
 								self.GallerySlideList[idx][0] = pol[4]
 								pol = self.GallerySlideList[idx]
 								gallfile = pol[0]
@@ -6207,7 +6077,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self['statusbar'].setText('')
 		LogCSFD.WriteToFile('[CSFD] CSFDGalleryShowNothing - konec\n')
 
-	@defer.inlineCallbacks
 	def CSFDPosterSlideShowStart(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDPosterSlideShowStart - zacatek\n')
 		if self.GallerySlideShowTimer.isActive():
@@ -6230,13 +6099,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						posterfile = pol[0]
 					else:
 						try:
-							if CSFDGlobalVar.getWebDownload() == 0:
-								if CSFDGlobalVar.getIsTwistedWithCookies():
-									yield CSFDdownloader.downloadPage(posterfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header, cookies=self.getCookies())
-								else:
-									yield CSFDdownloader.downloadPage(posterfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header)
-							else:
-								requestFileCSFD(posterfile, localfile, headers=std_media_header_UL2, errHandling=False)
+							requestFileCSFD(posterfile, localfile, headers=std_media_header_UL2, errHandling=False)
 							self.PosterSlideList[idx][0] = pol[4]
 							pol = self.PosterSlideList[idx]
 							posterfile = pol[0]
@@ -6258,7 +6121,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self.PosterSlideShowTimer.start(config.misc.CSFD.PosterSlideTime.getValue() * 500, True)
 		LogCSFD.WriteToFile('[CSFD] CSFDPosterSlideShowStart - konec\n')
 
-	@defer.inlineCallbacks
 	def CSFDPosterSlideShowEvent(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDPosterSlideShowEvent - zacatek\n')
 		if self.PosterSlideShowTimer is not None:
@@ -6286,13 +6148,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 								posterfile = pol[0]
 							else:
 								try:
-									if CSFDGlobalVar.getWebDownload() == 0:
-										if CSFDGlobalVar.getIsTwistedWithCookies():
-											yield CSFDdownloader.downloadPage(posterfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header, cookies=self.getCookies())
-										else:
-											yield CSFDdownloader.downloadPage(posterfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header)
-									else:
-										requestFileCSFD(posterfile, localfile, headers=std_media_header_UL2, errHandling=False)
+									requestFileCSFD(posterfile, localfile, headers=std_media_header_UL2, errHandling=False)
 									self.PosterSlideList[idx][0] = pol[4]
 									pol = self.PosterSlideList[idx]
 									posterfile = pol[0]
@@ -6317,7 +6173,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] CSFDPosterSlideShowEvent - konec\n')
 		return
 
-	@defer.inlineCallbacks
 	def CSFDPosterShow(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDPosterShow - zacatek\n')
 		if not self.PosterSlideStop:
@@ -6339,13 +6194,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 							posterfile = pol[0]
 						else:
 							try:
-								if CSFDGlobalVar.getWebDownload() == 0:
-									if CSFDGlobalVar.getIsTwistedWithCookies():
-										yield CSFDdownloader.downloadPage(posterfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header, cookies=self.getCookies())
-									else:
-										yield CSFDdownloader.downloadPage(posterfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header)
-								else:
-									requestFileCSFD(posterfile, localfile, headers=std_media_header_UL2, errHandling=False)
+								requestFileCSFD(posterfile, localfile, headers=std_media_header_UL2, errHandling=False)
 								self.PosterSlideList[idx][0] = pol[4]
 								pol = self.PosterSlideList[idx]
 								posterfile = pol[0]
@@ -6380,7 +6229,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self['statusbar'].setText('')
 		LogCSFD.WriteToFile('[CSFD] CSFDPosterShowNothing - konec\n')
 
-	@defer.inlineCallbacks
 	def CSFDVideoShow(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDVideoShow - zacatek\n')
 		if self['photolabel'].instance.isVisible():
@@ -6397,13 +6245,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					LogCSFD.WriteToFile('[CSFD] CSFDVideoShow - video poster - url: ' + videoposterfile + '\n')
 					try:
 						idx1 = idx
-						if CSFDGlobalVar.getWebDownload() == 0:
-							if CSFDGlobalVar.getIsTwistedWithCookies():
-								yield CSFDdownloader.downloadPage(videoposterfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header, cookies=self.getCookies())
-							else:
-								yield CSFDdownloader.downloadPage(videoposterfile, localfile, contextFactory=ClientContextFactoryCSFD, headers=std_media_header)
-						else:
-							requestFileCSFD(videoposterfile, localfile, headers=std_media_header_UL2, errHandling=False)
+						requestFileCSFD(videoposterfile, localfile, headers=std_media_header_UL2, errHandling=False)
+						
 						if videoposterfile == self.VideoSlideList[idx1][6]:
 							self.VideoSlideList[idx1][6] = localfile
 							videoposterfile = localfile
@@ -6467,22 +6310,18 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 	def TestLoginToCSFD(self, workingConfig=None):
 		LogCSFD.WriteToFile('[CSFD] TestLoginToCSFD - zacatek\n', 9)
-		if CSFDGlobalVar.getWebDownload() == 0:
-			IsHTTPSWorkingTwistedWeb()
+
 		self.workingConfig = workingConfig
 		self.session.openWithCallback(self.finishedTestLoginToCSFD, CSFDConsole, title=_('Test přihlášení na CSFD.cz ...'), cmdlist=None, startCallback=self.TestLoginToCSFD1, closeOnSuccess=False, startNow=False, startText=_('Test přihlášení na CSFD.cz - ZAČÁTEK'), endText=_('Test přihlášení na CSFD.cz - KONEC'))
 		LogCSFD.WriteToFile('[CSFD] TestLoginToCSFD - konec\n', 9)
 		return
 
-	@defer.inlineCallbacks
 	def TestLoginToCSFD1(self, console=None):
 		LogCSFD.WriteToFile('[CSFD] TestLoginToCSFD1 - zacatek\n', 9)
-		if CSFDGlobalVar.getWebDownload() == 0:
-			CSFDGlobalVar.resetCSFDCookies()
-			cookies = CSFDGlobalVar.getCSFDCookies()
-		else:
-			CSFDGlobalVar.resetCSFDCookiesUL2()
-			cookies = CSFDGlobalVar.getCSFDCookiesUL2()
+		
+		CSFDGlobalVar.resetCSFDCookiesUL2()
+		cookies = CSFDGlobalVar.getCSFDCookiesUL2()
+		
 		test_txt = ''
 		txt = _('Je povoleno přihlašování do CSFD v Nastaveních')
 		if not config.misc.CSFD.LoginToCSFD.getValue():
@@ -6531,11 +6370,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile(txt, 9)
 		test_txt += txt
 		txt = _('Je funkční čtení stránek HTTPS')
-		if CSFDGlobalVar.getWebDownload() == 0:
-			twist = True
-		else:
-			twist = False
-		if IsHTTPSWorking(twist):
+		
+		if IsHTTPSWorking():
 			txt += ' ..... OK\n'
 		else:
 			txt += ' ..... ERR\n'
@@ -6546,17 +6382,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		txt = _('Zkouším funkčnost načítání www stránek')
 		url = 'https://www.csfd.cz/prihlaseni/'
 		try:
-			if CSFDGlobalVar.getWebDownload() == 0:
-				txt += ' (TwistedWeb)'
-				if twistedwebExist:
-					page = yield getPage(url, contextFactory=ClientContextFactoryCSFD, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), headers=std_login_header)
-					txt += ' ..... OK\n'
-				else:
-					txt += ' ..... ERR\n'
-			else:
-				txt += ' (Urllib2)'
-				page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), saveCookie=True)
-				txt += ' ..... OK\n'
+			txt += ' (Urllib2)'
+			page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), saveCookie=True)
+			txt += ' ..... OK\n'
 		except:
 			txt += ' ..... ERR\n'
 			txt += traceback.format_exc() + '\n'
@@ -6590,27 +6418,16 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		page = ''
 		txt = _('Zkouším se zalogovat na stránky CSFD')
 		try:
-			if CSFDGlobalVar.getWebDownload() == 0:
-				if twistedwebExist:
-					values = {'username': config.misc.CSFD.UserNameCSFD.getValue(), 'password': config.misc.CSFD.PasswordCSFD.getValue(), 'send': 'Přihlásit+se', 
-					   'permanent': 'on', 
-					   '_token_': token}
-					data = urllib.urlencode(values)
-					url = url_login
-					page = yield getPage(url, contextFactory=ClientContextFactoryCSFD, method='POST', timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), postdata=data, cookies=cookies, headers=std_login_header)
-				else:
-					txt += ' ..... ERR\n'
-			else:
-				values = {'username': config.misc.CSFD.UserNameCSFD.getValue(), 'password': config.misc.CSFD.PasswordCSFD.getValue(), 
-				   'permanent': 'on', 
-				   'send': 'Přihlásit+se', 
-				   '_token_': token, 
-				   '_do': 'form-submit'}
-				data = urllib.urlencode(values)
-				url = url_login
-				page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False, saveCookie=True)
-				url = 'https://www.csfd.cz/'
-				page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
+			values = {'username': config.misc.CSFD.UserNameCSFD.getValue(), 'password': config.misc.CSFD.PasswordCSFD.getValue(), 
+			   'permanent': 'on', 
+			   'send': 'Přihlásit+se', 
+			   '_token_': token, 
+			   '_do': 'form-submit'}
+			data = urllib.urlencode(values)
+			url = url_login
+			page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False, saveCookie=True)
+			url = 'https://www.csfd.cz/'
+			page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
 			txt += ' ..... OK\n'
 		except:
 			txt += ' ..... ERR\n'
@@ -6679,7 +6496,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] finishedTestLoginToCSFD - konec\n', 9)
 		return
 
-	@defer.inlineCallbacks
 	def LoadIMDBTimerEvent(self):
 		LogCSFD.WriteToFile('[CSFD] LoadIMDBTimerEvent - zacatek\n', 10)
 		if self.LoadIMDBTimer is not None:
@@ -6689,10 +6505,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			downl_timeout = config.misc.CSFD.DownloadTimeOut.getValue()
 			LogCSFD.WriteToFile('[CSFD] LoadIMDBTimerEvent - stahuji z url ' + Uni8(self.IMDBpath) + '\n')
 			try:
-				if CSFDGlobalVar.getWebDownload() == 0:
-					result = yield CSFDdownloader.getPage(self.IMDBpath, contextFactory=ClientContextFactoryCSFD, followRedirect=True, cookies={}, timeout=downl_timeout, headers=std_media_header)
-				else:
-					result = request(self.IMDBpath, headers=std_media_header, timeout=downl_timeout)
+				result = request(self.IMDBpath, headers=std_media_header, timeout=downl_timeout)
 				LogCSFD.WriteToFile('[CSFD] LoadIMDBTimerEvent - OK\n', 8)
 			except:
 				result = ''
@@ -6760,40 +6573,11 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 	def CheckForUpdate(self):
 		LogCSFD.WriteToFile('[CSFD] CheckForUpdate - zacatek\n', 10)
-		IsHTTPSWorkingTwistedWeb()
+
 		config.misc.CSFD.LastVersionCheck.setValue(int(time.time()))
 		config.misc.CSFD.LastVersionCheck.save()
-		if twistedwebExist and IsHTTPSWorking() and IsTwistedFollowRedirect():
-			self.UpdateViaTwistedWeb()
-		else:
-			self.UpdateViaCURL()
+		self.UpdateViaCURL()
 		LogCSFD.WriteToFile('[CSFD] CheckForUpdate - konec\n', 10)
-
-	@defer.inlineCallbacks
-	def UpdateViaTwistedWeb(self):
-		LogCSFD.WriteToFile('[CSFD] UpdateViaTwistedWeb - zacatek\n', 10)
-		chyba = False
-		if config.misc.CSFD.AutomaticBetaVersionCheck.getValue():
-			LogCSFD.WriteToFile('[CSFD] UpdateViaTwistedWeb - aktualizace beta verzi - zapnuta\n', 10)
-			url = MainUpdateUrl + 'versionbeta.txt'
-			output = CSFDGlobalVar.getCSFDadresarTMP() + 'CSFDversionbeta.txt'
-		else:
-			url = MainUpdateUrl + 'version.txt'
-			output = CSFDGlobalVar.getCSFDadresarTMP() + 'CSFDversion.txt'
-		LogCSFD.WriteToFile('[CSFD] UpdateViaTwistedWeb - stahuji soubor verzi ' + url + ' do ' + output + '\n', 10)
-		try:
-			yield CSFDdownloader.downloadPage(url, output, followRedirect=True, contextFactory=ClientContextFactoryCSFD, headers=std_media_header)
-		except:
-			err = traceback.format_exc()
-			LogCSFD.WriteToFile('[CSFD] UpdateViaTwistedWeb - chyba - nemuzu stahnout soubor - ' + url + '\n', 10)
-			LogCSFD.WriteToFile(err, 10)
-			chyba = True
-
-		if not chyba:
-			self.ReadUpdateInformation()
-		else:
-			self.UpdateViaCURL()
-		LogCSFD.WriteToFile('[CSFD] UpdateViaTwistedWeb - konec\n', 10)
 
 	def UpdateViaCURL(self):
 		LogCSFD.WriteToFile('[CSFD] UpdateViaCURL - zacatek\n', 10)
@@ -6906,19 +6690,14 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 	def startPluginDownloadAndUpdate(self):
 		LogCSFD.WriteToFile('[CSFD] startPluginDownloadAndUpdate - zacatek\n', 10)
 		cmd = []
-		if twistedwebExist and IsHTTPSWorking():
-			if CSFDGlobalVar.getCSFDInstallCommand() == 'dpkg':
-				cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' --install --force-all ' + str(self.UpdateFile) + ' && apt-get -y update && apt-get -f -y install')
-			else:
-				cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install --force-overwrite --force-depends --force-downgrade ' + str(self.UpdateFile))
-			self.session.openWithCallback(self.finishedPluginDownloadAndUpdate, CSFDConsole, title=_('Online update pluginu ...'), cmdlist=cmd, startCallback=self.DownloadPluginViaTwistedWeb, closeOnSuccess=False, startNow=False, startText=_('Stažení a instalace nové verze pluginu - ZAČÁTEK'), endText=_('Stažení a instalace nové verze pluginu - KONEC'))
+
+		cmd.append('curl -k -L -o ' + self.UpdateFile + ' ' + self.UpdateUrl)
+		if CSFDGlobalVar.getCSFDInstallCommand() == 'dpkg':
+			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' --install --force-all ' + str(self.UpdateFile) + ' && apt-get -y update && apt-get -f -y install')
 		else:
-			cmd.append('curl -k -L -o ' + self.UpdateFile + ' ' + self.UpdateUrl)
-			if CSFDGlobalVar.getCSFDInstallCommand() == 'dpkg':
-				cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' --install --force-all ' + str(self.UpdateFile) + ' && apt-get -y update && apt-get -f -y install')
-			else:
-				cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install --force-overwrite --force-depends --force-downgrade ' + str(self.UpdateFile))
-			self.session.openWithCallback(self.finishedPluginDownloadAndUpdate, CSFDConsole, title=_('Online update pluginu ...'), cmdlist=cmd, closeOnSuccess=False, startText=_('Stažení a instalace nové verze pluginu - ZAČÁTEK'), endText=_('Stažení a instalace nové verze pluginu - KONEC'))
+			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install --force-overwrite --force-depends --force-downgrade ' + str(self.UpdateFile))
+		self.session.openWithCallback(self.finishedPluginDownloadAndUpdate, CSFDConsole, title=_('Online update pluginu ...'), cmdlist=cmd, closeOnSuccess=False, startText=_('Stažení a instalace nové verze pluginu - ZAČÁTEK'), endText=_('Stažení a instalace nové verze pluginu - KONEC'))
+		
 		LogCSFD.WriteToFile('[CSFD] startPluginDownloadAndUpdate - konec\n', 10)
 
 	def finishedPluginDownloadAndUpdate(self, retval=0):
@@ -6931,35 +6710,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] finishedPluginDownloadAndUpdate - chyba - pri instalaci nove verze\n', 10)
 			self.session.openWithCallback(self.restartGUI, MessageBox, (_('Instalace skončila s kódem (%s)!') + '\n' + _('Chcete nyní provést restart GUI?')) % str(retval), MessageBox.TYPE_YESNO)
 		LogCSFD.WriteToFile('[CSFD] finishedPluginDownloadAndUpdate - konec\n', 10)
-
-	@defer.inlineCallbacks
-	def DownloadPluginViaTwistedWeb(self, console=None):
-		LogCSFD.WriteToFile('[CSFD] DownloadPluginViaTwistedWeb - zacatek\n', 10)
-		chyba = False
-		console.addText(text=_('Stahuji plugin ') + strUni(self.UpdateUrl) + _(' do ') + strUni(self.UpdateFile) + '\n', typeText=2)
-		try:
-			LogCSFD.WriteToFile('[CSFD] DownloadPluginViaTwistedWeb - stahuji plugin ' + strUni(self.UpdateUrl) + ' do ' + strUni(self.UpdateFile) + '\n', 10)
-			yield CSFDdownloader.downloadPage(self.UpdateUrl, self.UpdateFile, contextFactory=ClientContextFactoryCSFD, followRedirect=True, headers=std_media_header)
-		except:
-			err = traceback.format_exc()
-			LogCSFD.WriteToFile('[CSFD] DownloadPluginViaTwistedWeb - chyba - nemuzu stahnout plugin ' + strUni(self.UpdateUrl) + '\n', 10)
-			LogCSFD.WriteToFile(err, 10)
-			chyba = True
-
-		if chyba:
-			cmd = []
-			cmd.append('curl -k -L -o ' + self.UpdateFile + ' ' + self.UpdateUrl)
-			if CSFDGlobalVar.getCSFDInstallCommand() == 'dpkg':
-				cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' --install --force-all ' + str(self.UpdateFile) + ' && apt-get -y update && apt-get -f -y install')
-			else:
-				cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install --force-overwrite --force-depends --force-downgrade ' + str(self.UpdateFile))
-			console.addText(text=_('Při stahování nové verze pluginu došlo k chybě (TwistedWeb)') + '\n \n')
-			console.addText(text=_('Stahuji plugin přes Curl ') + strUni(self.UpdateUrl) + _(' do ') + strUni(self.UpdateFile) + '\n', typeText=2)
-			console.changeCmd(cmd)
-		else:
-			console.addText(text=_('Stahování proběhlo úspěšně (TwistedWeb)') + '\n \n')
-		console.startRun()
-		LogCSFD.WriteToFile('[CSFD] DownloadPluginViaTwistedWeb - konec\n', 10)
 
 	def restartGUI(self, answer):
 		LogCSFD.WriteToFile('[CSFD] restartGUI - zacatek\n')
@@ -6979,7 +6729,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		if self.PluginRepairTimer is not None:
 			if self.PluginRepairTimer.isActive():
 				self.PluginRepairTimer.stop()
-		self.session.openWithCallback(self.answerPluginRepair, MessageBox, _('Chcete provést (re)instalaci potřebných knihoven (twisted-web, pyopenssl, zlib, curl) pro CSFD?'), MessageBox.TYPE_YESNO)
+		self.session.openWithCallback(self.answerPluginRepair, MessageBox, _('Chcete provést (re)instalaci potřebných knihoven (pyopenssl, zlib, curl) pro CSFD?'), MessageBox.TYPE_YESNO)
 		LogCSFD.WriteToFile('[CSFD] PluginRepair - konec\n')
 		return
 
@@ -7004,14 +6754,12 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		if CSFDGlobalVar.getCSFDInstallCommand() == 'dpkg':
 			cmd.append('apt-get -y update')
 			cmd.append('apt-get -f -y install python-pyopenssl')
-			cmd.append('apt-get -f -y install python-twisted-web')
 			cmd.append('apt-get -f -y install python-zlib')
 			cmd.append('apt-get -f -y install curl')
 			cmd.append('/usr/lib/enigma2/python/Plugins/Extensions/CSFD/addon/addon.sh')
 		else:
 			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' update')
 			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install python-pyopenssl --force-reinstall')
-			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install python-twisted-web --force-reinstall')
 			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install python-zlib --force-reinstall')
 			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install curl --force-reinstall')
 			cmd.append('/usr/lib/enigma2/python/Plugins/Extensions/CSFD/addon/addon.sh')

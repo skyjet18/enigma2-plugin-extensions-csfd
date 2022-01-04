@@ -15,8 +15,6 @@ config.misc.CSFD = ConfigSubsection()
 config.misc.CSFD.Log = ConfigYesNo(default=True)
 config.misc.CSFD.LogConsole = ConfigYesNo(default=False)
 config.misc.CSFD.LogConsoleTime = ConfigYesNo(default=False)
-config.misc.CSFD.LogTwistedWeb = ConfigYesNo(default=False)
-config.misc.CSFD.DownloadType = ConfigSelection(choices=[('0', _('automaticky')), ('1', _('TwistedWeb')), ('2', _('Urllib2'))], default='0')
 config.misc.CSFD.LogMaxSize = ConfigSelection(choices=[('50000', '50kB'), ('100000', '100kB'), ('200000', '200kB'), ('300000', '300kB'), ('400000', '400kB'), ('500000', '500kB'), ('1000000', '1MB')], default='300000')
 config.misc.CSFD.Language = ConfigSelection(choices=[('0', _('automaticky')), ('1', _('česky')), ('2', _('slovensky'))], default='0')
 config.misc.CSFD.Resolution = ConfigSelection(choices=[('0', _('automaticky')), ('720', _('720')), ('1280', _('1280')), ('1920', _('1920'))], default='0')
@@ -225,7 +223,7 @@ config.misc.CSFD.AntiFreezeLimit = ConfigInteger(default=30, limits=(20, 60))
 config.misc.CSFD.PlayerSubtDelayPlus = ConfigInteger(default=0, limits=(0, 60000))
 config.misc.CSFD.PlayerSubtDelayMinus = ConfigInteger(default=0, limits=(0, 60000))
 config.misc.CSFD.BackCSFDCompatibility = ConfigYesNo(default=True)
-config.misc.CSFD.TVCache = ConfigYesNo(default=True)
+config.misc.CSFD.TVCache = ConfigYesNo(default=False)
 config.misc.CSFD.DirectoryVideoDownload = CSFDConfigText('/hdd/movie/', fixed_size=False)
 config.misc.CSFD.Skinxml = ConfigYesNo(default=False)
 config.misc.CSFD.SkinOLEDxml = ConfigYesNo(default=True)
@@ -249,8 +247,6 @@ def ResetParams():
 	config.misc.CSFD.Log.saved_value = None
 	config.misc.CSFD.LogConsole.saved_value = None
 	config.misc.CSFD.LogConsoleTime.saved_value = None
-	config.misc.CSFD.LogTwistedWeb.saved_value = None
-	config.misc.CSFD.DownloadType.saved_value = None
 	config.misc.CSFD.LogMaxSize.saved_value = None
 	config.misc.CSFD.Language.saved_value = None
 	config.misc.CSFD.Resolution.saved_value = None
@@ -355,8 +351,6 @@ def ResetParams():
 	config.misc.CSFD.Log.load()
 	config.misc.CSFD.LogConsole.load()
 	config.misc.CSFD.LogConsoleTime.load()
-	config.misc.CSFD.LogTwistedWeb.load()
-	config.misc.CSFD.DownloadType.load()
 	config.misc.CSFD.LogMaxSize.load()
 	config.misc.CSFD.Language.load()
 	config.misc.CSFD.Resolution.load()

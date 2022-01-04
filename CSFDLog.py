@@ -20,7 +20,6 @@ class CSFDLog:
 		config.misc.CSFD.Log = ConfigYesNo(default=True)
 		config.misc.CSFD.LogConsole = ConfigYesNo(default=False)
 		config.misc.CSFD.LogConsoleTime = ConfigYesNo(default=False)
-		config.misc.CSFD.LogTwistedWeb = ConfigYesNo(default=True)
 		config.misc.CSFD.DirectoryTMP = ConfigText('/tmp/', fixed_size=False)
 		config.misc.CSFD.LogMaxSize = ConfigSelection(choices=[('50000', '50kB'), ('100000', '100kB'), ('200000', '200kB'), ('300000', '300kB'), ('400000', '400kB'), ('500000', '500kB'), ('1000000', '1MB')], default='300000')
 		self.LoadDefaults()
@@ -37,14 +36,10 @@ class CSFDLog:
 		else:
 			adresarTMP = '/tmp/'
 		self.CSFDLogFile = adresarTMP + 'CSFDlog.txt'
-		self.CSFDTwistedLogFile = adresarTMP + 'CSFDtwistedlog.txt'
 		if self.Log:
 			if not os_path.exists(self.CSFDLogFile):
 				self.CreateEmptyLog()
 			self.CheckAndEmptyLog()
-
-	def GetNameTwistedLog(self):
-		return self.CSFDTwistedLogFile
 
 	def CreateEmptyLog(self):
 		if self.Log:

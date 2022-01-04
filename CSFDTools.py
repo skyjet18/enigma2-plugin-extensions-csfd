@@ -52,111 +52,18 @@ except:
 	google_IP = google_URL
 
 LogCSFD.WriteToFile('[CSFD] CSFDTools - google_IP: ' + google_IP + '\n')
-if CSFDGlobalVar.getOpenSSLexist():
-	try:
-		if CSFDGlobalVar.getOpenSSLcontext():
-			from twisted.internet.ssl import ClientContextFactory
-			from OpenSSL import SSL
-			LogCSFD.WriteToFile('[CSFD] CSFDClientContextFactory - vytvarim\n')
 
-			class CSFDClientContextFactory(ClientContextFactory):
-				LogCSFD.WriteToFile('[CSFD] CSFDClientContextFactory - class\n')
-
-				def __init__(self):
-					LogCSFD.WriteToFile('[CSFD] CSFDClientContextFactory - init\n')
-					self.privateKeyFileName = '/etc/enigma2/key.pem'
-					self.certificateFileName = '/etc/enigma2/cert.pem'
-					self.method = SSL.SSLv23_METHOD
-					self.sslmethod = SSL.SSLv23_METHOD
-
-				def getContext(self):
-					LogCSFD.WriteToFile('[CSFD] CSFDClientContextFactory - getContext\n')
-					ctx = ClientContextFactory.getContext(self)
-					ctx.set_options(SSL.OP_ALL)
-					return ctx
-
-
-			ClientContextFactoryCSFD = CSFDClientContextFactory()
-		else:
-			LogCSFD.WriteToFile('[CSFD] CSFDTools - CSFDClientContextFactory - None\n')
-			ClientContextFactory = object
-			ClientContextFactoryCSFD = None
-			CSFDGlobalVar.setOpenSSLcontext(False)
-	except:
-		ClientContextFactory = object
-		ClientContextFactoryCSFD = None
-		CSFDGlobalVar.setOpenSSLcontext(False)
-		err = traceback.format_exc()
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - CSFDClientContextFactory - chyba\n')
-		LogCSFD.WriteToFile(err)
-		LogCSFD.WriteToFile('[CSFD] CSFDClientContextFactory - None\n')
-
-else:
-	LogCSFD.WriteToFile('[CSFD] CSFDClientContextFactory - None\n')
-	ClientContextFactory = object
-	ClientContextFactoryCSFD = None
 try:
-	from twisted.web.client import downloadPage, getPage, HTTPClientFactory
-	from twisted.internet import defer
-	from twisted.internet.defer import DeferredSemaphore
-	from twisted.python.log import startLogging
-	twistedwebExist = True
-	old_HTTPClientFactory_gotHeaders = HTTPClientFactory.gotHeaders
-
-	def CSFD_HTTPClientFactory_gotHeaders(self, headers):
-		LogCSFD.WriteToFile('[CSFD] CSFD_HTTPClientFactory_gotHeaders - zacatek\n')
-		old_HTTPClientFactory_gotHeaders(self, headers)
-		LogCSFD.WriteToFile('[CSFD] CSFD_HTTPClientFactory_gotHeaders - response headers: ' + str(headers) + '\n')
-		if headers.has_key('set-cookie'):
-			cookies = CSFDGlobalVar.getCSFDCookies()
-			LogCSFD.WriteToFile('[CSFD] Cookies - pred zmenou : ' + str(cookies) + '\n')
-			cookies.update(self.cookies)
-			LogCSFD.WriteToFile('[CSFD] Cookies - po zmene	  : ' + str(cookies) + '\n')
-			CSFDGlobalVar.setCSFDCookies(cookies)
-		LogCSFD.WriteToFile('[CSFD] CSFD_HTTPClientFactory_gotHeaders - konec\n')
-
-
-	HTTPClientFactory.gotHeaders = CSFD_HTTPClientFactory_gotHeaders
+	from twisted.web.client import downloadPage
 except:
-	twistedwebExist = False
-
 	def downloadPage(self, *a, **kw):
 		pass
-
-
-	def getPage(self, *a, **kw):
-		pass
-
-
-	class c_defer():
-
-		def inlineCallbacks(self, f):
-			pass
-
-
-	defer = c_defer()
-
-	def DeferredSemaphore(self, *a, **kw):
-		pass
-
-
+	
 try:
 	import unicodedata
 	unicodedataExist = True
 except:
 	unicodedataExist = False
-
-class LimitedDownloader():
-
-	def __init__(self, howMany):
-		self._semaphore = DeferredSemaphore(howMany)
-
-	def downloadPage(self, *a, **kw):
-		return self._semaphore.run(downloadPage, *a, **kw)
-
-	def getPage(self, *a, **kw):
-		return self._semaphore.run(getPage, *a, **kw)
-
 
 class ItemList(MenuList):
 
@@ -1119,33 +1026,9 @@ def IsThereBT_Parameters():
 	return OK
 
 
-@defer.inlineCallbacks
-def IsHTTPSWorkingTwistedWeb():
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - IsHTTPSWorkingTwistedWeb - zacatek\n')
-	OK = True
-	url = csfd_URL_https
-	try:
-		r = yield getPage(url, contextFactory=ClientContextFactoryCSFD, headers=std_headers, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
-	except:
-		OK = False
-		err = traceback.format_exc()
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - IsHTTPSWorkingTwistedWeb - neni funkcni stahovani HTTPS v twisted web - ' + url + '\n')
-		LogCSFD.WriteToFile(err)
-
-	CSFDGlobalVar.setHTTPSWorkingTwistedWeb(OK)
-	if OK:
-		CSFDGlobalVar.setHTTP('https')
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - IsHTTPSWorkingTwistedWeb - OK - ' + url + '\n')
-	else:
-		CSFDGlobalVar.setHTTP('http')
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - IsHTTPSWorkingTwistedWeb - NOT OK - ' + url + '\n')
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - IsHTTPSWorkingTwistedWeb - konec\n')
-
-
-def IsHTTPSWorking(testTwisted=True):
+def IsHTTPSWorking():
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - IsHTTPSWorking - zacatek\n')
-	if testTwisted:
-		IsHTTPSWorkingTwistedWeb()
+
 	OK = True
 	url = csfd_URL_https
 	try:
@@ -1159,90 +1042,14 @@ def IsHTTPSWorking(testTwisted=True):
 		LogCSFD.WriteToFile('[CSFD] CSFDTools - IsHTTPSWorking - neni funkcni stahovani HTTPS v urllib2 - ' + url + '\n')
 		LogCSFD.WriteToFile(err)
 
-	if not OK and testTwisted:
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - IsHTTPSWorking - nastavuji vysledek podle IsHTTPSWorkingTwistedWeb\n')
-		OK = CSFDGlobalVar.getHTTPSWorkingTwistedWeb()
 	if OK:
 		LogCSFD.WriteToFile('[CSFD] CSFDTools - IsHTTPSWorking - OK - ' + url + '\n')
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - IsHTTPSWorking - konec\n')
 	return OK
 
 
-def closeIsTwistedFollowRedirect(string):
-	grem(CSFDGlobalVar.getCSFDadresarTMP(), 'CSFDtest.*?txt')
-
-
-def IsTwistedFollowRedirect():
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - IsTwistedFollowRedirect - zacatek\n')
-	OK = True
-	url = google_URL
-	output = CSFDGlobalVar.getCSFDadresarTMP() + 'CSFDtest.txt'
-	try:
-		downloadPage(url, output, followRedirect=True, headers=std_media_header).addCallback(closeIsTwistedFollowRedirect)
-	except:
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - IsTwistedFollowRedirect - neni funkcni redirect pro twisted web - ' + url + '\n')
-		OK = False
-
-	if OK:
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - IsTwistedFollowRedirect - OK - ' + url + '\n')
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - IsTwistedFollowRedirect - konec\n')
-	return OK
-
-
-def closeIsTwistedUseCookies(string):
-	grem(CSFDGlobalVar.getCSFDadresarTMP(), 'CSFDtest.*?txt')
-
-
-def IsTwistedUseCookies():
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - IsTwistedUseCookies - zacatek\n')
-	OK = True
-	url = google_URL
-	output = CSFDGlobalVar.getCSFDadresarTMP() + 'CSFDtest.txt'
-	cookies = CSFDGlobalVar.getCSFDCookies()
-	try:
-		downloadPage(url, output, headers=std_media_header, cookies=cookies).addCallback(closeIsTwistedUseCookies)
-	except:
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - IsTwistedUseCookies - neni funkcni parametr cookies pro twisted web - ' + url + '\n')
-		OK = False
-
-	if OK:
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - IsTwistedUseCookies - OK - ' + url + '\n')
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - IsTwistedUseCookies - konec\n')
-	return OK
-
-
-CSFDdownloader = LimitedDownloader(4)
-
-def InitSetDownloadType():
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - InitSetDownloadType - zacatek\n')
-	if config.misc.CSFD.DownloadType.getValue() == '0':
-		if twistedwebExist and CSFDGlobalVar.getOpenSSLexist() and CSFDGlobalVar.getOpenSSLcontext():
-			LogCSFD.WriteToFile('[CSFD] CSFDTools - InitSetDownloadType - Auto WebDownload TwistedWeb\n')
-			CSFDGlobalVar.setWebDownload(0)
-		else:
-			LogCSFD.WriteToFile('[CSFD] CSFDTools - InitSetDownloadType - Auto WebDownload Urllib2\n')
-			CSFDGlobalVar.setWebDownload(1)
-	elif config.misc.CSFD.DownloadType.getValue() == '1':
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - InitSetDownloadType - WebDownload TwistedWeb\n')
-		CSFDGlobalVar.setWebDownload(0)
-	elif config.misc.CSFD.DownloadType.getValue() == '2':
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - InitSetDownloadType - WebDownload Urllib2\n')
-		CSFDGlobalVar.setWebDownload(1)
-	elif twistedwebExist and CSFDGlobalVar.getOpenSSLexist() and CSFDGlobalVar.getOpenSSLcontext():
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - InitSetDownloadType - Nedef. WebDownload TwistedWeb\n')
-		CSFDGlobalVar.setWebDownload(0)
-	else:
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - InitSetDownloadType - Nedef. WebDownload Urllib2\n')
-		CSFDGlobalVar.setWebDownload(1)
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - InitSetDownloadType - konec\n')
-
-
 def InitCSFDTools():
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - InitCSFDTools - zacatek\n')
-	if twistedwebExist and config.misc.CSFD.LogTwistedWeb.getValue():
-		sb = file(LogCSFD.GetNameTwistedLog(), 'w')
-		sb.close()
-		startLogging(file(LogCSFD.GetNameTwistedLog(), 'w'), setStdout=0)
 	CSFDGlobalVar.setCSFDBoxType(getBoxtypeCSFD())
 	ImageType, ImageCompatibility = getImagetype()
 	CSFDGlobalVar.setCSFDImageType(ImageType)
@@ -1252,24 +1059,7 @@ def InitCSFDTools():
 	CSFDGlobalVar.setCSFDEnigmaVersion(CSFDGlobalVar.getCSFDBoxType()[4])
 	CSFDGlobalVar.setCSFDInstallCommand(GetInstallCommand())
 	CSFDGlobalVar.setBTParameters(IsThereBT_Parameters())
-	CSFDGlobalVar.setIsTwistedWithCookies(IsTwistedUseCookies())
-	InitSetDownloadType()
-	if CSFDGlobalVar.getWebDownload() == 0:
-		try:
-			IsHTTPSWorkingTwistedWeb()
-		except:
-			err = traceback.format_exc()
-			LogCSFD.WriteToFile('[CSFD] CSFDTools - InitCSFDTools  - IsHTTPSWorkingTwistedWeb - neni funkcni - ERR - chyba\n')
-			LogCSFD.WriteToFile(err)
-			CSFDGlobalVar.setHTTPSWorkingTwistedWeb(False)
-			CSFDGlobalVar.setHTTP('http')
-
-	elif IsHTTPSWorking(testTwisted=False):
-		CSFDGlobalVar.setHTTP('https')
-	else:
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - InitCSFDTools  - IsHTTPSWorking - neni funkcni - ERR - chyba\n')
-		CSFDGlobalVar.setHTTP('http')
+	CSFDGlobalVar.setHTTP('https')
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - InitCSFDTools - konec\n')
-
 
 InitCSFDTools()

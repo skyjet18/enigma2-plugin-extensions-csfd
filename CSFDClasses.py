@@ -3,7 +3,7 @@
 from enigma import gRGB, gFont, iPlayableService, RT_HALIGN_LEFT, RT_WRAP, RT_VALIGN_TOP
 from enigma import eTimer, eSize, iServiceInformation, eServiceReference
 from CSFDLog import LogCSFD
-from CSFDTools import defer, getPage, requestCSFD, internet_on, ItemListTypeSpecial, strUni, Uni8, ClientContextFactoryCSFD
+from CSFDTools import requestCSFD, internet_on, ItemListTypeSpecial, strUni, Uni8
 from Screens.Screen import Screen
 from Screens.InfoBarGenerics import InfoBarNotifications, InfoBarSubtitleSupport
 from Screens.MessageBox import MessageBox
@@ -33,7 +33,8 @@ import time, urllib, traceback
 
 def LoginToCSFD():
 	LogCSFD.WriteToFile('[CSFD] LoginToCSFD - zacatek\n', 1)
-	if not config.misc.CSFD.LoginToCSFD.getValue():
+#	if not config.misc.CSFD.LoginToCSFD.getValue():
+	if True:		
 		LogCSFD.WriteToFile('[CSFD] LoginToCSFD - neprihlasovat do CSFD\n', 1)
 		LogCSFD.WriteToFile('[CSFD] LoginToCSFD - konec\n', 1)
 		return
@@ -48,7 +49,6 @@ def LoginToCSFD():
 		LogCSFD.WriteToFile('[CSFD] LoginToCSFD - konec\n', 1)
 		return
 
-	@defer.inlineCallbacks
 	def LogToWeb():
 		LogCSFD.WriteToFile('[CSFD] LogToWeb - zacatek\n', 1)
 		url = CSFDGlobalVar.getHTTP() + const_www_csfd + '/prihlaseni/'
@@ -56,10 +56,7 @@ def LoginToCSFD():
 		try:
 			raise NameError('#1 Login do csfd nie je podporovany')
 		
-#			if CSFDGlobalVar.getWebDownload() == 0:
-#				page = yield getPage(url, contextFactory=ClientContextFactoryCSFD, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), cookies=CSFDGlobalVar.getCSFDCookies(), headers=std_login_header)
-#			else:
-#				page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), saveCookie=True)
+#			page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), saveCookie=True)
 		except:
 			LogCSFD.WriteToFile('[CSFD] LogToWeb - get token - chyba - konec\n', 1)
 			config.misc.CSFD.LastLoginError.setValue(int(time.time()))
@@ -92,25 +89,17 @@ def LoginToCSFD():
 				LogCSFD.WriteToFile('[CSFD] LogToWeb - url pro login OK\n', 1)
 				page = ''
 				try:
-					if CSFDGlobalVar.getWebDownload() == 0:
-						values = {'username': config.misc.CSFD.UserNameCSFD.getValue(), 'password': config.misc.CSFD.PasswordCSFD.getValue(), 'send': 'Přihlásit+se', 
-						   'permanent': 'on', 
-						   '_token_': token}
-						data = urllib.urlencode(values)
-						url = url_login
-						page = yield getPage(url, contextFactory=ClientContextFactoryCSFD, method='POST', postdata=data, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), cookies=CSFDGlobalVar.getCSFDCookies(), headers=std_login_header)
-					else:
-						values = {'username': config.misc.CSFD.UserNameCSFD.getValue(), 'password': config.misc.CSFD.PasswordCSFD.getValue(), 
-						   'permanent': 'on', 
-						   'send': 'Přihlásit+se', 
-						   '_token_': token, 
-						   '_do': 'form-submit'}
-						data = urllib.urlencode(values)
-						url = url_login
-						raise NameError('#2 Login do csfd nie je podporovany')
-#						page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False, saveCookie=True)
-#						url = 'https://www.csfd.cz/'
-#						page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
+					values = {'username': config.misc.CSFD.UserNameCSFD.getValue(), 'password': config.misc.CSFD.PasswordCSFD.getValue(), 
+					   'permanent': 'on', 
+					   'send': 'Přihlásit+se', 
+					   '_token_': token, 
+					   '_do': 'form-submit'}
+					data = urllib.urlencode(values)
+					url = url_login
+					raise NameError('#2 Login do csfd nie je podporovany')
+#					page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False, saveCookie=True)
+#					url = 'https://www.csfd.cz/'
+#					page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
 				except:
 					LogCSFD.WriteToFile('[CSFD] LogToWeb - login - chyba - konec\n', 1)
 					config.misc.CSFD.LastLoginError.setValue(int(time.time()))
@@ -166,7 +155,6 @@ def GetMoviesForTVChannels(t_channName, t_typechannName=0, t_downlTimeout=3, t_i
 		LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - konec\n', 20)
 		return
 
-#	@defer.inlineCallbacks
 	def GetMovies(s_channName, s_typechannName=0, s_downlTimeout=3, s_ignoreNetErr=False):
 		channName = s_channName
 		typechannName = s_typechannName
@@ -202,10 +190,7 @@ def GetMoviesForTVChannels(t_channName, t_typechannName=0, t_downlTimeout=3, t_i
 				if not chyba:
 					try:
 						raise NameError('#1 Ziskavanie TV tipov pre stanicu nie je podporovane')
-#						if CSFDGlobalVar.getWebDownload() == 0:
-#							page = yield getPage(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=0', contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=downlTimeout, cookies=cookies1, headers=std_tv_post_header)
-#						else:
-#							page = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=0', headers=std_tv_post_header_UL2, timeout=downlTimeout)
+#						page = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=0', headers=std_tv_post_header_UL2, timeout=downlTimeout)
 					except:
 						page = ''
 						chyba = True
@@ -220,10 +205,7 @@ def GetMoviesForTVChannels(t_channName, t_typechannName=0, t_downlTimeout=3, t_i
 					try:
 						raise NameError('#2 Ziskavanie TV tipov pre stanicu nie je podporovane')
 					
-#						if CSFDGlobalVar.getWebDownload() == 0:
-#							page_tomm = yield getPage(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=1', contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=downlTimeout, cookies=cookies1, headers=std_tv_post_header)
-#						else:
-#							page_tomm = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=1', headers=std_tv_post_header_UL2, timeout=downlTimeout)
+#						page_tomm = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=1', headers=std_tv_post_header_UL2, timeout=downlTimeout)
 					except:
 						page_tomm = ''
 						chyba = True
@@ -237,10 +219,7 @@ def GetMoviesForTVChannels(t_channName, t_typechannName=0, t_downlTimeout=3, t_i
 				if not chyba:
 					try:
 						raise NameError('#3 Ziskavanie TV tipov pre stanicu nie je podporovane')
-#						if CSFDGlobalVar.getWebDownload() == 0:
-#							page_yest = yield getPage(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=-1', contextFactory=ClientContextFactoryCSFD, followRedirect=True, timeout=downlTimeout, cookies=cookies1, headers=std_tv_post_header)
-#						else:
-#							page_yest = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=-1', headers=std_tv_post_header_UL2, timeout=downlTimeout)
+#						page_yest = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=-1', headers=std_tv_post_header_UL2, timeout=downlTimeout)
 					except:
 						page_yest = ''
 						chyba = True
@@ -765,11 +744,10 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list1.append(getConfigListEntry(_('Rotovat ratingy?'), config.misc.CSFD.RatingRotation))
 		self.list1.append(getConfigListEntry(_('Změna jednotlivých ratingů') + _('-def.15 (02 až 50)*0,5s'), config.misc.CSFD.RatingRotationTime))
 		self.list2 = []
-		self.list2.append(getConfigListEntry(_('Přihlásit se do CSFD?'), config.misc.CSFD.LoginToCSFD))
-		self.list2.append(getConfigListEntry(_('Uživatelské jméno pro CSFD:'), config.misc.CSFD.UserNameCSFD))
-		self.list2.append(getConfigListEntry(_('Heslo pro CSFD:'), config.misc.CSFD.PasswordCSFD))
-		self.list2.append(getConfigListEntry(_('Metoda stahování informací z CSFD?'), config.misc.CSFD.DownloadType))
-		self.list2.append(getConfigListEntry(_('Jak dlouho se nepřihlašovat po chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LoginErrorWaiting))
+#		self.list2.append(getConfigListEntry(_('Přihlásit se do CSFD?'), config.misc.CSFD.LoginToCSFD))
+#		self.list2.append(getConfigListEntry(_('Uživatelské jméno pro CSFD:'), config.misc.CSFD.UserNameCSFD))
+#		self.list2.append(getConfigListEntry(_('Heslo pro CSFD:'), config.misc.CSFD.PasswordCSFD))
+#		self.list2.append(getConfigListEntry(_('Jak dlouho se nepřihlašovat po chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LoginErrorWaiting))
 		self.list2.append(getConfigListEntry(_('Při plné shodě ihned načíst detail?'), config.misc.CSFD.Detail100))
 		self.list2.append(getConfigListEntry(_('Vyhledané výsledky třídit defaultně podle'), config.misc.CSFD.Default_Sort))
 		self.list2.append(getConfigListEntry(_('Vyhledat defaultně všechny podobné pořady?'), config.misc.CSFD.FindAllItems))
@@ -779,9 +757,9 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list2.append(getConfigListEntry(_('Vyhledávat včetně diakritiky pro pořady z EPG?'), config.misc.CSFD.FindInclDiacrEPG))
 		self.list2.append(getConfigListEntry(_('Vyhledávat včetně diakritiky pro pořady z ostatních zdrojů?'), config.misc.CSFD.FindInclDiacrOth))
 		self.list2.append(getConfigListEntry(_('Načíst další názvy z detailu kolika filmů?') + _(' def.2 (0 až 4)'), config.misc.CSFD.NumberOfReadMovieNameFromDetail))
-		self.list2.append(getConfigListEntry(_('Načíst seznam pořadů z CSFD pro daný kanál do cache?'), config.misc.CSFD.TVCache))
-		self.list2.append(getConfigListEntry(_('Jak dlouho nenačítat cache po net chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LanErrorWaiting))
-		self.list2.append(getConfigListEntry(_('Třídící algoritmus pro vyhledané položky?'), config.misc.CSFD.SortFindItems))
+#		self.list2.append(getConfigListEntry(_('Načíst seznam pořadů z CSFD pro daný kanál do cache?'), config.misc.CSFD.TVCache))
+#		self.list2.append(getConfigListEntry(_('Jak dlouho nenačítat cache po net chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LanErrorWaiting))
+#		self.list2.append(getConfigListEntry(_('Třídící algoritmus pro vyhledané položky?'), config.misc.CSFD.SortFindItems))
 		self.list2.append(getConfigListEntry(_('Zadávání znaků'), config.misc.CSFD.Input_Type))
 		self.list2.append(getConfigListEntry(_('Při zadávání předvyplnit poslední hledaný pořad?'), config.misc.CSFD.SaveSearch))
 		self.list2.append(getConfigListEntry(_('Volat místo IMDB plugin CSFD?'), config.misc.CSFD.CSFDreplaceIMDB))
@@ -803,7 +781,6 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list2.append(getConfigListEntry(_('Logovat do systémové konzole?'), config.misc.CSFD.LogConsole))
 		self.list2.append(getConfigListEntry(_('Logovat do konzole i čas?'), config.misc.CSFD.LogConsoleTime))
 		self.list2.append(getConfigListEntry(_('Logovat do <adr.>CSFDlog.txt ?'), config.misc.CSFD.Log))
-		self.list2.append(getConfigListEntry(_('Logovat TwistedWeb do <adr.>CSFDtwistedlog.txt ?'), config.misc.CSFD.LogTwistedWeb))
 		self.list2.append(getConfigListEntry(_('Maximální velikost logu?'), config.misc.CSFD.LogMaxSize))
 		self.list2.append(getConfigListEntry(_('Cesta <adr.> pro dočasné soubory a logy (def.: /tmp/ ) '), config.misc.CSFD.DirectoryTMP))
 		self.list2.append(getConfigListEntry(_('Cesta <adr.> pro download videa (def.: /hdd/movie/ ) '), config.misc.CSFD.DirectoryVideoDownload))

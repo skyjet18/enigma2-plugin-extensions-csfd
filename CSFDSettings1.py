@@ -14,7 +14,6 @@ class CSFDGlobalVarDef:
 		self.AudioSelectionexist = False
 		self.OpenSSLexist = False
 		self.OpenSSLcontext = False
-		self.WebDownload = 0
 		self.TVTimer_channName = ''
 		self.Session = None
 		self.EventName = ''
@@ -32,9 +31,7 @@ class CSFDGlobalVarDef:
 		self.CSFDEnigmaVersion = '3'
 		self.CSFDInstallCommand = 'opkg'
 		self.BTParameters = False
-		self.HTTPSWorkingTwistedWeb = False
 		self.HTTP = 'http'
-		self.IsTwistedWithCookies = True
 		self.ParalelDownloadProcedure = None
 		self.ParalelDownloadPage = ''
 		return
@@ -68,12 +65,6 @@ class CSFDGlobalVarDef:
 
 	def setIMDBexist(self, IMDBexist):
 		self.IMDBexist = IMDBexist
-
-	def getWebDownload(self):
-		return self.WebDownload
-
-	def setWebDownload(self, WebDownload):
-		self.WebDownload = WebDownload
 
 	def getCSFDCookies(self):
 		return self.CSFDCookies
@@ -207,23 +198,11 @@ class CSFDGlobalVarDef:
 	def setBTParameters(self, BTParameters):
 		self.BTParameters = BTParameters
 
-	def getHTTPSWorkingTwistedWeb(self):
-		return self.HTTPSWorkingTwistedWeb
-
-	def setHTTPSWorkingTwistedWeb(self, HTTPSWorkingTwistedWeb):
-		self.HTTPSWorkingTwistedWeb = HTTPSWorkingTwistedWeb
-
 	def getHTTP(self):
 		return self.HTTP
 
 	def setHTTP(self, HTTP):
 		self.HTTP = HTTP
-
-	def getIsTwistedWithCookies(self):
-		return self.IsTwistedWithCookies
-
-	def setIsTwistedWithCookies(self, IsTwistedWithCookies):
-		self.IsTwistedWithCookies = IsTwistedWithCookies
 
 	def getParalelDownload(self):
 		return (
