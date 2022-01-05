@@ -43,7 +43,7 @@ tar --transform 's,^,usr/lib/enigma2/python/Plugins/Extensions/CSFD/,' --exclude
 popd
 
 echo "2.0" > $CUR_DIR/debian-binary
-ar rv ${CUR_DIR}/${PKG_NAME} $CUR_DIR/debian-binary $CUR_DIR/data.tar.gz $CUR_DIR/control.tar.gz
+ar rv ${CUR_DIR}/${PKG_NAME} $CUR_DIR/debian-binary $CUR_DIR/control.tar.gz $CUR_DIR/data.tar.gz
 
 rm $CUR_DIR/debian-binary
 rm $CUR_DIR/control.tar.gz
