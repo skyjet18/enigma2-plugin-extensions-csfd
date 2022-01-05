@@ -1,3 +1,14 @@
+HISTORIE  ZMĚN  V  PLUGINU  CSFD (autor: skyjet)
+$$$A¯
+$$$B_
+Verze 15.00  -  05.01. 2022
+$$$A¯
+- oživenie pluginu a zverejnenie zdrojových súborov
+- zmena spôsobu získavania údajov z csfd - prechod na api
+- odstránenie twisted http klienta
+- zmena URL pre automatické aktualizácie
+- a mnoho iného súvisiaceho s opätovným oživením
+$$$B_
 HISTORIE  ZMĚN  V  PLUGINU  CSFD (autor: petrkl12, www.TVplugins.cz)
 $$$A¯
 $$$B_

@@ -1,6 +1,8 @@
-12.50
-enigma2-plugin-extensions-csfd_12-50-20180505_all.ipk
-Hlavní změny:
-- oprava přihlašování a hodnocení filmů dle nové struktury na csfd
-- oprava pro OpenPLI image
-- další vylepšení a opravy
+15.00
+enigma2-plugin-extensions-csfd_15-00-20220105_all.ipk
+Hlavné zmeny:
+- oživenie pluginu a zverejnenie zdrojových súborov
+- zmena spôsobu získavania údajov z csfd - prechod na api
+- odstránenie twisted http klienta
+- zmena URL pre automatické aktualizácie
+- a mnoho iného súvisiaceho s opätovným oživením

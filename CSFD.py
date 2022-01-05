@@ -9,7 +9,7 @@ from CSFDParser import ParserCSFD, ParserOstCSFD, ParserVideoCSFD, ParserGallCSF
 from CSFDClasses import LoginToCSFD, GetMoviesForTVChannels, CSFDChannelSelection, CSFDEPGSelection, CSFDLCDSummary, CSFDSetup, CSFDInputText, CSFDAbout, CSFDHistory, CSFDVideoInfoScreen, CSFDPlayer, RefreshPlugins
 from CSFDMovieCache import TVMovieCache
 from CSFDSettings1 import CSFDGlobalVar
-from CSFDSettings2 import _, localeInit, CSFDActionDict, std_headers, std_headers_UL2, std_media_header, std_media_header_UL2, std_post_header, std_post_header_UL2, std_login_header, std_login_header_UL2, MainUpdateUrl, const_www_csfd, const_csfd_http_film, const_quick_page, ResetParams
+from CSFDSettings2 import _, localeInit, CSFDActionDict, std_headers, std_headers_UL2, std_media_header, std_media_header_UL2, std_post_header, std_post_header_UL2, std_login_header, std_login_header_UL2, MainUpdateUrl, MainUpdateUrlIpk, const_www_csfd, const_csfd_http_film, const_quick_page, ResetParams
 from CSFDSettings2 import config
 from CSFDSkinSelect import CSFDSkinSelect
 from CSFDSkinLoader import *
@@ -6659,7 +6659,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						nameUpdateFile += '.deb'
 					else:
 						nameUpdateFile += '.ipk'
-					self.UpdateUrl = str(MainUpdateUrl + nameUpdateFile.strip())
+					self.UpdateUrl = str(MainUpdateUrlIpk + 'v' + remoteversion + '/'  + nameUpdateFile.strip())
 					self.UpdateFile = str(CSFDGlobalVar.getCSFDadresarTMP() + nameUpdateFile.strip())
 					popis = ''
 					for index, value in enumerate(tmp_infolines):
@@ -6729,7 +6729,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		if self.PluginRepairTimer is not None:
 			if self.PluginRepairTimer.isActive():
 				self.PluginRepairTimer.stop()
-		self.session.openWithCallback(self.answerPluginRepair, MessageBox, _('Chcete provést (re)instalaci potřebných knihoven (pyopenssl, zlib, curl) pro CSFD?'), MessageBox.TYPE_YESNO)
+		self.session.openWithCallback(self.answerPluginRepair, MessageBox, _('Chcete provést (re)instalaci potřebných knihoven (requests, pyopenssl, zlib, curl) pro CSFD?'), MessageBox.TYPE_YESNO)
 		LogCSFD.WriteToFile('[CSFD] PluginRepair - konec\n')
 		return
 
@@ -6753,12 +6753,14 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		cmd = []
 		if CSFDGlobalVar.getCSFDInstallCommand() == 'dpkg':
 			cmd.append('apt-get -y update')
+			cmd.append('apt-get -f -y install python-requests')
 			cmd.append('apt-get -f -y install python-pyopenssl')
 			cmd.append('apt-get -f -y install python-zlib')
 			cmd.append('apt-get -f -y install curl')
 			cmd.append('/usr/lib/enigma2/python/Plugins/Extensions/CSFD/addon/addon.sh')
 		else:
 			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' update')
+			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install python-requests --force-reinstall')
 			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install python-pyopenssl --force-reinstall')
 			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install python-zlib --force-reinstall')
 			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install curl --force-reinstall')
