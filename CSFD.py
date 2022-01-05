@@ -6659,12 +6659,13 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						nameUpdateFile += '.deb'
 					else:
 						nameUpdateFile += '.ipk'
-					self.UpdateUrl = str(MainUpdateUrlIpk + 'v' + remoteversion + '/'  + nameUpdateFile.strip())
-					self.UpdateFile = str(CSFDGlobalVar.getCSFDadresarTMP() + nameUpdateFile.strip())
-					popis = ''
-					for index, value in enumerate(tmp_infolines):
-						if index > 1:
-							popis += char2Allowchar(value).strip() + '\n'
+					
+				self.UpdateUrl = str(MainUpdateUrlIpk + 'v' + remoteversion + '/'  + nameUpdateFile.strip())
+				self.UpdateFile = str(CSFDGlobalVar.getCSFDadresarTMP() + nameUpdateFile.strip())
+				popis = ''
+				for index, value in enumerate(tmp_infolines):
+					if index > 1:
+						popis += char2Allowchar(value).strip() + '\n'
 
 				old_V = Uni8(config.misc.CSFD.Version.getValue()).rjust(10, '0')
 				new_V = Uni8(remoteversion).rjust(10, '0')
