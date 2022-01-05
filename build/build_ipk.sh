@@ -34,18 +34,18 @@ sed -i "s/Version:\ [[:digit:]][[:digit:]]\.[[:digit:]][[:digit:]]/Version:\ $E_
 
 CUR_DIR=`pwd`
 
-pushd control/
-tar --numeric-owner --group=0 --owner=0 -czf $CUR_DIR/control.tar.gz ./*
-popd
-
 pushd ..
-tar --transform 's,^,usr/lib/enigma2/python/Plugins/Extensions/CSFD/,' --exclude-vcs --exclude-vcs-ignore --exclude=build --exclude=logs --numeric-owner --group=0 --owner=0 -czf $CUR_DIR/data.tar.gz ./*
+tar --transform 's,^./,usr/lib/enigma2/python/Plugins/Extensions/CSFD/,' --exclude-vcs --exclude-vcs-ignore --exclude=build --exclude=logs --numeric-owner --group=0 --owner=0 -cf $CUR_DIR/data.tar ./*
 popd
 
-echo "2.0" > $CUR_DIR/debian-binary
-ar rv ${CUR_DIR}/${PKG_NAME} $CUR_DIR/debian-binary $CUR_DIR/control.tar.gz $CUR_DIR/data.tar.gz
+mkdir deb
+pushd deb
+tar -xf ../data.tar
+mkdir DEBIAN
+cp ../control/control DEBIAN/
+popd
+dpkg-deb -Zgzip -b deb `basename -s .ipk $PKG_NAME`.deb
 
-rm $CUR_DIR/debian-binary
-rm $CUR_DIR/control.tar.gz
-rm $CUR_DIR/data.tar.gz
-cp $PKG_NAME `basename -s .ipk $PKG_NAME`.deb
+rm $CUR_DIR/data.tar
+rm -rf deb
+cp `basename -s .ipk $PKG_NAME`.deb $PKG_NAME
