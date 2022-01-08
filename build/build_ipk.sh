@@ -31,11 +31,13 @@ sed -i "1s/.*/$E_VER/" ../versionbeta.txt
 sed -i "2s/.*/$E_PKG_NAME/" ../version.txt
 sed -i "2s/.*/$E_PKG_NAME/" ../versionbeta.txt
 sed -i "s/Version:\ [[:digit:]][[:digit:]]\.[[:digit:]][[:digit:]]/Version:\ $E_VER/" ../maintainer.info
+msgfmt ../locale/cs/LC_MESSAGES/CSFD.po -o ../locale/cs/LC_MESSAGES/CSFD.mo
+msgfmt ../locale/sk/LC_MESSAGES/CSFD.po -o ../locale/sk/LC_MESSAGES/CSFD.mo
 
 CUR_DIR=`pwd`
 
 pushd ..
-tar --transform 's,^./,usr/lib/enigma2/python/Plugins/Extensions/CSFD/,' --exclude-vcs --exclude-vcs-ignore --exclude=build --exclude=logs --numeric-owner --group=0 --owner=0 -cf $CUR_DIR/data.tar ./*
+tar --transform 's,^./,usr/lib/enigma2/python/Plugins/Extensions/CSFD/,' --exclude-vcs --exclude-vcs-ignore --exclude=build --exclude=logs --exclude='*.po' --numeric-owner --group=0 --owner=0 -cf $CUR_DIR/data.tar ./*
 popd
 
 mkdir deb

@@ -169,7 +169,7 @@ if CSFDGlobalVar.getCSFDlang() is None:
 	language.addCallback(localeInit)
 
 def _(txt):
-	t = gettext.dgettext('CSFD', txt)
+	t = gettext.dgettext('CSFD', txt.decode('utf-8'))
 	if t == txt:
 		t = t.encode('utf-8')
 	t = str(t)

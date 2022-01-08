@@ -1,0 +1,1734 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CSFD.cz - verze 12.50\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-05 17:30+0200\n"
+"PO-Revision-Date: 2018-05-05 17:31+0200\n"
+"Last-Translator: petrkl12 <petrkl12@tvplugins.cz>\n"
+"Language-Team: petrkl12@tvplugins.cz <petrkl12@tvplugins.cz>\n"
+"Language: sk_SK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 2.0.6\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "   Hodnocení: "
+msgstr "   Hodnotenie: "
+
+msgid " - def.0 ms (0 až +60000=60s)"
+msgstr " - def.0 ms (0 až +60000=60s)"
+
+msgid " - def.0 ms (0 až -60000=60s)"
+msgstr " - def.0 ms (0 až -60000=60s)"
+
+msgid " - def.100 (000 až 200)"
+msgstr " - def.100 (000 až 200)"
+
+msgid " - def.10min.(1 až 240)"
+msgstr " - def.10min.(1 až 240)"
+
+msgid " - def.15 (5 až 120)"
+msgstr " - def.15 (5 až 120)"
+
+msgid " - def.30s (20 až 60s)"
+msgstr " - def.30s (20 až 60s)"
+
+msgid " def.2 (0 až 4)"
+msgstr " def.2 (0 až 4)"
+
+msgid " do "
+msgstr " do "
+
+msgid " of "
+msgstr " z "
+
+msgid "(Aktuální hodnocení: %s)"
+msgstr "(Aktuálne hodnotenie: %s)"
+
+msgid "(Re)Instalace byla provedena!"
+msgstr "(Re)Inštalácia bola vykonaná!"
+
+msgid "(prohlížeč stránek CSFD.cz na platformě Enigma2)"
+msgstr "(zobrazovač stránok CSFD.cz na platforme Enigma2)"
+
+msgid "(změnit typ zajímavostí můžete pomocí klávesy 2)"
+msgstr "(zmeniť typ zaujímavostí môžete pomocou klávesy 2)"
+
+msgid "(změnit třídění komentářů můžete pomocí klávesy 2)"
+msgstr "(zmeniť triedenie komentárov môžete pomocou klávesy 2)"
+
+msgid "-def.10 (02 až 50)*0,5s"
+msgstr "-def.10 (02 až 50)*0,5s"
+
+msgid "-def.15 (02 až 50)*0,5s"
+msgstr "-def.15 (02 až 50)*0,5s"
+
+msgid "0"
+msgstr "0"
+
+msgid "1280"
+msgstr "1280"
+
+msgid "1920"
+msgstr "1920"
+
+msgid "720"
+msgstr "720"
+
+msgid "Adresář pro stažení videa není dostupný: %s"
+msgstr "Adresár pre stiahnutie videa nie je dostupný: %s"
+
+msgid "Akce pro dlouhý stisk modrého tlačítka"
+msgstr "Akcia pre dlhý stisk modrého tlačidla"
+
+msgid "Akce pro dlouhý stisk zeleného tlačítka"
+msgstr "Akcia pre dlhý stisk zeleného tlačidla"
+
+msgid "Akce pro dlouhý stisk červeného tlačítka"
+msgstr "Akcia pre dlhý stisk červeného tlačidla"
+
+msgid "Akce pro dlouhý stisk žlutého tlačítka"
+msgstr "Akcia pre dlhý stisk žltého tlačidla"
+
+msgid "Akce pro klávesu 0"
+msgstr "Akcia pre klávesu 0"
+
+msgid "Akce pro klávesu 4"
+msgstr "Akcia pre klávesu 4"
+
+msgid "Akce pro klávesu 5"
+msgstr "Akcia pre klávesu 5"
+
+msgid "Akce pro klávesu 6"
+msgstr "Akcia pre klávesu 6"
+
+msgid "Akce pro klávesu 7"
+msgstr "Akcia pre klávesu 7"
+
+msgid "Akce pro klávesu 8"
+msgstr "Akcia pre klávesu 8"
+
+msgid "Akce pro klávesu 9"
+msgstr "Akcia pre klávesu 9"
+
+msgid "Amatérský film"
+msgstr "Amatérsky film"
+
+msgid "Ano"
+msgstr "Áno"
+
+msgid "Ano, ale přehrát další video"
+msgstr "Áno, ale prehrať ďalšie video"
+
+msgid "Ano, ale přehrát předchozí video"
+msgstr "Áno, ale prehrať predchádzajúce video"
+
+msgid "Automaticky kontrolovat nové beta verze pluginu?"
+msgstr "Automaticky kontrolovať nové beta verzie pluginu?"
+
+msgid "Automaticky kontrolovat nové verze pluginu?"
+msgstr "Automaticky kontrolovať nové verzie pluginu?"
+
+msgid "Autor pluginu: "
+msgstr "Autor pluginu: "
+
+msgid "Autor skinu:"
+msgstr "Autor skinu:"
+
+msgid "Bez akce"
+msgstr "Bez akcie"
+
+msgid ""
+"Byla aktivována ochrana proti \"zamrznutí\"!\n"
+"Tento stav mohl nastat z důvodu dlouhého stahování nebo došlo k nějaké chybě "
+"v programu\n"
+"Zkuste zadat nebo vybrat z EPG pořad znovu"
+msgstr ""
+"Bola aktivovaná OCHRANA voči \"zamrznutie\"! \n"
+"Tento stav mohol nastať z dôvodu dlhého sťahovania alebo došlo k nejakej "
+"chybe v programe\n"
+"Skúste zadať alebo vybrať z EPG reláciu znova"
+
+msgid "CSFD"
+msgstr "CSFD"
+
+msgid "CSFD - Chyba při stahování"
+msgstr "CSFD - Chyba pri sťahovaní"
+
+msgid "CSFD - chyba dotazu! - film: "
+msgstr "CSFD - chyba dotazu! - film: "
+
+msgid "CSFD - chyba dotazu!!! - film: "
+msgstr "CSFD - chyba dotazu!!! - film: "
+
+msgid "CSFD - stahování dalších informací probíhá ..."
+msgstr "CSFD - sťahovanie ďalších informácií prebieha ..."
+
+msgid "CSFD - stahování detailu probíhá ..."
+msgstr "CSFD - sťahovanie detailu prebieha ..."
+
+msgid "CSFD Nastavení"
+msgstr "CSFD Nastavenie"
+
+msgid "CSFD Poster"
+msgstr "CSFD Poster"
+
+msgid "CSFD detaily se načítají ..."
+msgstr "CSFD detaily sa načítajú ..."
+
+msgid "CSFD fetchFailed - Chyba při stahování"
+msgstr "CSFD fetchFailed - Chyba pri sťahovaní"
+
+msgid "CSFD stahování dalších informací dokončeno"
+msgstr "CSFD sťahovanie ďalších informácií dokončené"
+
+msgid "CSFD stahování detailu dokončeno"
+msgstr "CSFD sťahovanie detailu dokončené"
+
+msgid "CSFD.cz"
+msgstr "CSFD.cz"
+
+msgid "CSFD.cz :"
+msgstr "CSFD.cz :"
+
+msgid "CSFD:"
+msgstr "CSFD:"
+
+msgid "CZ titulky"
+msgstr "CZ titulky"
+
+msgid "Cancel"
+msgstr "Zrušiť"
+
+msgid "Cannot decode subtitles. Try another encoding group"
+msgstr "Nemôžem dekódovať titulky. Skúste použiť inú skupinu kódovaní"
+
+msgid "Cannot parse subtitles"
+msgstr "Chyba načítania tituliek"
+
+msgid "Central and Eastern Europe"
+msgstr "Stredná a východná Európa"
+
+msgid "Cesta <adr.> pro download videa (def.: /hdd/movie/ ) "
+msgstr "Cesta <adr.> pre download videa (def.: /hdd/movie/ ) "
+
+msgid "Cesta <adr.> pro dočasné soubory a logy (def.: /tmp/ ) "
+msgstr "Cesta <adr.> pre dočasné súbory a logy (def.: /tmp/) "
+
+msgid "Change encoding"
+msgstr "Zmeniť kódovanie"
+
+msgid "Chcete ji stáhnout a nainstalovat?"
+msgstr "Chcete ju stiahnuť a nainštalovať?"
+
+msgid "Chcete nastavit všechny parametry na přednastavené (default) hodnoty?"
+msgstr "Chcete nastaviť všetky parametre na prednastavené (default) hodnoty?"
+
+msgid "Chcete nyní provést restart GUI?"
+msgstr "Chcete teraz uskutočniť reštart GUI?"
+
+msgid "Chcete plugin přesto znovu stáhnout a nainstalovat?"
+msgstr "Chcete plugin napriek tomu znova stiahnuť a nainštalovať?"
+
+msgid ""
+"Chcete provést (re)instalaci potřebných knihoven (twisted-web, pyopenssl, "
+"zlib, curl) pro CSFD?"
+msgstr ""
+"Chcete spustiť (re)inštaláciu potrebných knižníc (twisted-web, pyopenssl, "
+"zlib, curl) pre CSFD?"
+
+msgid "Chcete přesto stáhnout a nainstalovat tuto starší verzi?"
+msgstr "Chcete napriek tomu stiahnuť a nainštalovať túto staršiu verziu?"
+
+msgid "Choose Subtitles"
+msgstr "Vybrať titulky"
+
+msgid "Choose subtitles"
+msgstr "Vybrať titulky"
+
+msgid "Chyba - zamrznutí pluginu"
+msgstr "Chyba - zamrznutie pluginu"
+
+msgid "Chyba při mazání hodnocení"
+msgstr "Chyba pri mazaní hodnotenia"
+
+msgid "Chyba při stahování titulků: %s"
+msgstr "Chyba pri sťahovaní titulkov: %s"
+
+msgid "Chyba při stahování videa: %s"
+msgstr "Chyba pri sťahovaní videa: %s"
+
+msgid "Chyba při ukládání hodnocení"
+msgstr "Chyba pri ukladaní hodnotenia"
+
+msgid "Chyba streamování: %s"
+msgstr "Chyba streamovanie: %s"
+
+msgid "Chyba v pluginu!"
+msgstr "Chyba v plugine!"
+
+msgid "Color"
+msgstr "Farba"
+
+msgid "Currently choosed subtitles"
+msgstr "Momentálne vybraté titulky"
+
+msgid "Další"
+msgstr "Ďalšia"
+
+msgid "Design"
+msgstr "Design"
+
+msgid "Design CSFD obrazovek"
+msgstr "Design CSFD obrazoviek"
+
+msgid "Detaily"
+msgstr "Detaily"
+
+msgid "Direct query IMDb"
+msgstr "Direct query IMDb"
+
+msgid "Diskuze"
+msgstr "Diskusia"
+
+msgid "Diskuze "
+msgstr "Diskusia "
+
+msgid "Divadelní záznam"
+msgstr "Divadelný záznam"
+
+msgid "Email:"
+msgstr "Email:"
+
+msgid "Encoding"
+msgstr "Skupina kódovaní"
+
+msgid "Epizody v seriálu"
+msgstr "Epizódy v seriáli"
+
+msgid "Error during downloading"
+msgstr "Chyba pri sťahovaní"
+
+msgid "Ext.recenze"
+msgstr "Ext.recenzie"
+
+msgid "Externí recenze "
+msgstr "Externé recenzie "
+
+msgid "Fanclub pořadu"
+msgstr "Fanclub relácie"
+
+msgid "Fanoušci"
+msgstr "Fanúšikovia"
+
+msgid "Filmová databáze CSFD"
+msgstr "Filmová databáza CSFD"
+
+msgid "Filmová databáze CSFD.cz"
+msgstr "Filmová databáza CSFD.cz"
+
+msgid "Font size"
+msgstr "Velkosť písma"
+
+msgid "Font size for FullHD"
+msgstr "Velkosť písma pre FullHD"
+
+msgid "Font type"
+msgstr "Font"
+
+msgid "Galerie"
+msgstr "Galéria"
+
+msgid "Galerie pořadu"
+msgstr "Galéria relácie"
+
+msgid "Galerie č.%s"
+msgstr "Galéria č.%s"
+
+msgid "Galerie: "
+msgstr "Galéria: "
+
+msgid "HD"
+msgstr "HD"
+
+msgid "Heslo pro CSFD:"
+msgstr "Heslo pre CSFD:"
+
+msgid "Heslo: "
+msgstr "Heslo: "
+
+msgid "Historie změn v pluginu"
+msgstr "História zmien v pluginu"
+
+msgid "Historie změn v pluginu CSFD"
+msgstr "História zmien v pluginu CSFD"
+
+msgid "Hledaný film: "
+msgstr "Hľadaný film: "
+
+msgid "Hodnocení"
+msgstr "Hodnotenie"
+
+msgid "Hodnocení smazáno"
+msgstr "Hodnotenie zmazané"
+
+msgid "Hodnocení uloženo"
+msgstr "Hodnotenie uložené"
+
+msgid "Hodnocení uživatelů"
+msgstr "Hodnotenie užívateľov"
+
+msgid "Hodnocení: "
+msgstr "Hodnotenie: "
+
+msgid "Hrají: "
+msgstr "Hrajú: "
+
+msgid "Hudba: "
+msgstr "Hudba: "
+
+msgid "Hudební videoklip"
+msgstr "Hudobný videoklip"
+
+msgid "IMDb:"
+msgstr "IMDb:"
+
+msgid "Info z EPG: "
+msgstr "Info z EPG: "
+
+msgid ""
+"Informace o nové verzi není momentálně dostupná nebo došlo k síťové chybě "
+"(curl)"
+msgstr ""
+"Informácia o novej verzii nie je momentálne dostupná alebo došlo k sieťovej "
+"chybe (curl)"
+
+msgid "Informace o pluginu CSFD"
+msgstr "Informácie o pluginu CSFD"
+
+msgid "Informace o přehrávaném videu:"
+msgstr "Informácie o prehrávanom videu:"
+
+msgid "Instalace skončila s kódem (%s)!"
+msgstr "Inštalácia skončila s kódom (%s)!"
+
+msgid "Instalaci nové verze provádět pomocí příkazu?"
+msgstr "Inštaláciu novej verzie vykonávať pomocou príkazu?"
+
+msgid "Jak dlouho nenačítat cache po net chybě"
+msgstr "Ako dlho nenačítať cache po net chybe"
+
+msgid "Jak dlouho se nepřihlašovat po chybě"
+msgstr "Ako dlho sa nepřihlašovat po chybe"
+
+msgid "Jazyk pro menu"
+msgstr "Jazyk pre menu"
+
+msgid "Je dostupná nová verze CSFD pluginu %s na www.TVplugins.cz"
+msgstr "Je dostupná nová verzia CSFD pluginu %s na www.TVplugins.cz"
+
+msgid "Je funkční dekódování www stránek (zlib)"
+msgstr "Je funkčné dekódovanie www stránok (zlib)"
+
+msgid "Je funkční internet"
+msgstr "Je funkčný internet"
+
+msgid "Je funkční čtení stránek HTTPS"
+msgstr "Je funkčné čítanie stránok HTTPS"
+
+msgid "Je nainstalovaná knihovna OpenSSL"
+msgstr "Je nainštalovaná knižnica OpenSSL"
+
+msgid "Je povoleno přihlašování do CSFD v Nastaveních"
+msgstr "Je povolené prihlasovanie do CSFD v Nastaveniach"
+
+msgid "Je vyplněno heslo v Nastaveních"
+msgstr "Je vyplnené heslo v Nastaveniach"
+
+msgid "Je vyplněno uživatelské jméno v Nastaveních"
+msgstr "Je vyplnené užívateľské meno v Nastaveniach"
+
+msgid "Kamera: "
+msgstr "Kamera: "
+
+msgid "Kategorie:"
+msgstr "Kategórie:"
+
+msgid "Komentáře"
+msgstr "Komentáre"
+
+msgid "Komentáře uživatelů "
+msgstr "Komentáre užívateľov "
+
+msgid "Komentáře uživatelů třídit:"
+msgstr "Komentáre užívateľov triediť:"
+
+msgid "Koncert"
+msgstr "Koncert"
+
+msgid "Kostýmy: "
+msgstr "Kostýmy: "
+
+msgid "List of Storage Devices"
+msgstr "Zoznam zariadení pre ukladanie"
+
+msgid "Logovat TwistedWeb do <adr.>CSFDtwistedlog.txt ?"
+msgstr "Logovať TwistedWeb do <adr.>CSFDtwistedlog.txt ?"
+
+msgid "Logovat do <adr.>CSFDlog.txt ?"
+msgstr "Logovať do <adr.>CSFDlog.txt ?"
+
+msgid "Logovat do konzole i čas?"
+msgstr "Logovať do konzoly i čas?"
+
+msgid "Logovat do systémové konzole?"
+msgstr "Logovať do systémovej konzoly?"
+
+msgid "Long Keypress"
+msgstr "Dlhé Stlačenie"
+
+msgid "Masky: "
+msgstr "Masky: "
+
+msgid "Maximální kvalita stahovaných fotek z filmů"
+msgstr "Maximálna kvalita sťahovaných fotiek z filmov"
+
+msgid "Maximální kvalita stahovaných fotek z videí"
+msgstr "Maximálna kvalita sťahovaných fotiek z videí"
+
+msgid "Maximální kvalita stahovaných posterů"
+msgstr "Maximálna kvalita sťahovaných posterov"
+
+msgid "Maximální velikost logu?"
+msgstr "Maximálna veľkosť logu?"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Menu pořadů"
+msgstr "Menu relácií"
+
+msgid "Metacritic:"
+msgstr "Metacritic:"
+
+msgid "Metoda stahování informací z CSFD?"
+msgstr "Metóda sťahovania informácií z CSFD?"
+
+msgid "Multi EPG"
+msgstr "Multi EPG"
+
+msgid "Máte nainstalovanou aktuální verzi pluginu!"
+msgstr "Máte nainštalovanú aktuálnu verziu pluginu!"
+
+msgid ""
+"Máte nainstalovanou novější verzi pluginu než je aktuálně online dostupná!"
+msgstr ""
+"Máte nainštalovanú novšiu verziu pluginu než je aktuálne online dostupná!"
+
+msgid "Můžete hodnotit filmy na CSFD"
+msgstr "Môžete hodnotiť filmy na CSFD"
+
+msgid "Nacitam dalsi informace ..."
+msgstr "Načítavam dalsie informácie ..."
+
+msgid "Nastavení"
+msgstr "Nastavenie"
+
+msgid "Načíst další názvy z detailu kolika filmů?"
+msgstr "Načítať ďalšie názvy z detailu koľkých filmov?"
+
+msgid "Načíst detail na základě skóre podobnosti?"
+msgstr "Načítať detail na základe skóre podobnosti?"
+
+msgid "Načíst seznam pořadů z CSFD pro daný kanál do cache?"
+msgstr "Načítať zoznam relácií z CSFD pre daný kanál do cache?"
+
+msgid "Načítat poster?"
+msgstr "Načítať poster?"
+
+msgid "Načítání galerie ještě probíhá. Zkuste spustit galerii za chvíli."
+msgstr "Načítanie galérie ešte prebieha. Skúste spustiť galériu za chvíľu."
+
+msgid "Načítání posterů ještě probíhá. Zkuste spustit postery za chvíli."
+msgstr "Načítanie posterov ešte prebieha. Skúste spustiť postery za chvíľu."
+
+msgid "Načítání videí ještě probíhá..."
+msgstr "Načítanie videí ešte prebieha..."
+
+msgid "Ne"
+msgstr "Nie"
+
+msgid "Ne, ale přehrát video znovu"
+msgstr "Nie, ale prehrať video znovu"
+
+msgid "Nemůžu načíst název pořadu"
+msgstr "Nemôžem načítať názov relácie"
+
+msgid "Nenalezen token pro uložení hodnocení"
+msgstr "Nenájdený token pre uloženie hodnotenia"
+
+msgid "Nenalezena možnost pro smazaní"
+msgstr "Nenájdená možnosť pre zmazanie"
+
+msgid "Nenalezeno video! Zastavit přehrávání?"
+msgstr "Nenájdené video! Zastaviť prehrávanie?"
+
+msgid "Není funkční internet!"
+msgstr "Nie je funkčný internet!"
+
+msgid "Není nainstalován Twisted-Web plugin!"
+msgstr "Nie je nainštalovaný Twisted-Web plugin!"
+
+msgid "Nominován:"
+msgstr "Nominovaný:"
+
+msgid "None"
+msgstr "Žiadne"
+
+msgid "Nová verze byla úspěšně nainstalována!"
+msgstr "Nová verzia bola úspešne nainštalovaná!"
+
+msgid "Nápady na zlepšení, připomínky a chyby"
+msgstr "Nápady na zlepšenie, pripomienky a chyby"
+
+msgid "Nápověda"
+msgstr "Nápoveda"
+
+msgid "Název, grafické logo"
+msgstr "Názov, grafické logo"
+
+msgid "Název: "
+msgstr "Názov: "
+
+msgid "O pluginu"
+msgstr "O pluginu"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Obsah: "
+msgstr "Obsah: "
+
+msgid "Ocenění"
+msgstr "Ocenenia"
+
+msgid "Ochrana před kompletním \"zamrznutím\" aplikace?"
+msgstr "Ochrana pred kompletným \"zamrznutím\" aplikácie?"
+
+msgid "Oddělovač tisíců"
+msgstr "Oddeľovač tisícov"
+
+msgid "Online update pluginu ..."
+msgstr "Online update pluginu ..."
+
+msgid "Oprava knihoven pluginu - KONEC"
+msgstr "Oprava knižníc pluginu - KONIEC"
+
+msgid "Oprava knihoven pluginu - ZAČÁTEK"
+msgstr "Oprava knižníc pluginu - ZAČIATOK"
+
+msgid "Oprava knihoven pluginu ..."
+msgstr "Oprava knižníc pluginu ..."
+
+msgid "Opravit/Reinstalovat potřebné knihovny"
+msgstr "Opraviť/Reinštalovať potrebné knižnice"
+
+msgid "Otestuje přihlášení do CSFD"
+msgstr "Otestuje prihlásenie do CSFD"
+
+msgid "Ovládání"
+msgstr "Ovládanie"
+
+msgid "Ověřuji přihlášení na CSFD"
+msgstr "Overujem prihlásenie na CSFD"
+
+msgid "Page "
+msgstr "Strana "
+
+msgid "Parent Directory"
+msgstr "Vyberte adresár"
+
+msgid "Parsing XML Feeds ..."
+msgstr "Analýza XML Feeds ..."
+
+msgid ""
+"Po některých změnách je nutné znovu spustit plugin nebo restartartovat GUI!"
+msgstr ""
+"Po niektorých zmenách je nutné znovu spustiť plugin alebo restartartovat GUI!"
+
+msgid "Podobné pořady"
+msgstr "Podobné relácie"
+
+msgid "Pokusí se opravit/doinstalovat potřebné moduly"
+msgstr "Pokúsi sa opraviť/doinštalovať potrebné moduly"
+
+msgid "Položka 01 pro rotaci v BOUQUETech"
+msgstr "Položka 01 pre rotáciu v BOUQUETech"
+
+msgid "Položka 02 pro rotaci v BOUQUETech"
+msgstr "Položka 02 pre rotáciu v BOUQUETech"
+
+msgid "Položka 03 pro rotaci v BOUQUETech"
+msgstr "Položka 03 pre rotáciu v BOUQUETech"
+
+msgid "Položka 04 pro rotaci v BOUQUETech"
+msgstr "Položka 04 pre rotáciu v BOUQUETech"
+
+msgid "Položka 05 pro rotaci v BOUQUETech"
+msgstr "Položka 05 pre rotáciu v BOUQUETech"
+
+msgid "Položka 06 pro rotaci v BOUQUETech"
+msgstr "Položka 06 pre rotáciu v BOUQUETech"
+
+msgid "Položka 07 pro rotaci v BOUQUETech"
+msgstr "Položka 07 pre rotáciu v BOUQUETech"
+
+msgid "Položka 08 pro rotaci v BOUQUETech"
+msgstr "Položka 08 pre rotáciu v BOUQUETech"
+
+msgid "Položka 09 pro rotaci v BOUQUETech"
+msgstr "Položka 09 pre rotáciu v BOUQUETech"
+
+msgid "Položka 10 pro rotaci v BOUQUETech"
+msgstr "Položka 10 pre rotáciu v BOUQUETech"
+
+msgid "Porovnávat včetně roku natáčení?"
+msgstr "Porovnávať vrátane roku natáčania?"
+
+msgid "Position"
+msgstr "Pozícia"
+
+msgid "Poster"
+msgstr "Poster"
+
+msgid "Poster slideshow včetně fotek z galerie v základu?"
+msgstr "Poster slideshow vrátane fotiek z galérie v základe?"
+
+msgid "Poster č.%s"
+msgstr "Poster č.%s"
+
+msgid "Poster: "
+msgstr "Poster: "
+
+msgid "Postery pořadu"
+msgstr "Postery relácie"
+
+msgid "Posun u titulků + v ms"
+msgstr "Posun u titulkov + v ms"
+
+msgid "Posun u titulků - v ms"
+msgstr "Posun u titulkov - v ms"
+
+msgid "Povolit slideshow pro galerii v detailu?"
+msgstr "Povoliť slideshow pre galériu v detaily?"
+
+msgid "Povolit slideshow pro poster v detailu?"
+msgstr "Povoliť slideshow pre poster v detaily?"
+
+msgid "Povolit slideshow pro poster v základu?"
+msgstr "Povoliť slideshow pre poster v základe?"
+
+msgid "Povolit změnit CSFD ve skinu"
+msgstr "Povoliť zmeniť CSFD vo skine"
+
+msgid "Povolit změnit OLED displej ve skinu"
+msgstr "Povoliť zmeniť OLED displej vo skine"
+
+msgid "Pořad: "
+msgstr "Relácia: "
+
+msgid "Preferované rozlišení videa?"
+msgstr "Preferované rozlíšenie videa?"
+
+msgid "Premiéry"
+msgstr "Premiéry"
+
+msgid "Priorita pluginu v menu"
+msgstr "Priorita pluginu v menu"
+
+msgid "Probíhá vyhledávání v TV databázi CSFD ... ("
+msgstr "Prebieha vyhľadávanie v TV databáze CSFD ... ("
+
+msgid "Probíhá vyhledávání v databázi CSFD ... ("
+msgstr "Prebieha vyhľadávanie v databáze CSFD ... ("
+
+msgid "Produkce: "
+msgstr "Produkcia: "
+
+msgid "Předloha: "
+msgstr "Predloha: "
+
+msgid "Přejít na další záložku"
+msgstr "Prejsť na ďalšiu záložku"
+
+msgid "Přejít na předchozí záložku"
+msgstr "Prejsť na predchádzajúcu záložku"
+
+msgid "Přepne na další záložku"
+msgstr "Prejde na ďalšiu záložku"
+
+msgid "Přepne na předchozí záložku"
+msgstr "Prejde na predchádzajúcu záložku"
+
+msgid "Při aktualizaci došlo k chybě"
+msgstr "Pri aktualizácii došlo k chybe"
+
+msgid "Při dlouhém stisku tlačítka INFO(EPG)"
+msgstr "Pri dlhom stlačení tlačidla INFO(EPG)"
+
+msgid "Při plné shodě ihned načíst detail?"
+msgstr "Pri plnej zhode ihneď načítať detail?"
+
+msgid "Při stahování nové verze pluginu došlo k chybě (TwistedWeb)"
+msgstr "Pri sťahovaní novej verzie pluginu došlo k chybe (TwistedWeb)"
+
+msgid "Při volání IMDB odstranit diakritiku?"
+msgstr "Pri volaní IMDB odstrániť diakritiku?"
+
+msgid "Při zadávání předvyplnit poslední hledaný pořad?"
+msgstr "Pri zadávaní predvyplniť poslednú hľadanú reláciu?"
+
+msgid "Přihlásit se do CSFD?"
+msgstr "Prihlásiť sa do CSFD?"
+
+msgid "Really close without saving settings?"
+msgstr "Naozaj zatvoriť bez uloženia nastavenia?"
+
+msgid "Recenze od: "
+msgstr "Recenzia od: "
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Reset skinu se projeví po restartu GUI."
+msgstr "Reset skinu sa prejaví po reštarte GUI."
+
+msgid "Resetování všech parametrů"
+msgstr "Resetovanie všetkých parametrov"
+
+msgid "Režie: "
+msgstr "Réžia: "
+
+msgid "Rotovat ratingy?"
+msgstr "Rotovať ratingy?"
+
+msgid "Rozlišení"
+msgstr "Rozlíšenie"
+
+msgid "Russia"
+msgstr "Rusko"
+
+msgid "Různé"
+msgstr "Rôzne"
+
+msgid "SD"
+msgstr "SD"
+
+msgid "SK titulky"
+msgstr "SK titulky"
+
+msgid "Save"
+msgstr "Uložiť"
+
+msgid "Scénografie: "
+msgstr "Scénografia: "
+
+msgid "Scénář: "
+msgstr "Scenár: "
+
+msgid "Seriál - epizoda"
+msgstr "Seriál - epizóda"
+
+msgid "Seriál - série"
+msgstr "Seriál - séria"
+
+msgid "Seriál: "
+msgstr "Seriál: "
+
+msgid "Setřídit položky podle CSFD"
+msgstr "Zotriediť položky podľa CSFD"
+
+msgid "Setřídit položky podle abecedy"
+msgstr "Zotriediť položky podľa abecedy"
+
+msgid "Setřídit položky podle data vydání"
+msgstr "Zotriediť položky podľa dátumu vydania"
+
+msgid "Setřídit položky podle vhodnosti názvu"
+msgstr "Zotriediť položky podľa vhodnosti názva"
+
+msgid "Setříděno podle "
+msgstr "Zoradené podľa "
+
+msgid "Show subtitles"
+msgstr "Zobraziť titulky"
+
+msgid "Single EPG"
+msgstr "Single EPG"
+
+msgid "Slideshow - "
+msgstr "Slideshow - "
+
+msgid "Soukromá poznámka: "
+msgstr "Súkromná poznámka: "
+
+msgid "Související pořady"
+msgstr "Súvisiace relácie"
+
+msgid "Spustit video ukázku"
+msgstr "Spustiť video ukážku"
+
+msgid "Stahovaná verze:"
+msgstr "Sťahovaná verzia:"
+
+msgid "Stahování proběhlo úspěšně (TwistedWeb)"
+msgstr "Sťahovanie prebehlo úspešne (TwistedWeb)"
+
+msgid "Stahuji obal k filmu: "
+msgstr "Sťahujem obal k filmu: "
+
+msgid "Stahuji plugin "
+msgstr "Sťahujem plugin "
+
+msgid "Stahuji plugin přes Curl "
+msgstr "Sťahujem plugin cez Curl "
+
+msgid "Stažení a instalace nové verze pluginu - KONEC"
+msgstr "Stiahnutie a inštalácia novej verzie pluginu - KONIEC"
+
+msgid "Stažení a instalace nové verze pluginu - ZAČÁTEK"
+msgstr "Stiahnutie a inštalácia novej verzie pluginu - ZAČIATOK"
+
+msgid "Strana č.%s"
+msgstr "Strana č.%s"
+
+msgid "Studentský film"
+msgstr "Študentský film"
+
+msgid "Stáhnout novou verzi pluginu"
+msgstr "Stiahnuť novú verziu pluginu"
+
+msgid "Střih: "
+msgstr "Strih: "
+
+msgid "Subtitles"
+msgstr "Titulky"
+
+msgid "Subtitles setting"
+msgstr "Nastavenia tituliek"
+
+msgid "Subtitles settings"
+msgstr "Nastavenie tituliek"
+
+msgid "TEST BOHUŽEL NEPROBĚHL ÚSPĚŠNĚ"
+msgstr "TEST BOHUŽIAĹ NEPREBEHOL ÚSPEŠNE"
+
+msgid "TEST PROBĚHL ÚSPĚŠNĚ"
+msgstr "TEST PREBEHOL ÚSPEŠNE"
+
+msgid "TV film"
+msgstr "TV film"
+
+msgid "TV pořad"
+msgstr "TV relácia"
+
+msgid "TV seriál"
+msgstr "TV seriál"
+
+msgid "Tagy: "
+msgstr "Tagy: "
+
+msgid "Tento box nemmůže dekódovat videostream: %s"
+msgstr "Tento box nemmůže dekódovať Videostream: %s"
+
+msgid "Tento box nemůže dekódovat audiostream: %s"
+msgstr "Tento box nemôže dekódovať audiostream: %s"
+
+msgid "Test login"
+msgstr "Test login"
+
+msgid "Test přihlášení do CSFD"
+msgstr "Test prihlásenia do CSFD"
+
+msgid "Test přihlášení na CSFD.cz - KONEC"
+msgstr "Test prihlásenia na CSFD.cz - KONIEC"
+
+msgid "Test přihlášení na CSFD.cz - ZAČÁTEK"
+msgstr "Test prihlásenia na CSFD.cz - ZAČIATOK"
+
+msgid "Test přihlášení na CSFD.cz ..."
+msgstr "Test prihlásenia na CSFD.cz ..."
+
+msgid "Testovací položka"
+msgstr "Testovacia položka"
+
+msgid "Testovat funkčnost internetu?"
+msgstr "Testovať funkčnosť internetu?"
+
+msgid "Timeout pro stahování"
+msgstr "Timeout pre sťahovanie"
+
+msgid "Tipy:"
+msgstr "Tipy:"
+
+msgid "Titulky: "
+msgstr "Titulky: "
+
+msgid "TwistedWeb"
+msgstr "TwistedWeb"
+
+msgid "Třídit EPG podle CZ&SK abecedy?"
+msgstr "Triediť EPG podľa CZ & SK abecedy?"
+
+msgid "Třídící algoritmus pro vyhledané položky?"
+msgstr "Triediaci algoritmus pre vyhľadané položky?"
+
+msgid "Uknown error when processing subtitles"
+msgstr "Neznáma chyba pri spracovaní titulkov"
+
+msgid "Ukončení nastavování - bez uložení"
+msgstr "Ukončenie nastavovania - bez uloženia"
+
+msgid "Uložit video"
+msgstr "Uložiť video"
+
+msgid "Uloží nastavení"
+msgstr "Uloží nastavenie"
+
+msgid "Urllib2"
+msgstr "Urllib2"
+
+msgid "Uživatel: "
+msgstr "Užívateľ: "
+
+msgid "Uživatelské jméno pro CSFD:"
+msgstr "Užívateľské meno pre CSFD:"
+
+msgid "Vaše verze:"
+msgstr "Vaša verzia:"
+
+msgid "Velikost fontu pro FullHD rozlišení"
+msgstr "Veľkosť fontu pre FullHD rozlíšenie"
+
+msgid "Velikost fontu pro SD a HD rozlišení"
+msgstr "Veľkosť fontu pre SD a HD rozlíšenie"
+
+msgid "Verze: "
+msgstr "Verzia: "
+
+msgid "Videa"
+msgstr "Videá"
+
+msgid "Videa v pořadu"
+msgstr "Videá v relácii"
+
+msgid "Video - CSFD"
+msgstr "Video - CSFD"
+
+msgid "Video bude staženo do : %s"
+msgstr "Video bude stiahnuté do: %s"
+
+msgid "Video bylo staženo"
+msgstr "Video bolo stiahnuté"
+
+msgid "Video film"
+msgstr "Video film"
+
+msgid "Video není bohužel dostupné!"
+msgstr "Video nie je bohužiaľ dostupné!"
+
+msgid "Video č.%s"
+msgstr "Video č.%s"
+
+msgid "Vlastní hodnocení: "
+msgstr "Vlastné hodnotenie: "
+
+msgid "Volat místo IMDB plugin CSFD?"
+msgstr "Volať miesto IMDB plugin CSFD?"
+
+msgid "Vyberte typ zajímavostí:"
+msgstr "Vyberte typ zaujímavostí:"
+
+msgid "Vyhledané výsledky třídit defaultně podle"
+msgstr "Vyhľadané výsledky triediť defaultne podľa"
+
+msgid "Vyhledat akt. pořad v CSFD"
+msgstr "Vyhľadať akt. reláciu v CSFD"
+
+msgid "Vyhledat defaultně všechny podobné pořady?"
+msgstr "Vyhľadať defaultne všetky podobné relácie?"
+
+msgid "Vyhledat pořad v IMDB"
+msgstr "Vyhľadať reláciu v IMDB"
+
+msgid "Vyhledat v CSFD"
+msgstr "Vyhľadať v CSFD"
+
+msgid "Vyhledat všechny položky"
+msgstr "Vyhľadať všetky položky"
+
+msgid "Vyhledávat včetně diakritiky pro pořady z EPG?"
+msgstr "Vyhľadávať vrátane diakritiky pre relácie z EPG?"
+
+msgid "Vyhledávat včetně diakritiky pro pořady z ostatních zdrojů?"
+msgstr "Vyhľadávať vrátane diakritiky pre relácie z ostatných zdrojov?"
+
+msgid "Vyhledávat včetně roku natáčení?"
+msgstr "Vyhľadávať vrátane roku natáčania?"
+
+msgid "Vítěz:"
+msgstr "Víťaz:"
+
+msgid "Výběr kanálu"
+msgstr "Výber kanála"
+
+msgid "Výběr pořadu z EPG akt.programu"
+msgstr "Výber relácie z EPG akt.programu"
+
+msgid "Výběr pořadu ze všech kanálů"
+msgstr "Výber relácie zo všetkých kanálov"
+
+msgid "Výběr skinu pro plugin CSFD"
+msgstr "Výber skinu pre plugin CSFD"
+
+msgid "Výběr z EPG"
+msgstr "Výber z EPG"
+
+msgid ""
+"Všechny parametry byly nastaveny na přednastavené hodnoty!\n"
+"Spusťte znovu plugin!"
+msgstr ""
+"Všetky parametre boli nastavené na prednastavené hodnoty!\n"
+"Spusťte znova plugin!"
+
+msgid "Western Europe"
+msgstr "Západná Európa"
+
+msgid "Za jak dlouho se má ochrana aktivovat"
+msgstr "Za ako dlho sa má ochrana aktivovať"
+
+msgid "Zachovat zpětnou kompatibilitu volání CSFD?"
+msgstr "Zachovať spätnú kompatibilitu volanie CSFD?"
+
+msgid "Zadat/změnit hodnocení"
+msgstr "Zadať/zmeniť hodnotenie"
+
+msgid "Zadej název hledaného pořadu:"
+msgstr "Zadaj názov hľadaného programu:"
+
+msgid "Zadej pořad"
+msgstr "Zadaj reláciu"
+
+msgid "Zadejte hodnocení pro:"
+msgstr "Zadajte hodnotenie pre:"
+
+msgid "Zadání pořadu"
+msgstr "Zadanie relácie"
+
+msgid "Zadávání znaků"
+msgstr "Zadávanie znakov"
+
+msgid "Zajímavosti"
+msgstr "Zaujímavosti"
+
+msgid "Zajímavosti "
+msgstr "Zaujímavosti "
+
+msgid "Zalogovaný uživatel je: "
+msgstr "Prihlásený užívateľ je: "
+
+msgid "Zastavit přehrávání tohoto videa?"
+msgstr "Zastaviť prehrávanie tohto videa?"
+
+msgid "Zjišťuji zalogovaného uživatele na CSFD"
+msgstr "Zisťujem zalogovaného užívateľa na CSFD"
+
+msgid "Zkouším funkčnost načítání www stránek"
+msgstr "Skúšam funkčnosť načítanie www stránok"
+
+msgid "Zkouším se zalogovat na stránky CSFD"
+msgstr "Skúšam sa zalogovať na stránky CSFD"
+
+msgid "Změna galerie při slideshow v detailu"
+msgstr "Zmena galérie pri slideshow v detaily"
+
+msgid "Změna jednotlivých ratingů"
+msgstr "Zmena jednotlivých ratingov"
+
+msgid "Změna posteru při slideshow v detailu"
+msgstr "Zmena posteru pri slideshow v detaily"
+
+msgid "Změna posteru při slideshow v základu"
+msgstr "Zmena posteru pri slideshow v základe"
+
+msgid "Změna skinu"
+msgstr "Zmena skinu"
+
+msgid "Změna skinu se projeví po restartu GUI."
+msgstr "Zmena skinu sa prejaví po reštarte GUI."
+
+msgid "Změna zobrazovaných tipů"
+msgstr "Zmena zobrazovaných tipov"
+
+msgid "Změnit"
+msgstr "Zmeniť"
+
+msgid "Zobrazeny epizody seriálu"
+msgstr "Zobrazené epizódy seriálu"
+
+msgid "Zobrazeny podobné pořady"
+msgstr "Zobrazené podobné relácie"
+
+msgid "Zobrazeny související pořady"
+msgstr "Zobrazené súvisiace relácie"
+
+msgid "Zobrazeny řady seriálu"
+msgstr "Zobrazené série seriálu"
+
+msgid "Zobrazit CSFD informace při změně pořadu?"
+msgstr "Zobraziť CSFD informácie pri zmene programu?"
+
+msgid "Zobrazit CSFD v EPG SubMenu v PLI?"
+msgstr "Zobraziť CSFD v EPG SubMenu v PLI?"
+
+msgid "Zobrazit CSFD v EPG detailu?"
+msgstr "Zobraziť CSFD v EPG detaile?"
+
+msgid "Zobrazit CSFD v EPG místo MultiEPG?"
+msgstr "Zobraziť CSFD v EPG místo MultiEPG?"
+
+msgid "Zobrazit CSFD v EPG výběru - modré tlačítko?"
+msgstr "Zobraziť CSFD v EPG výberu - modré tlačidlo?"
+
+msgid "Zobrazit CSFD v EPG výběru?"
+msgstr "Zobraziť CSFD v EPG výberu?"
+
+msgid "Zobrazit CSFD v Hlavním menu?"
+msgstr "Zobraziť CSFD v Hlavnom menu?"
+
+msgid "Zobrazit CSFD v menu Extension?"
+msgstr "Zobraziť CSFD v menu Extension?"
+
+msgid "Zobrazit CSFD v menu INFO(EPG)?"
+msgstr "Zobraziť CSFD v menu INFO(EPG)?"
+
+msgid "Zobrazit CSFD v menu Pluginů?"
+msgstr "Zobraziť CSFD v menu Pluginov?"
+
+msgid "Zobrazit CSFD v openATV/VIX imagích?"
+msgstr "Zobraziť CSFD v openATV/VIX imagích?"
+
+msgid "Zobrazit CSFD ve výběru nahraných pořadů?"
+msgstr "Zobraziť CSFD vo výbere nahratých relácií?"
+
+msgid "Zobrazit diskuzi"
+msgstr "Zobraziť diskusiu"
+
+msgid "Zobrazit epizody seriálu"
+msgstr "Zobraziť epizódy seriálu"
+
+msgid "Zobrazit ext.recenze"
+msgstr "Zobraziť ext.recenzie"
+
+msgid "Zobrazit fanoušky pořadu"
+msgstr "Zobraziť fanúšikov relácie"
+
+msgid "Zobrazit galerii"
+msgstr "Zobraziť galériu"
+
+msgid "Zobrazit hodnocení uživatelů"
+msgstr "Zobraziť hodnotenia užívateľov"
+
+msgid "Zobrazit komentáře"
+msgstr "Zobraziť komentáre"
+
+msgid "Zobrazit ocenění"
+msgstr "Zobraziť ocenenie"
+
+msgid "Zobrazit oddělovací linku v detailu?"
+msgstr "Zobraziť oddeľovací linku v detaile?"
+
+msgid "Zobrazit podobné pořady"
+msgstr "Zobraziť podobné relácie"
+
+msgid "Zobrazit postery"
+msgstr "Zobraziť postery"
+
+msgid "Zobrazit premiéry"
+msgstr "Zobraziť premiéry"
+
+msgid "Zobrazit související pořady"
+msgstr "Zobraziť súvisiace relácie"
+
+msgid "Zobrazit videa"
+msgstr "Zobraziť videá"
+
+msgid "Zobrazit zajímavosti"
+msgstr "Zobraziť zaujímavosti"
+
+msgid "Zobrazit řady seriálu"
+msgstr "Zobraziť série seriálu"
+
+msgid "Zobrazovat tipy?"
+msgstr "Zobraziť tipy?"
+
+msgid "Zobrazí další možnosti v Nastaveních"
+msgstr "Zobrazia ďalšie možnosti v Nastaveniach"
+
+msgid "Zpět"
+msgstr "Späť"
+
+msgid "Zrušit"
+msgstr "Zrušiť"
+
+msgid "Zvuk: "
+msgstr "Zvuk: "
+
+msgid "abecedy"
+msgstr "abecedy"
+
+msgid "automaticky"
+msgstr "automaticky"
+
+msgid "barva textu dle hodnocení"
+msgstr "farba textu podľa hodnotenia"
+
+msgid "barvy stejné + zvýraznění kategorií"
+msgstr "farby rovnaké + zvýraznenie kategórií"
+
+msgid "barvy stejné bez ohledu na hodnocení"
+msgstr "farby rovnaké bez ohľadu na hodnotenie"
+
+msgid "blue"
+msgstr "modrá"
+
+msgid "cannot decode"
+msgstr "nemôžem dekódovať"
+
+msgid "celkový počet zajímavostí:"
+msgstr "celkový počet zaujímavostí:"
+
+msgid "data vydání"
+msgstr "dátumu vydania"
+
+msgid "decrease subtitles delay"
+msgstr "zníženie oneskorenia titulkov"
+
+msgid "encoding"
+msgstr "kódovanie"
+
+msgid "green"
+msgstr "zelená"
+
+msgid "i obsahová část jsou vlastnictvím společnosti"
+msgstr "i obsahová časť sú vlastníctvom spoločnosti"
+
+msgid "increase subtitles delay"
+msgstr "zvýšenie oneskorenia titulkov"
+
+msgid "ještě nehodnoceno"
+msgstr "ešte nehodnotené"
+
+msgid "manuální zadání hledaného pořadu"
+msgstr "manuálne zadanie hľadanej relácie"
+
+msgid "metoda 1 - Levenshtein"
+msgstr "metóda 1 - Levenshtein"
+
+msgid "metoda 2 - Bigram"
+msgstr "metóda 2 - Bigram"
+
+msgid "metoda 3 - Jen porovnat"
+msgstr "metóda 3 - Len porovnať"
+
+msgid "mezera"
+msgstr "medzera"
+
+msgid "možnost změny nastavení různých parametrů pluginu"
+msgstr "možnosť zmeny nastavenia rôznych parametrov pluginu"
+
+msgid "možnost změny skinu"
+msgstr "možnosť zmeny skinu"
+
+msgid "máte možnost ohodnotit vyhledaný pořad"
+msgstr "máte možnosť ohodnotiť vyhľadanú reláciu"
+
+msgid "můžete setřídit komentáře od nejnovějších po nejstarší"
+msgstr "môžete zotrieďiť komentáre od najnovších po najstaršie"
+
+msgid "můžete setřídit komentáře podle hodnocení uživatelů"
+msgstr "môžete zotrieďiť komentáre podľa hodnotenia užívateľov"
+
+msgid "můžete setřídit komentáře podle počtu bodů uživatele"
+msgstr "môžete zotrieďiť podľa počtu bodov užívateľa"
+
+msgid "od nejnovějších po nejstarší"
+msgstr "od najnovších po najstaršie"
+
+msgid "opravte nalezené chyby !!!"
+msgstr "odstráňte nájdené chyby !!!"
+
+msgid "podle hodnocení"
+msgstr "podľa hodnotenia"
+
+msgid "podle počtu bodů uživatele"
+msgstr "podľa počtu bodov užívateľa"
+
+msgid "pokud to povolíte v Nastaveních"
+msgstr "pokiaľ toto povolíte v Nastaveniach"
+
+msgid "pomocí virtuální klávesnice"
+msgstr "pomocou virtuálnej klávesnice"
+
+msgid "posun na následující stránku nebo položku"
+msgstr "posun na nasledujúcu stránku alebo položku"
+
+msgid "posun na předchozí stránku nebo položku"
+msgstr "posun na predchádzajúcu stránku alebo položku"
+
+msgid "posílejte na můj email. Díky."
+msgstr "posielajte na môj email. Vďaka."
+
+msgid "počet diskuzních příspěvků:"
+msgstr "počet diskusných príspevkov:"
+
+msgid "počet externích recenzí:"
+msgstr "počet externých recenzií:"
+
+msgid "počet fanoušků:"
+msgstr "počet fanúšikov:"
+
+msgid "počet hodnocení:"
+msgstr "počet hodnotení:"
+
+msgid "počet komentářů:"
+msgstr "počet komentárov:"
+
+msgid "purple"
+msgstr "fialová"
+
+msgid "red"
+msgstr "červená"
+
+msgid "rotace po jednotlivých informacích o pořadu"
+msgstr "rotácia po jednotlivých informáciách o relácii"
+
+msgid "rovnou vyhledat aktuální pořad"
+msgstr "ihneď vyhľadať aktuálnu reláciu"
+
+msgid "seřadit od nejnovějších po nejstarší"
+msgstr "zoradiť od najnovších po najstaršie"
+
+msgid "seřadit podle hodnocení"
+msgstr "zoradiť podľa hodnotenia"
+
+msgid "seřadit podle počtu bodů uživatele"
+msgstr "zoradiť podľa počtu bodov užívateľa"
+
+msgid "seřazené od nejnovějších po nejstarší"
+msgstr "zoradené od najnovších po najstaršie"
+
+msgid "seřazené podle hodnocení"
+msgstr "zoradené podľa hodnotenia"
+
+msgid "seřazené podle počtu bodů uživatele"
+msgstr "zoradené podľa počtu bodov užívateľa"
+
+msgid "show subtitles menu"
+msgstr "zobraziť titulky"
+
+msgid "slovensky"
+msgstr "slovensky"
+
+msgid "smazat hodnocení"
+msgstr "zmazať hodnotenie"
+
+msgid "spustí aktuální video ukázku"
+msgstr "spustí aktuálnu video ukážku"
+
+msgid "spustí slideshow"
+msgstr "spustí slideshow"
+
+msgid "tečka"
+msgstr "bodka"
+
+msgid "typ"
+msgstr "typ"
+
+msgid "ukončit"
+msgstr "ukončiť"
+
+msgid "uloží video ukázku do definovaného adresáře"
+msgstr "uloží video ukážku do definovaného adresára"
+
+msgid "v menu můžete ohodnotit vyhledaný pořad"
+msgstr "v menu môžete ohodnotiť vyhľadanú reláciu"
+
+msgid "v menu můžete provést manuální zadání hledaného pořadu"
+msgstr "v menu môžete uskutočniť manuálne zadanie hľadanej relácie"
+
+msgid "v menu můžete provést výběr hledaného pořadu z EPG aktuálního kanálu"
+msgstr ""
+"v menu môžete uskutočniť výber hľadanej relácie z EPG aktuálneho kanála"
+
+msgid "v menu můžete provést výběr hledaného pořadu ze všech kanálů"
+msgstr "v menu môžete uskutočniť výber hľadanej relácii zo všetkých kanálov"
+
+msgid "v menu můžete setřídit vyhledané položky podle abecedy"
+msgstr "v menu môžete zotrieďiť vyhľadané položky podľa abecedy"
+
+msgid "v menu můžete setřídit vyhledané položky podle pořadí na CSFD"
+msgstr "v menu môžete zotrieďiť vyhľadané položky podľa poradia na CSFD"
+
+msgid "v menu můžete setřídit vyhledané položky podle vhodnosti názvu"
+msgstr "v menu môžete zotrieďiť vyhľadané položky podľa vhodnosti názvu"
+
+msgid "v menu můžete spustit aktuální video ukázku"
+msgstr "v menu môžete spustiť aktuálnu video ukážku"
+
+msgid "v menu můžete uložit video ukázku do definovaného adresáře"
+msgstr "v menu môžete uložiť video ukážku do definovaného adresára"
+
+msgid ""
+"v menu můžete vyhledat aktuální pořad v mezinárodní filmové databázi IMDB"
+msgstr ""
+"v menu môžete vyhľadať aktuálnu reláciu v medzinárodnej filmovej databázi "
+"IMDB"
+
+msgid "v menu můžete vyhledat všechny podobné názvy k danému pořadu"
+msgstr "v menu môžete vyhľadať všetky podobné názvy k danej relácii"
+
+msgid "v menu můžete zjistit, zda je dostupná nová verze pluginu"
+msgstr "v menu môžete zistiť, či je dostupná nová verzia pluginu"
+
+msgid "v menu můžete změnit skin"
+msgstr "v menu môžete zmeniť skin"
+
+msgid "v menu můžete zobrazit detailní hodnocení pořadu"
+msgstr "v menu môžete zobraziť detailné hodnotenie relácie"
+
+msgid "v menu můžete zobrazit diskuzi uživatelů k pořadu"
+msgstr "v menu môžete zobraziť diskusiu užívateľov k relácii"
+
+msgid "v menu můžete zobrazit epizody seriálu"
+msgstr "v menu môžete zobraziť epizódy seriálu"
+
+msgid "v menu můžete zobrazit externí recenze k pořadu"
+msgstr "v menu môžete zobraziť externej recenzie k relácii"
+
+msgid "v menu můžete zobrazit fanoušky pořadu"
+msgstr "v menu môžete zobraziť fanúšikov relácie"
+
+msgid "v menu můžete zobrazit galerii fotek z pořadu"
+msgstr "v menu môžete zobraziť galériu fotiek z relácie"
+
+msgid "v menu můžete zobrazit historii změn v pluginu"
+msgstr "v menu môžete zobraziť históriu zmien v plugine"
+
+msgid "v menu můžete zobrazit komentáře uživatelů k pořadu"
+msgstr "v menu môžete zobraziť komentáre užívateľov k relácii"
+
+msgid "v menu můžete zobrazit postery (filmové plakáty) k pořadu"
+msgstr "v menu môžete zobraziť postery (filmové plagáty) k relácii"
+
+msgid "v menu můžete zobrazit premiéry pořadu"
+msgstr "v menu môžete zobraziť premiéry relácie"
+
+msgid "v menu můžete zobrazit související filmy"
+msgstr "v menu môžete zobraziť súvisiace filmy"
+
+msgid "v menu můžete zobrazit zajímavosti o pořadu"
+msgstr "v menu môžete zobraziť zaujímavosti o relácii"
+
+msgid "v menu můžete zobrazit získaná ocenění"
+msgstr "v menu môžete zobraziť získané ocenenia"
+
+msgid "v menu můžete zobrazit řady seriálu"
+msgstr "v menu môžete zobraziť série seriálu"
+
+msgid "verze:"
+msgstr "verzia:"
+
+msgid "vhodnosti názvu"
+msgstr "vhodnosti názvu"
+
+msgid "vyhledání aktuálního pořadu v mezinárodní filmové databázi IMDB"
+msgstr "vyhľadanie aktuálnej relácie v medzinárodnej filmovej databázi IMDB"
+
+msgid "výběr hledaného pořadu z EPG aktuálního kanálu"
+msgstr "výber hľadanej relácie z EPG aktuálneho kanála"
+
+msgid "výběr hledaného pořadu ze všech kanálů"
+msgstr "výber hľadanej relácie zo všetkých kanálov"
+
+msgid "výběrem znaků opakovaným stiskem klávesy"
+msgstr "výberom znakov opakovaným stlačením klávesy"
+
+msgid "white"
+msgstr "biela"
+
+msgid "yellow"
+msgstr "žltá"
+
+msgid "zastaví slideshow"
+msgstr "zastaví slideshow"
+
+msgid "změna třídění vyhledaných pořadů"
+msgstr "zmena triedenia vyhľadaných relácií"
+
+msgid "zobrazit EPG aktuálního kanálu"
+msgstr "zobraziť EPG aktuálneho kanála"
+
+msgid "zobrazit seznam kanálů"
+msgstr "zobraziť zoznam kanálov"
+
+msgid "zobrazí další detaily o pořadu dle aktuálního kontextu"
+msgstr "zobrazí ďalšie detaily o relácii podľa aktuálneho kontextu"
+
+msgid "zobrazí detailní hodnocení pořadu"
+msgstr "zobrazí detailné hodnotenie relácie"
+
+msgid "zobrazí detaily o pořadu"
+msgstr "zobrazí detaily o relácii"
+
+msgid "zobrazí diskuzi uživatelů k pořadu"
+msgstr "zobrazí diskusiu užívateľov k relácii"
+
+msgid "zobrazí epizody seriálu"
+msgstr "zobrazí epizódy seriálu"
+
+msgid "zobrazí externí recenze k pořadu"
+msgstr "zobrazí externej recenzie k relácii"
+
+msgid "zobrazí fanoušky pořadu"
+msgstr "zobrazí fanúšikov relácie"
+
+msgid "zobrazí galerii fotek z pořadu"
+msgstr "zobrazí galériu fotiek z relácie"
+
+msgid "zobrazí historii změn v pluginu"
+msgstr "zobrazí históriu zmien v plugine"
+
+msgid "zobrazí informaci, zda je k dostupná nová verze"
+msgstr "zobrazí informáciu, či je k dispozícii nová verzia"
+
+msgid "zobrazí komentáře uživatelů k pořadu"
+msgstr "zobrazí komentáre užívateľov k relácii"
+
+msgid "zobrazí menu s aktuálně dostupnými akcemi"
+msgstr "zobrazí menu s aktuálne dostupnými akciami"
+
+msgid "zobrazí nápovědu k jednotlivým tlačítkům v pluginu"
+msgstr "zobrazí nápovedu k jednotlivým tlačidlám v pluginu"
+
+msgid "zobrazí postery (filmové plakáty) k pořadu"
+msgstr "zobrazí postery (filmové plagáty) k relácii"
+
+msgid "zobrazí premiéry pořadu"
+msgstr "zobrazí premiéry relácie"
+
+msgid "zobrazí seznam vyhledaných pořadů"
+msgstr "zobrazí zoznam vyhľadaných relácií"
+
+msgid "zobrazí související filmy"
+msgstr "zobrazí súvisiace filmy"
+
+msgid "zobrazí video ukázky z pořadu"
+msgstr "zobrazí video ukážky z relácii"
+
+msgid "zobrazí zajímavosti o pořadu"
+msgstr "zobrazí zaujímavosti o relácii"
+
+msgid "zobrazí získaná ocenění"
+msgstr "zobrazí získaná ocenenia"
+
+msgid "zobrazí řady seriálu"
+msgstr "zobrazí série seriálu"
+
+msgid "zpět"
+msgstr "späť"
+
+msgid "zpět v jednotlivých položkách nebo ukončení pluginu"
+msgstr "späť v jednotlivých položkách alebo ukončenie pluginu"
+
+msgid "česky"
+msgstr "česky"
+
+msgid "čárka"
+msgstr "èiarka"
+
+msgid "Řady v seriálu"
+msgstr "Rady v seriáli"
+
+msgid "Žádná galerie v databázi."
+msgstr "Žiadna galéria v databáze."
+
+msgid "Žádná ocenění v databázi."
+msgstr "Žiadne ocenenie v databáze."
+
+msgid "Žádná postery v databázi."
+msgstr "Žiadne postery v databáze."
+
+msgid "Žádná shoda na CSFD pro film: "
+msgstr "Žiadna zhoda na CSFD pre film: "
+
+msgid "Žádná shoda na CSFD."
+msgstr "Žiadna zhoda na CSFD."
+
+msgid "Žádná videa v databázi."
+msgstr "Žiadna videá v databáze."
+
+msgid "Žádné další diskuzní příspěvky v databázi."
+msgstr "Žiadne ďalšie diskusné príspevky v databáze."
+
+msgid "Žádné další externí recenze v databázi."
+msgstr "Žiadne ďalšie externej recenzie v databáze."
+
+msgid "Žádné další hodnocení v databázi."
+msgstr "Žiadne ďalšie hodnotenie v databáze."
+
+msgid "Žádné další komentáře v databázi."
+msgstr "Žiadne ďalšie komentáre v databáze."
+
+msgid "Žádné další ocenění v databázi."
+msgstr "Žiadne ďalšie ocenenie v databáze."
+
+msgid "Žádné další premiéry v databázi."
+msgstr "Žiadne ďalšie premiéry v databáze."
+
+msgid "Žádné další zajímavosti pro tento typ."
+msgstr "Žiadne ďalšie zaujímavosti pre tento typ."
+
+msgid "Žádné diskuzní příspěvky v databázi."
+msgstr "Žiadne diskusné príspevky v databáze."
+
+msgid "Žádné externí recenze v databázi."
+msgstr "Žiadne externé recenzie v databáze."
+
+msgid "Žádné hodnocení v databázi."
+msgstr "Žiadne hodnotenie v databáze."
+
+msgid "Žádné komentáře v databázi."
+msgstr "Žiadne komentáre v databáze."
+
+msgid "Žádné premiéry v databázi."
+msgstr "Žiadne premiéry v databáze."
+
+msgid "Žádné zajímavosti v databázi."
+msgstr "Žiadne zaujímavosti v databáze."
+
+msgid "Žádní další fanoušci v databázi."
+msgstr "Žiadni ďalší fanúšikovia v databáze."
+
+msgid "Žádní fanoušci v databázi."
+msgstr "Žiadni fanúšikovia v databáze."
+
+msgid "žádné hodnocení"
+msgstr "žiadne hodnotenie"
+
+msgid "žádný"
+msgstr "žiaden"

@@ -1,6 +1,11 @@
 HISTORIE  ZMĚN  V  PLUGINU  CSFD (autor: skyjet)
 $$$A¯
 $$$B_
+Verze 15.10  -  xxx
+$$$A¯
+- vylepšené logo pluginu
+- opravené prepínanie cz/sk jazyka pluginu 
+$$$B_
 Verze 15.00  -  05.01. 2022
 $$$A¯
 - oživenie pluginu a zverejnenie zdrojových súborov
