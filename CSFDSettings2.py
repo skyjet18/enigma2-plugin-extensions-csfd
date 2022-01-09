@@ -9,8 +9,8 @@ from datetime import datetime
 from CSFDLog import LogCSFD
 from CSFDSettings1 import CSFDGlobalVar
 import gettext, locale
-CSFDVersion='15.00'
-CSFDVersionData='05.01.2022'
+CSFDVersion='15.10'
+CSFDVersionData='09.01.2022'
 config.misc.CSFD = ConfigSubsection()
 config.misc.CSFD.Log = ConfigYesNo(default=True)
 config.misc.CSFD.LogConsole = ConfigYesNo(default=False)
