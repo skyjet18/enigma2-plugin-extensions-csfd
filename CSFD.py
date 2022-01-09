@@ -4971,7 +4971,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			acname = strUni(self.ActName)
 			self.myreference = eServiceReference(4097, 0, str(self.videoklipurl))
 			self.myreference.setName(acname + ' - ' + self.VideoSlideList[self.VideoActIdx][2])
-			self.session.open(CSFDPlayer, self.myreference, self.lastservice, self.videotitulkyurl, infoCallback=self.CSFDshowVideoInfo, nextCallback=self.CSFDgetNextEntryVideo, prevCallback=self.CSFDgetPrevEntryVideo, exitCallback=self.CSFDPlayerExit, existPrevOrNextCallback=self.CSFDexistPrevOrNextVideo, downloadVideo=self.CSFDopenVideoDownload, colorOLED=GetItemColourRateN(self.ratingstars))
+			self.session.open(CSFDPlayer, self.myreference, self.lastservice, str(self.videotitulkyurl), infoCallback=self.CSFDshowVideoInfo, nextCallback=self.CSFDgetNextEntryVideo, prevCallback=self.CSFDgetPrevEntryVideo, exitCallback=self.CSFDPlayerExit, existPrevOrNextCallback=self.CSFDexistPrevOrNextVideo, downloadVideo=self.CSFDopenVideoDownload, colorOLED=GetItemColourRateN(self.ratingstars))
 			sss = str(self.VideoActIdx + 1)
 			self['page'].setText(_('Video č.%s' % sss))
 			sss = sss + '/' + str(self.VideoCountPix) + '  ' + strUni(self.VideoSlideList[self.VideoActIdx][2])
@@ -5044,7 +5044,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self.videoklipurl = self.VideoSlideList[self.VideoActIdx][4]
 			self.videotitulkyurl = self.VideoSlideList[self.VideoActIdx][5]
 			if self.videoklipurl != '':
-				self.myreference = eServiceReference(4097, 0, self.videoklipurl)
+				self.myreference = eServiceReference(4097, 0, str(self.videoklipurl))
 				self.myreference.setName(self.eventNameLocal + ' - ' + self.VideoSlideList[self.VideoActIdx][2])
 				LogCSFD.WriteToFile('[CSFD] CSFDgetNextEntryVideo - ' + self.videoklipurl + ' a False - konec\n')
 				return (
@@ -5065,7 +5065,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self.videoklipurl = self.VideoSlideList[self.VideoActIdx][4]
 			self.videotitulkyurl = self.VideoSlideList[self.VideoActIdx][5]
 			if self.videoklipurl != '':
-				self.myreference = eServiceReference(4097, 0, self.videoklipurl)
+				self.myreference = eServiceReference(4097, 0, str(self.videoklipurl))
 				self.myreference.setName(self.eventNameLocal + ' - ' + self.VideoSlideList[self.VideoActIdx][2])
 				LogCSFD.WriteToFile('[CSFD] CSFDgetPrevEntryVideo - ' + self.videoklipurl + ' a False - konec\n')
 				return (
