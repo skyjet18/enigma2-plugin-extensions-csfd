@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from CSFDLog import LogCSFD
-from CSFDSettings2 import config
+from .CSFDLog import LogCSFD
+from .CSFDSettings2 import config
 import re
 
 try:
-	from htmlentitydefs import name2codepoint
+	from .htmlentitydefs import name2codepoint
 except:
 	from html.entities import name2codepoint
 	unichr = chr

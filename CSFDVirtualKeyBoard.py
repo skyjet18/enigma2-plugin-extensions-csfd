@@ -11,8 +11,8 @@ from Components.MenuList import MenuList
 from Components.MultiContent import MultiContentEntryText, MultiContentEntryPixmapAlphaTest
 from Tools.Directories import resolveFilename, SCOPE_CURRENT_SKIN
 from Tools.LoadPixmap import LoadPixmap
-from CSFDLog import LogCSFD
-from CSFDSettings1 import CSFDGlobalVar
+from .CSFDLog import LogCSFD
+from .CSFDSettings1 import CSFDGlobalVar
 
 try:
 	# py2
@@ -114,26 +114,26 @@ def VirtualKeyBoardEntryComponent(keys, selectedKey, shiftMode=False):
 
 class CSFDVirtualKeyBoard(Screen):
 	if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
-		from CSFDSkinLoader import Screen_CSFDVirtualKeyBoardSD
+		from .CSFDSkinLoader import Screen_CSFDVirtualKeyBoardSD
 		skin = Screen_CSFDVirtualKeyBoardSD
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
-		from CSFDSkinLoader import Screen_CSFDVirtualKeyBoardHD
+		from .CSFDSkinLoader import Screen_CSFDVirtualKeyBoardHD
 		skin = Screen_CSFDVirtualKeyBoardHD
 	else:
-		from CSFDSkinLoader import Screen_CSFDVirtualKeyBoardFullHD
+		from .CSFDSkinLoader import Screen_CSFDVirtualKeyBoardFullHD
 		skin = Screen_CSFDVirtualKeyBoardFullHD
 
 	def __init__(self, session, title='', text=''):
-		from CSFDSettings2 import config
+		from .CSFDSettings2 import config
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
-			from CSFDSkinLoader import Screen_CSFDVirtualKeyBoardSD
+			from .CSFDSkinLoader import Screen_CSFDVirtualKeyBoardSD
 			self.skin = Screen_CSFDVirtualKeyBoardSD
 		else:
 			if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
-				from CSFDSkinLoader import Screen_CSFDVirtualKeyBoardHD
+				from .CSFDSkinLoader import Screen_CSFDVirtualKeyBoardHD
 				self.skin = Screen_CSFDVirtualKeyBoardHD
 			else:
-				from CSFDSkinLoader import Screen_CSFDVirtualKeyBoardFullHD
+				from .CSFDSkinLoader import Screen_CSFDVirtualKeyBoardFullHD
 				self.skin = Screen_CSFDVirtualKeyBoardFullHD
 			Screen.__init__(self, session)
 			if config.misc.CSFD.Skinxml.getValue():

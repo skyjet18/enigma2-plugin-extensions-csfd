@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from CSFDLog import LogCSFD
-from CSFDSettings1 import CSFDGlobalVar
-from CSFDSettings2 import _, config
-from CSFDTools import Uni8
+from .CSFDLog import LogCSFD
+from .CSFDSettings1 import CSFDGlobalVar
+from .CSFDSettings2 import _, config
+from .CSFDTools import Uni8
 import traceback
 LogCSFD.WriteToFile('[CSFD] CSFDImdb - IMDB import - zacatek\n')
 try:
@@ -18,7 +18,7 @@ try:
 		LogCSFD.WriteToFile('[CSFD] CSFDImdb - IMDB import - nenastaven\n')
 except:
 	CSFDGlobalVar.setIMDBexist(False)
-	from CSFDTools import EmptyClass as puvIMDB
+	from .CSFDTools import EmptyClass as puvIMDB
 	err = traceback.format_exc()
 	LogCSFD.WriteToFile('[CSFD] CSFDImdb - IMDB import - nezdarilo se\n')
 
@@ -28,13 +28,13 @@ class CSFD_IMDBcalls(puvIMDB):
 	try:
 		LogCSFD.WriteToFile('[CSFD] CSFDImdb - IMDBcalls1 - init - zacatek\n')
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
-			from CSFDSkinLoader import Screen_CSFDIMDB_SD
+			from .CSFDSkinLoader import Screen_CSFDIMDB_SD
 			skin = Screen_CSFDIMDB_SD % (config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue())
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
-			from CSFDSkinLoader import Screen_CSFDIMDB_HD
+			from .CSFDSkinLoader import Screen_CSFDIMDB_HD
 			skin = Screen_CSFDIMDB_HD % (config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue())
 		else:
-			from CSFDSkinLoader import Screen_CSFDIMDB_FullHD
+			from .CSFDSkinLoader import Screen_CSFDIMDB_FullHD
 			skin = Screen_CSFDIMDB_FullHD % (config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeight.getValue())
 	except:
 		err = traceback.format_exc()
@@ -55,13 +55,13 @@ class CSFD_IMDBcalls(puvIMDB):
 			try:
 				self.CSFDmoviepath = moviepath
 				if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
-					from CSFDSkinLoader import Screen_CSFDIMDB_SD
+					from .CSFDSkinLoader import Screen_CSFDIMDB_SD
 					self.skin = Screen_CSFDIMDB_SD % (config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue())
 				elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
-					from CSFDSkinLoader import Screen_CSFDIMDB_HD
+					from .CSFDSkinLoader import Screen_CSFDIMDB_HD
 					self.skin = Screen_CSFDIMDB_HD % (config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue())
 				else:
-					from CSFDSkinLoader import Screen_CSFDIMDB_FullHD
+					from .CSFDSkinLoader import Screen_CSFDIMDB_FullHD
 					self.skin = Screen_CSFDIMDB_FullHD % (config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeight.getValue())
 			except:
 				err = traceback.format_exc()
@@ -129,7 +129,7 @@ class CSFD_IMDBcalls(puvIMDB):
 			localfile = '/tmp/imdbquery2.html'
 			fetchurl = moviepath
 			LogCSFD.WriteToFile('[CSFD] CSFDImdb - IMDB - stahuji z url ' + fetchurl + ' do ' + localfile + '\n')
-			from CSFDTools import downloadPage
+			from .CSFDTools import downloadPage
 			downloadPage(fetchurl, localfile).addCallback(self.IMDBquery2).addErrback(self.fetchFailedIMDB, fetchurl)
 			self['menu'].hide()
 			self.resetLabels()
@@ -146,7 +146,7 @@ def InitIMDBchanges():
 	try:
 		LogCSFD.WriteToFile('[CSFD] CSFDImdb - IMDB - hlavni nahrazeni - zacatek\n')
 		if config.misc.CSFD.CSFDreplaceIMDB.getValue() and CSFDGlobalVar.getIMDBexist():
-			from CSFD import CSFDClass
+			from .CSFD import CSFDClass
 			Plugins.Extensions.IMDb.plugin.IMDB = CSFDClass
 			LogCSFD.WriteToFile('[CSFD] CSFDImdb - IMDB - hlavni nahrazeni - OK\n')
 		else:

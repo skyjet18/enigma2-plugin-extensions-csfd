@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from CSFDSettings2 import config
-from CSFDSettings2 import _
-from CSFDLog import LogCSFD
+from .CSFDSettings2 import config
+from .CSFDSettings2 import _
+from .CSFDLog import LogCSFD
 from Screens.Screen import Screen
 from Components.config import configfile
 from Components.Pixmap import Pixmap
@@ -10,9 +10,9 @@ from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Components.Button import Button
-from CSFDTools import strUni, Uni8, ItemListString
-from CSFDSkinLoader import *
-from CSFDSettings1 import CSFDGlobalVar
+from .CSFDTools import strUni, Uni8, ItemListString
+from .CSFDSkinLoader import *
+from .CSFDSettings1 import CSFDGlobalVar
 from enigma import ePicLoad, gPixmapPtr, gFont
 from os import path as os_path, listdir as os_listdir
 import traceback
@@ -107,7 +107,7 @@ class CSFDSkinSelect(Screen):
 			LogCSFD.WriteToFile('[CSFD] SkinSelect - zmena - Reload Defaultniho skinu 1\n')
 			exec('reload(%s.%s)' % ('skins', module))
 			LogCSFD.WriteToFile('[CSFD] SkinSelect - zmena - Reload Defaultniho skinu 2\n')
-			exec('from %s.%s import *' % ('skins', module))
+			exec('from .%s.%s import *' % ('skins', module))
 			LogCSFD.WriteToFile('[CSFD] SkinSelect - zmena - Reload Defaultniho skinu OK\n')
 		except:
 			err = traceback.format_exc()
@@ -121,7 +121,7 @@ class CSFDSkinSelect(Screen):
 			LogCSFD.WriteToFile('[CSFD] SkinSelect - zmena 1 - %s\n' % module)
 			exec('reload(%s.%s)' % ('skins', module))
 			LogCSFD.WriteToFile('[CSFD] SkinSelect - zmena 2 - %s\n' % module)
-			exec('from %s.%s import *' % ('skins', module))
+			exec('from .%s.%s import *' % ('skins', module))
 			LogCSFD.WriteToFile('[CSFD] SkinSelect - zmena OK - %s\n' % module)
 		except:
 			err = traceback.format_exc()
@@ -214,7 +214,7 @@ class CSFDSkinSelect(Screen):
 			LogCSFD.WriteToFile('[CSFD] SkinSelect - Reload Defaultniho skinu 2\n')
 			exec('reload(%s.%s)' % ('skins', module))
 			LogCSFD.WriteToFile('[CSFD] SkinSelect - Reload Defaultniho skinu 3\n')
-			exec('from %s.%s import *' % ('skins', module))
+			exec('from .%s.%s import *' % ('skins', module))
 			LogCSFD.WriteToFile('[CSFD] SkinSelect - Reload Defaultniho skinu 4\n')
 			self.resultlist.append((ar + CSFD_SKIN_NAME, CSFD_SKIN_AUTHOR, CSFD_SKIN_AUTHOR_CONTACT, CSFD_SKIN_DESCRIPTION, CSFD_SKIN_PREVIEW))
 			LogCSFD.WriteToFile('[CSFD] SkinSelect - Reload Defaultniho skinu OK\n')
@@ -234,7 +234,7 @@ class CSFDSkinSelect(Screen):
 				LogCSFD.WriteToFile('[CSFD] SkinSelect - import/reload2 - %s\n' % module)
 				exec('reload(%s.%s)' % ('skins', module))
 				LogCSFD.WriteToFile('[CSFD] SkinSelect - import/reload3 - %s\n' % module)
-				exec('from %s.%s import *' % ('skins', module))
+				exec('from .%s.%s import *' % ('skins', module))
 				LogCSFD.WriteToFile('[CSFD] SkinSelect - import/reload4 - %s\n' % module)
 				if module == 'CSFDSkin_' + CSFD_SKIN_NAME:
 					self.resultlist.append((ar + CSFD_SKIN_NAME, CSFD_SKIN_AUTHOR, CSFD_SKIN_AUTHOR_CONTACT, CSFD_SKIN_DESCRIPTION, CSFD_SKIN_PREVIEW))
@@ -263,7 +263,7 @@ class CSFDSkinSelect(Screen):
 					LogCSFD.WriteToFile('[CSFD] SkinSelect - reload 1 - %s\n' % module)
 					exec('reload(%s.%s)' % ('skins', module))
 					LogCSFD.WriteToFile('[CSFD] SkinSelect - reload 2 - %s\n' % module)
-					exec('from %s.%s import *' % ('skins', module))
+					exec('from .%s.%s import *' % ('skins', module))
 					LogCSFD.WriteToFile('[CSFD] SkinSelect - reload OK - %s\n' % module)
 					moduleload = True
 				except:

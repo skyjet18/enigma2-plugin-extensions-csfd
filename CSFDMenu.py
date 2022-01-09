@@ -7,11 +7,11 @@ from Components.Sources.StaticText import StaticText
 from Screens.Screen import Screen
 from Tools import ASCIItranslit
 from Tools.Directories import fileExists
-from CSFDLog import LogCSFD
-from CSFDTools import downloadPage
-from CSFDXmlMenu import sxml
-from CSFDSettings1 import CSFDGlobalVar
-from CSFDSettings2 import _
+from .CSFDLog import LogCSFD
+from .CSFDTools import downloadPage
+from .CSFDXmlMenu import sxml
+from .CSFDSettings1 import CSFDGlobalVar
+from .CSFDSettings2 import _
 from enigma import ePicLoad, getDesktop
 from xml.dom.minidom import parseString
 from xml.sax.saxutils import unescape

@@ -2,7 +2,7 @@
 
 from enigma import eTimer
 from Components.Language import language
-from CSFDSettings1 import CSFDGlobalVar
+from .CSFDSettings1 import CSFDGlobalVar
 
 class CSFDNumericalTextInput:
 

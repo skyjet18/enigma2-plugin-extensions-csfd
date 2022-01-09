@@ -4,8 +4,8 @@ import skin
 from Components.HTMLComponent import HTMLComponent
 from Components.GUIComponent import GUIComponent
 from enigma import eLabel, eWidget, eSlider, fontRenderClass, ePoint, eSize, gRGB
-from CSFDLog import LogCSFD
-from CSFDSettings1 import CSFDGlobalVar
+from .CSFDLog import LogCSFD
+from .CSFDSettings1 import CSFDGlobalVar
 
 class CSFDScrollColorLabel(HTMLComponent, GUIComponent):
 

@@ -2,11 +2,11 @@
 
 from Plugins.Plugin import PluginDescriptor
 from enigma import eTimer, eEPGCache, eServiceCenter
-from CSFDLog import LogCSFD
-from CSFDSettings1 import CSFDGlobalVar
-from CSFDSettings2 import _, config
-from CSFDImdb import InitIMDBchanges
-from CSFDTools import CSFDHelpableActionMapChng
+from .CSFDLog import LogCSFD
+from .CSFDSettings1 import CSFDGlobalVar
+from .CSFDSettings2 import _, config
+from .CSFDImdb import InitIMDBchanges
+from .CSFDTools import CSFDHelpableActionMapChng
 from Screens.Screen import Screen
 from Screens.EpgSelection import EPGSelection
 from Screens.EventView import EventViewEPGSelect, EventViewSimple
@@ -38,7 +38,7 @@ TVTimerConn = None
 InitIMDBchanges()
 if config.misc.CSFD.BackCSFDCompatibility.getValue():
 	LogCSFD.WriteToFile('[CSFD] CSFD - zapnuta zpetna kompatibilita volani CSFD\n')
-	from CSFD import CSFDClass
+	from .CSFD import CSFDClass
 
 	class CSFD(CSFDClass):
 
@@ -68,7 +68,7 @@ def RunCSFD(session, eventName='', callbackNeeded=False, EPG='', sourceEPG=False
 	CSFDGlobalVar.setCSFDeventID_REF('')
 	ret = None
 	try:
-		from CSFD import CSFDClass
+		from .CSFD import CSFDClass
 		ret = session.open(CSFDClass, eventName, callbackNeeded, EPG, sourceEPG, DVBchannel)
 	except:
 		LogCSFD.WriteToFile('[CSFD] Spusteni CSFD - chyba\n')
@@ -95,7 +95,7 @@ def LoginToCSFDTimer():
 			LoginTimer.stop()
 		LoginTimerConn = None
 		LoginTimer = None
-	from CSFDClasses import LoginToCSFD
+	from .CSFDClasses import LoginToCSFD
 	LoginToCSFD()
 	LogCSFD.WriteToFile('[CSFD] LoginToCSFDTimer - konec\n', 1)
 	return
@@ -119,7 +119,7 @@ def TimerEventGetMoviesForTVChannels():
 	if TVTimer is not None:
 		if TVTimer.isActive():
 			TVTimer.stop()
-	from CSFDClasses import GetMoviesForTVChannels
+	from .CSFDClasses import GetMoviesForTVChannels
 	GetMoviesForTVChannels(CSFDGlobalVar.getTVTimer_channName())
 	LogCSFD.WriteToFile('[CSFD] TimerEventGetMoviesForTVChannels - konec\n', 20)
 	return
@@ -741,7 +741,7 @@ else:
 			if listP:
 				event_id = self.getSelectedEventId()
 				if typeP == 1:
-					from CSFDTools import char2DiacriticSort
+					from .CSFDTools import char2DiacriticSort
 					listP.sort(key=lambda x: (char2DiacriticSort(x[4]) and char2DiacriticSort(x[4]).lower(), x[2]))
 				else:
 					listP.sort(key=lambda x: x[2])
@@ -768,10 +768,10 @@ def eventinfo(session, servicelist, **kwargs):
 		RunCSFD(session, '')
 	elif config.misc.CSFD.Info_EPG.getValue() == '1':
 		ref = session.nav.getCurrentlyPlayingServiceReference()
-		from CSFDClasses import CSFDEPGSelection
+		from .CSFDClasses import CSFDEPGSelection
 		session.open(CSFDEPGSelection, ref)
 	else:
-		from CSFDClasses import CSFDChannelSelection
+		from .CSFDClasses import CSFDChannelSelection
 		session.open(CSFDChannelSelection, openPlugin=True)
 
 

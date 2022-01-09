@@ -9,8 +9,8 @@ except:
 	from urllib import quote_plus
 
 
-from CSFDLog import LogCSFD
-from CSFDSettings2 import config
+from .CSFDLog import LogCSFD
+from .CSFDSettings2 import config
 
 # ######################################################################################
 

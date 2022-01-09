@@ -19,7 +19,7 @@ from twisted.internet import defer
 from enigma import RT_VALIGN_CENTER, ePoint, RT_HALIGN_LEFT, eListboxPythonMultiContent, getDesktop, eServiceCenter, eServiceReference, iPlayableService, eTimer, addFont, gFont
 from Screens.Screen import Screen
 from Screens.MessageBox import MessageBox
-from CSFDConfigList import CSFDConfigListScreen
+from .CSFDConfigList import CSFDConfigListScreen
 from Components.config import ConfigSubsection, ConfigSelection, ConfigYesNo, configfile, getConfigListEntry
 from Components.Harddisk import harddiskmanager
 from Components.Label import Label
@@ -31,17 +31,17 @@ from Components.ServiceEventTracker import ServiceEventTracker
 from Tools.Directories import SCOPE_SKIN_IMAGE, resolveFilename
 from Tools.LoadPixmap import LoadPixmap
 from skin import parseColor
-from CSFDLog import LogCSFD
-from CSFDSettings1 import CSFDGlobalVar
-from CSFDSettings2 import config
-from CSFDSkinLoader import *
+from .CSFDLog import LogCSFD
+from .CSFDSettings1 import CSFDGlobalVar
+from .CSFDSettings2 import config
+from .CSFDSkinLoader import *
 
 def debug(data):
 	if DEBUG:
 		LogCSFD.WriteToFile('[SubsSupport] %s\n' % data.encode('utf-8'))
 
 
-from CSFDSettings2 import _
+from .CSFDSettings2 import _
 PLUGIN_NAME = 'CSFD'
 DEBUG = False
 ALL_LANGUAGES_ENCODINGS = [

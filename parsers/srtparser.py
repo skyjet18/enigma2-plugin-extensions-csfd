@@ -3,7 +3,7 @@ import time
 import os
 import re
 import traceback
-from baseparser import BaseParser
+from .baseparser import BaseParser
 
 try:
 	# py2

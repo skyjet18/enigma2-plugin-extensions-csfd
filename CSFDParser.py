@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from CSFDLog import LogCSFD
-from CSFDTools import char2Allowchar, strUni, ExtractNumbers, isBigCharInFirst, char2Diacritic
-from CSFDSettings2 import const_csfd_http_film
-from CSFDSettings1 import CSFDGlobalVar
+from .CSFDLog import LogCSFD
+from .CSFDTools import char2Allowchar, strUni, ExtractNumbers, isBigCharInFirst, char2Diacritic
+from .CSFDSettings2 import const_csfd_http_film
+from .CSFDSettings1 import CSFDGlobalVar
 from datetime import datetime
 import re, traceback
 
 try:
 	# py2
-	from htmlentitydefs import name2codepoint
+	from .htmlentitydefs import name2codepoint
 except:
 	# py3
 	from html.entities import name2codepoint

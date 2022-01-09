@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from Components.config import config, ConfigSubsection, ConfigYesNo, ConfigSelection, ConfigInteger, configfile, NoSave
-from CSFDConfigText import CSFDConfigText, CSFDConfigPassword
+from .CSFDConfigText import CSFDConfigText, CSFDConfigPassword
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 from os import environ as os_environ, path as os_path
 from datetime import datetime
-from CSFDLog import LogCSFD
-from CSFDSettings1 import CSFDGlobalVar
+from .CSFDLog import LogCSFD
+from .CSFDSettings1 import CSFDGlobalVar
 import gettext, locale
 CSFDVersion='15.10'
 CSFDVersionData='09.01.2022'
@@ -455,7 +455,7 @@ def ResetParams():
 	config.misc.CSFD.Bouquet9.load()
 	config.misc.CSFD.Bouquet10.load()
 	config.misc.CSFD.Bouquet11.load()
-	from CSFDSubtitles import ResetSubtitleParams
+	from .CSFDSubtitles import ResetSubtitleParams
 	ResetSubtitleParams()
 	configfile.save()
 	return

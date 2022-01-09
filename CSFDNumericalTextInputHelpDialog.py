@@ -2,30 +2,30 @@
 
 from Screens.Screen import Screen
 from Components.Label import Label
-from CSFDSettings1 import CSFDGlobalVar
+from .CSFDSettings1 import CSFDGlobalVar
 
 class CSFDNumericalTextInputHelpDialog(Screen):
 	if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
-		from CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogSD
+		from .CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogSD
 		skin = Screen_CSFDNumericalTextInputHelpDialogSD
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
-		from CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogHD
+		from .CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogHD
 		skin = Screen_CSFDNumericalTextInputHelpDialogHD
 	else:
-		from CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogFullHD
+		from .CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogFullHD
 		skin = Screen_CSFDNumericalTextInputHelpDialogFullHD
 
 	def __init__(self, session, textinput):
-		from CSFDSettings2 import config
+		from .CSFDSettings2 import config
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
-			from CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogSD
+			from .CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogSD
 			self.skin = Screen_CSFDNumericalTextInputHelpDialogSD
 		else:
 			if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
-				from CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogHD
+				from .CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogHD
 				self.skin = Screen_CSFDNumericalTextInputHelpDialogHD
 			else:
-				from CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogFullHD
+				from .CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogFullHD
 				self.skin = Screen_CSFDNumericalTextInputHelpDialogFullHD
 			Screen.__init__(self, session)
 			if config.misc.CSFD.Skinxml.getValue():

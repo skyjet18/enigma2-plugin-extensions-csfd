@@ -3,10 +3,10 @@
 from enigma import eConsoleAppContainer
 from Screens.Screen import Screen
 from Components.ActionMap import ActionMap
-from CSFDScrollColorLabel import CSFDScrollColorLabel
-from CSFDSettings1 import CSFDGlobalVar
-from CSFDLog import LogCSFD
-from CSFDSkinLoader import *
+from .CSFDScrollColorLabel import CSFDScrollColorLabel
+from .CSFDSettings1 import CSFDGlobalVar
+from .CSFDLog import LogCSFD
+from .CSFDSkinLoader import *
 
 class CSFDConsole(Screen):
 	if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:

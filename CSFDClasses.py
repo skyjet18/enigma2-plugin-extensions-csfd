@@ -2,33 +2,33 @@
 
 from enigma import gRGB, gFont, iPlayableService, RT_HALIGN_LEFT, RT_WRAP, RT_VALIGN_TOP
 from enigma import eTimer, eSize, iServiceInformation, eServiceReference
-from CSFDLog import LogCSFD
-from CSFDTools import requestCSFD, internet_on, ItemListTypeSpecial, strUni, Uni8
+from .CSFDLog import LogCSFD
+from .CSFDTools import requestCSFD, internet_on, ItemListTypeSpecial, strUni, Uni8
 from Screens.Screen import Screen
 from Screens.InfoBarGenerics import InfoBarNotifications, InfoBarSubtitleSupport
 from Screens.MessageBox import MessageBox
 from Screens.ChoiceBox import ChoiceBox
 from Screens.ChannelSelection import SimpleChannelSelection
 from Screens.EpgSelection import EPGSelection
-from CSFDHelpMenu import CSFDHelpableScreen1
+from .CSFDHelpMenu import CSFDHelpableScreen1
 from Components.ActionMap import ActionMap, HelpableActionMap
 from Components.Pixmap import Pixmap, MultiPixmap
 from Components.Label import Label
-from CSFDSubtitles import SubsSupport
+from .CSFDSubtitles import SubsSupport
 from Components.Button import Button
 from Components.MultiContent import MultiContentEntryText
 from Components.ServiceEventTracker import ServiceEventTracker
 from Components.config import getConfigListEntry
 from Components.config import configfile
-from CSFDConfigList import CSFDConfigListScreen
-from CSFDConfigText import CSFDConfigText, CSFDConfigPassword
+from .CSFDConfigList import CSFDConfigListScreen
+from .CSFDConfigText import CSFDConfigText, CSFDConfigPassword
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
-from CSFDSettings1 import CSFDGlobalVar
-from CSFDSettings2 import _, const_www_csfd, std_login_header, std_tv_post_header, std_login_header_UL2, std_tv_post_header_UL2, std_headers_UL2
-from CSFDSettings2 import config
-from CSFDMovieCache import TVMovieCache
-from CSFDParser import GetCSFDNumberFromChannel, ParserTVCSFD, ParserOstCSFD
-from CSFDSkinLoader import *
+from .CSFDSettings1 import CSFDGlobalVar
+from .CSFDSettings2 import _, const_www_csfd, std_login_header, std_tv_post_header, std_login_header_UL2, std_tv_post_header_UL2, std_headers_UL2
+from .CSFDSettings2 import config
+from .CSFDMovieCache import TVMovieCache
+from .CSFDParser import GetCSFDNumberFromChannel, ParserTVCSFD, ParserOstCSFD
+from .CSFDSkinLoader import *
 import time, traceback
 
 try:
@@ -429,7 +429,7 @@ class CSFDEPGSelection(EPGSelection):
 			if EPG != '':
 				EPG = eventName + ' - ' + EPG
 			if self.openPlugin:
-				from CSFD import CSFDClass
+				from .CSFD import CSFDClass
 				self.session.open(CSFDClass, eventName, False, EPG, True, DVBchannel)
 				self.close(eventName, EPG, DVBchannel)
 			else:
@@ -507,8 +507,8 @@ class CSFDLCDSummary(Screen):
 def RefreshPlugins():
 	LogCSFD.WriteToFile('[CSFD] RefreshPlugins - zacatek\n')
 	from Components.PluginComponent import plugins
-	from CSFDTools import InitCSFDTools
-	from CSFDSettings2 import PathTMPInit, localeInit, InitParamsLangImpact
+	from .CSFDTools import InitCSFDTools
+	from .CSFDSettings2 import PathTMPInit, localeInit, InitParamsLangImpact
 	LogCSFD.LoadDefaults()
 	PathTMPInit()
 	localeInit()

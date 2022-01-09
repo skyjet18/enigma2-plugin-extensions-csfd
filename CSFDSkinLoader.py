@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from CSFDSettings2 import config
-from CSFDLog import LogCSFD
+from .CSFDSettings2 import config
+from .CSFDLog import LogCSFD
 from Components.config import configfile
 from os import path as os_path, listdir as os_listdir
 import traceback
 LogCSFD.WriteToFile('[CSFD] SkinLoader - zacatek\n')
 LogCSFD.WriteToFile('[CSFD] SkinLoader - Import Defaultniho skinu\n')
 try:
-	from skins.CSFDSkin_Default import *
+	from .skins.CSFDSkin_Default import *
 	LogCSFD.WriteToFile('[CSFD] SkinLoader - Import Defaultniho skinu OK\n')
 except:
 	err = traceback.format_exc()
@@ -23,7 +23,7 @@ for module in os_listdir(os_path.join(os_path.dirname(__file__), 'skins')):
 	if module == 'CSFDSkin_' + config.misc.CSFD.CurrentSkin.getValue():
 		LogCSFD.WriteToFile('[CSFD] SkinLoader - import - %s\n' % module)
 		try:
-			exec('from %s.%s import *' % ('skins', module))
+			exec('from .%s.%s import *' % ('skins', module))
 			LogCSFD.WriteToFile('[CSFD] SkinLoader - import OK - %s\n' % module)
 			moduleload = True
 		except:

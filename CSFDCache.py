@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from CSFDLog import LogCSFD
+from .CSFDLog import LogCSFD
 import time
 
 class CSFDCache:

@@ -3,9 +3,9 @@
 from Components.GUIComponent import GUIComponent
 from enigma import eListboxPythonMultiContent, eListbox, gFont
 from Tools.KeyBindings import queryKeyBinding, getKeyDescription
-from CSFDLog import LogCSFD
-from CSFDSettings1 import CSFDGlobalVar
-from CSFDSettings2 import config
+from .CSFDLog import LogCSFD
+from .CSFDSettings1 import CSFDGlobalVar
+from .CSFDSettings2 import config
 
 class CSFDHelpMenuList(GUIComponent):
 

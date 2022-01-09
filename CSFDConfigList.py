@@ -3,12 +3,12 @@
 from Components.HTMLComponent import HTMLComponent
 from Components.GUIComponent import GUIComponent
 from Components.config import KEY_LEFT, KEY_RIGHT, KEY_HOME, KEY_END, KEY_0, KEY_DELETE, KEY_BACKSPACE, KEY_OK, KEY_TOGGLEOW, KEY_ASCII, KEY_TIMEOUT, KEY_NUMBERS, ConfigElement
-from CSFDConfigText import CSFDConfigText, CSFDConfigPassword
+from .CSFDConfigText import CSFDConfigText, CSFDConfigPassword
 from Components.ActionMap import NumberActionMap, ActionMap
 from enigma import eListbox, eListboxPythonConfigContent, eTimer
 from Screens.MessageBox import MessageBox
-from CSFDSettings1 import CSFDGlobalVar
-from CSFDSettings2 import _
+from .CSFDSettings1 import CSFDGlobalVar
+from .CSFDSettings2 import _
 
 class ConfigList(HTMLComponent, GUIComponent, object):
 
@@ -191,7 +191,7 @@ class CSFDConfigListScreen:
 		return
 
 	def KeyText(self):
-		from CSFDVirtualKeyBoard import CSFDVirtualKeyBoard
+		from .CSFDVirtualKeyBoard import CSFDVirtualKeyBoard
 		self.session.openWithCallback(self.VirtualKeyBoardCallback, CSFDVirtualKeyBoard, title=self['config'].getCurrent()[0], text=self['config'].getCurrent()[1].getValue())
 
 	def VirtualKeyBoardCallback(self, callback=None):

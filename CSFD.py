@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
 
 from enigma import eTimer, ePicLoad, eServiceCenter, eServiceReference, eConsoleAppContainer, gPixmapPtr, gRGB, RT_HALIGN_LEFT, RT_VALIGN_CENTER
-from CSFDLog import LogCSFD
-from CSFDTools import ItemList, ItemListServiceMenu, TextSimilarityBigram, TextSimilarityLD, TextCompare, max_positions, request, requestCSFD, requestFileCSFD, internet_on, fromRomanStr, StrtoRoman
-from CSFDTools import IsHTTPSWorking, intWithSeparator, char2Diacritic, char2DiacriticSort, char2Allowchar, char2AllowcharNumbers, strUni, Uni8, deletetmpfiles, OdstranitDuplicityRadku, loadPixmapCSFD, picStartDecodeCSFD
-from CSFDMenu import CSFDIconMenu
-from CSFDParser import ParserCSFD, ParserOstCSFD, ParserVideoCSFD, ParserGallCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions
-from CSFDClasses import LoginToCSFD, GetMoviesForTVChannels, CSFDChannelSelection, CSFDEPGSelection, CSFDLCDSummary, CSFDSetup, CSFDInputText, CSFDAbout, CSFDHistory, CSFDVideoInfoScreen, CSFDPlayer, RefreshPlugins
-from CSFDMovieCache import TVMovieCache
-from CSFDSettings1 import CSFDGlobalVar
-from CSFDSettings2 import _, localeInit, CSFDActionDict, std_headers, std_headers_UL2, std_media_header, std_media_header_UL2, std_post_header, std_post_header_UL2, std_login_header, std_login_header_UL2, MainUpdateUrl, MainUpdateUrlIpk, const_www_csfd, const_csfd_http_film, const_quick_page, ResetParams
-from CSFDSettings2 import config
-from CSFDSkinSelect import CSFDSkinSelect
-from CSFDSkinLoader import *
-from CSFDImdb import CSFD_IMDBcalls
-from CSFDHelpMenu import CSFDHelpableScreen
-from CSFDVirtualKeyBoard import CSFDVirtualKeyBoard
-from CSFDScrollColorLabel import CSFDScrollColorLabel
-from CSFDConsole import CSFDConsole
-from CSFDCache import movieCSFDCache
-from IMDBParser import ParserIMDB
+from .CSFDLog import LogCSFD
+from .CSFDTools import ItemList, ItemListServiceMenu, TextSimilarityBigram, TextSimilarityLD, TextCompare, max_positions, request, requestCSFD, requestFileCSFD, internet_on, fromRomanStr, StrtoRoman
+from .CSFDTools import IsHTTPSWorking, intWithSeparator, char2Diacritic, char2DiacriticSort, char2Allowchar, char2AllowcharNumbers, strUni, Uni8, deletetmpfiles, OdstranitDuplicityRadku, loadPixmapCSFD, picStartDecodeCSFD
+from .CSFDMenu import CSFDIconMenu
+from .CSFDParser import ParserCSFD, ParserOstCSFD, ParserVideoCSFD, ParserGallCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions
+from .CSFDClasses import LoginToCSFD, GetMoviesForTVChannels, CSFDChannelSelection, CSFDEPGSelection, CSFDLCDSummary, CSFDSetup, CSFDInputText, CSFDAbout, CSFDHistory, CSFDVideoInfoScreen, CSFDPlayer, RefreshPlugins
+from .CSFDMovieCache import TVMovieCache
+from .CSFDSettings1 import CSFDGlobalVar
+from .CSFDSettings2 import _, localeInit, CSFDActionDict, std_headers, std_headers_UL2, std_media_header, std_media_header_UL2, std_post_header, std_post_header_UL2, std_login_header, std_login_header_UL2, MainUpdateUrl, MainUpdateUrlIpk, const_www_csfd, const_csfd_http_film, const_quick_page, ResetParams
+from .CSFDSettings2 import config
+from .CSFDSkinSelect import CSFDSkinSelect
+from .CSFDSkinLoader import *
+from .CSFDImdb import CSFD_IMDBcalls
+from .CSFDHelpMenu import CSFDHelpableScreen
+from .CSFDVirtualKeyBoard import CSFDVirtualKeyBoard
+from .CSFDScrollColorLabel import CSFDScrollColorLabel
+from .CSFDConsole import CSFDConsole
+from .CSFDCache import movieCSFDCache
+from .IMDBParser import ParserIMDB
 from Screens.Screen import Screen
 from Screens.MessageBox import MessageBox
 from Screens.ChoiceBox import ChoiceBox
@@ -45,7 +45,7 @@ except:
 	from urllib import urlencode
 	from urllib import quote
 
-from CSFDAndroidClient import CSFDAndroidClient
+from .CSFDAndroidClient import CSFDAndroidClient
 LogCSFD.WriteToFile('[CSFD] Iniciace modulu CSFD.py* - zacatek\n')
 deletetmpfiles()
 

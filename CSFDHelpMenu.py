@@ -3,12 +3,12 @@
 from Screens.Screen import Screen
 from Components.Label import Label
 from Components.ActionMap import ActionMap
-from CSFDHelpMenuList import CSFDHelpMenuList
-from CSFDRc import CSFDRc
-from CSFDSettings1 import CSFDGlobalVar
-from CSFDSettings2 import _
-from CSFDSettings2 import config
-from CSFDSkinLoader import *
+from .CSFDHelpMenuList import CSFDHelpMenuList
+from .CSFDRc import CSFDRc
+from .CSFDSettings1 import CSFDGlobalVar
+from .CSFDSettings2 import _
+from .CSFDSettings2 import config
+from .CSFDSkinLoader import *
 
 class CSFDHelpMenu(Screen, CSFDRc):
 	if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:

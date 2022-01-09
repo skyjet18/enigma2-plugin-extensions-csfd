@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from enigma import eRCInput, getPrevAsciiCode
-from CSFDNumericalTextInput import CSFDNumericalTextInput
-from CSFDNumericalTextInputHelpDialog import CSFDNumericalTextInputHelpDialog
+from .CSFDNumericalTextInput import CSFDNumericalTextInput
+from .CSFDNumericalTextInputHelpDialog import CSFDNumericalTextInputHelpDialog
 from Components.config import KEY_LEFT, KEY_RIGHT, KEY_HOME, KEY_END, KEY_DELETE, KEY_BACKSPACE, KEY_TOGGLEOW, KEY_ASCII, KEY_TIMEOUT, KEY_NUMBERS, getKeyNumber, ConfigElement
-from CSFDSettings1 import CSFDGlobalVar
+from .CSFDSettings1 import CSFDGlobalVar
 
 try:
 	unichr
