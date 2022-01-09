@@ -231,18 +231,18 @@ class SubsSupport(object):
 					self.__subsDir = self.__defaultPath
 				if not os.path.isfile(subsPath):
 					subsPath = None
-				if subsPath is not None:
-					self.__subsDict, self.__subsEnc = self.__processSubs(subsPath)
-				if self.__subsDict is not None:
-					self.__subsPath = subsPath
-					if newService:
-						self.__subsEngine.reset(newService)
-					self.__subsEngine.pause()
-					self.__subsEngine.setPlayerDelay(self.__playerDelay)
-					self.__subsEngine.setSubsDict(self.__subsDict)
-					self.__loaded = True
-					self.__working = False
-					return True
+			if subsPath is not None:
+				self.__subsDict, self.__subsEnc = self.__processSubs(subsPath)
+			if self.__subsDict is not None:
+				self.__subsPath = subsPath
+				if newService:
+					self.__subsEngine.reset(newService)
+				self.__subsEngine.pause()
+				self.__subsEngine.setPlayerDelay(self.__playerDelay)
+				self.__subsEngine.setSubsDict(self.__subsDict)
+				self.__loaded = True
+				self.__working = False
+				return True
 			self.__working = False
 			self.resetSubs(True)
 			return False

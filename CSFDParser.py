@@ -1524,12 +1524,12 @@ class CSFDParser():
 				videotitulkyurlSK = ''
 				
 				try:
-					videotitulkyurlCZ = video["subtitles"]["české"]
+					videotitulkyurlCZ = video["subtitles"]["české".decode('utf-8')]
 				except:
 					pass
 
 				try:
-					videotitulkyurlSK = video["subtitles"]["slovenské"]
+					videotitulkyurlSK = video["subtitles"]["slovenské".decode('utf-8')]
 				except:
 					pass
 					
