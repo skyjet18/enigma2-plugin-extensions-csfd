@@ -10,12 +10,39 @@ from Components.ActionMap import ActionMap
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS, SCOPE_CURRENT_SKIN
 from Tools.LoadPixmap import LoadPixmap
 from CSFDMenuList import CSFDMenuList
-import urllib, urllib2, cookielib, re, sys, operator, traceback
-cj = cookielib.CookieJar()
-handlersUL2 = [urllib2.HTTPHandler(), urllib2.HTTPSHandler(), urllib2.HTTPCookieProcessor(cj)]
-openerUL2 = urllib2.build_opener(*handlersUL2)
+import re, sys, operator, traceback
 
-class NoRedirection(urllib2.HTTPErrorProcessor):
+try:
+	# py2
+	from urllib import urlencode
+	from urllib2 import build_opener as urllib_build_opener
+	from urllib2 import HTTPHandler as urllib_HTTPHandler
+	from urllib2 import HTTPSHandler as urllib_HTTPSHandler
+	from urllib2 import HTTPCookieProcessor as urllib_HTTPCookieProcessor
+	from urllib2 import HTTPErrorProcessor as HTTPError
+	from urllib2 import Request as urllib_Request
+	from urllib2 import urlopen as urllib_urlopen
+	from cookielib import CookieJar
+except:
+	# py3
+	from urllib.parse import urlencode
+	from urllib.request import build_opener as urllib_build_opener
+	from urllib.request import HTTPHandler as urllib_HTTPHandler
+	from urllib.request import HTTPSHandler as urllib_HTTPSHandler
+	from urllib.request import HTTPCookieProcessor as urllib_HTTPCookieProcessor
+	from urllib.error import HTTPError as HTTPError
+	from urllib.request import Request as urllib_Request
+	from urllib.request import urlopen as urllib_urlopen
+	from http.cookiejar import CookieJar
+	xrange = range
+	unicode = str
+
+cj = CookieJar()
+	
+handlersUL2 = [urllib_HTTPHandler(), urllib_HTTPSHandler(), urllib_HTTPCookieProcessor(cj)]
+openerUL2 = urllib_build_opener(*handlersUL2)
+
+class NoRedirection( HTTPError ):
 
 	def http_response(self, request, response):
 		return response
@@ -23,7 +50,7 @@ class NoRedirection(urllib2.HTTPErrorProcessor):
 	https_response = http_response
 
 
-openerUL2NoRedirect = urllib2.build_opener(NoRedirection, urllib2.HTTPCookieProcessor(cj))
+openerUL2NoRedirect = urllib_build_opener(NoRedirection, urllib_HTTPCookieProcessor(cj))
 try:
 	import ssl
 	contextSSL = hasattr(ssl, '_create_unverified_context') and ssl._create_unverified_context() or None
@@ -184,7 +211,7 @@ def request(url, headers={}, timeout=None):
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - request - zacatek\n')
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - request - url: %s\n' % Uni8(url))
 	try:
-		r = urllib2.Request(url, headers=headers)
+		r = urllib_Request(url, headers=headers)
 		if timeout is None:
 			response = openerUL2.open(r)
 		else:
@@ -296,7 +323,7 @@ class CSFDHelpableActionMapChng(ActionMap):
 			actions = {}
 		alist = []
 		adict = {}
-		for action, funchelp in actions.iteritems():
+		for action, funchelp in list(actions.items()):
 			if isinstance(funchelp, tuple):
 				alist.append((action, funchelp[1]))
 				adict[action] = funchelp[0]
@@ -325,8 +352,8 @@ def requestInclErr(url, headers={}):
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - requestInclErr - url: %s\n' % Uni8(url))
 	chyba = False
 	try:
-		r = urllib2.Request(url, headers=headers)
-		response = urllib2.urlopen(r)
+		r = urllib_Request(url, headers=headers)
+		response = urllib_urlopen(r)
 		data = response.read()
 		response.close()
 		LogCSFD.WriteToFile('[CSFD] CSFDTools - requestInclErr - OK\n')
@@ -347,7 +374,7 @@ def internet_on(timeout_s=1):
 		return True
 	OK = False
 	try:
-		urllib2.urlopen(google_IP, timeout=timeout_s)
+		urllib_urlopen(google_IP, timeout=timeout_s)
 		OK = True
 	except:
 		OK = False
@@ -368,10 +395,10 @@ std_header_UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gec
 def post(url, data):
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - post - zacatek\n')
 	try:
-		postdata = urllib.urlencode(data)
-		req = urllib2.Request(url, postdata)
+		postdata = urlencode(data)
+		req = urllib_Request(url, postdata)
 		req.add_header('User-Agent', std_header_UA)
-		response = urllib2.urlopen(req)
+		response = urllib_urlopen(req)
 		data = response.read()
 		response.close()
 		LogCSFD.WriteToFile('[CSFD] CSFDTools - post - OK\n')
@@ -697,7 +724,7 @@ def char2Diacritic(line):
 				output += c
 
 	else:
-		for i, j in dictonaryDiacritic.iteritems():
+		for i, j in list(dictonaryDiacritic.items()):
 			line = line.replace(i, j)
 
 		output = line
@@ -712,7 +739,7 @@ dictonarySortCZ = {'ch': 'h|', 'CH': 'H|', 'Ch': 'H|', 'Ch': 'h|', 'Á': 'A|', '
 def char2DiacriticSort(text):
 	if isinstance(text, str):
 		text = unicode(text, 'utf-8')
-	for i, j in dictonarySortCZ.iteritems():
+	for i, j in list(dictonarySortCZ.items()):
 		text = text.replace(i, j)
 
 	return text
@@ -1032,8 +1059,8 @@ def IsHTTPSWorking():
 	OK = True
 	url = csfd_URL_https
 	try:
-		r = urllib2.Request(url, headers=std_media_header)
-		response = urllib2.urlopen(r)
+		r = urllib_Request(url, headers=std_media_header)
+		response = urllib_urlopen(r)
 		response.read()
 		response.close()
 	except:

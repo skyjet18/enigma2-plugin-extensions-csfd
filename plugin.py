@@ -290,7 +290,7 @@ else:
 							configfile.save()
 
 					else:
-						print '[CSFD] no epg for the service avail.. so we show CSFD instead of eventinfo'
+						print('[CSFD] no epg for the service avail.. so we show CSFD instead of eventinfo')
 						serviceref = self.session.nav.getCurrentlyPlayingServiceReference()
 						serviceHandler = eServiceCenter.getInstance()
 						info = serviceHandler.info(serviceref)

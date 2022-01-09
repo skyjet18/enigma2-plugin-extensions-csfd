@@ -1,6 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import urllib2, os
+import os
+
+try:
+	# py2
+	from urllib2 import Request as urllib_Request
+	from urllib2 import urlopen as urllib_urlopen
+except:
+	# py3
+	from urllib.request import Request as urllib_Request
+	from urllib.request import urlopen as urllib_urlopen
+	unicode = str
+	long = int
+	
 from re import compile as re_compile
 from os import path as os_path, listdir
 from twisted.internet import defer
@@ -26,7 +38,7 @@ from CSFDSkinLoader import *
 
 def debug(data):
 	if DEBUG:
-		print '[SubsSupport]', data.encode('utf-8')
+		LogCSFD.WriteToFile('[SubsSupport] %s\n' % data.encode('utf-8'))
 
 
 from CSFDSettings2 import _
@@ -43,9 +55,9 @@ ENCODINGS = {_('Central and Eastern Europe'): CENTRAL_EASTERN_EUROPE_ENCODINGS, 
 FONT_PATH = os.path.join(os.path.dirname(__file__), 'fonts')
 FONT = {'Default': {'regular': 'Regular', 'italic': 'Regular', 
 			   'bold': 'Regular'}}
-print '[Subtitles] initializing fonts in %s' % FONT_PATH
+LogCSFD.WriteToFile('[Subtitles] initializing fonts in %s' % FONT_PATH)
 FONT_CP = FONT.copy()
-for f in FONT_CP.keys():
+for f in list(FONT_CP.keys()):
 	if f == 'Default':
 		continue
 	regular = FONT[f]['regular']
@@ -64,7 +76,7 @@ for module in os.listdir(os.path.join(os.path.dirname(__file__), 'parsers')):
 	if module == '__init__.py' or module == 'baseparser.py' or module[-3:] != '.py':
 		continue
 	module = module[:-3]
-	exec 'import %s.%s' % ('parsers', module)
+	exec('import %s.%s' % ('parsers', module))
 	parsermod = eval('%s.%s' % ('parsers', module))
 	parser = parsermod.parserClass
 	debug('found %s %s' % (parser, dir(parser)))
@@ -82,12 +94,12 @@ for i in range(-100000, 100000, 100):
 
 subtitles_settings.playerDelay = ConfigSelection(default=_('0'), choices=choicelist)
 choicelist = []
-for e in ENCODINGS.keys():
+for e in list(ENCODINGS.keys()):
 	choicelist.append(e)
 
 subtitles_settings.encodingsGroup = ConfigSelection(default=_('Central and Eastern Europe'), choices=choicelist)
 choicelist = []
-for f in FONT.keys():
+for f in list(FONT.keys()):
 	choicelist.append(f)
 
 subtitles_settings.fontType = ConfigSelection(default='Ubuntu', choices=choicelist)
@@ -264,7 +276,7 @@ class SubsSupport(object):
 
 	def resumeSubs(self):
 		if self.__loaded:
-			print '[Subtitles] resuming subtitles'
+			LogCSFD.WriteToFile('[Subtitles] resuming subtitles\n')
 			if subtitles_settings.showSubtitles.value:
 				self.showSubsDialog()
 			else:
@@ -273,7 +285,7 @@ class SubsSupport(object):
 
 	def pauseSubs(self):
 		if self.__loaded:
-			print '[Subtitles] pausing subtitles'
+			LogCSFD.WriteToFile('[Subtitles] pausing subtitles\n')
 			self.__subsEngine.pause()
 
 	def playAfterSeek(self):
@@ -286,12 +298,12 @@ class SubsSupport(object):
 
 	def showSubsDialog(self):
 		if self.__loaded:
-			print '[Subtitles] show dialog'
+			LogCSFD.WriteToFile('[Subtitles] show dialog\n')
 			self.__subsScreen.show()
 
 	def hideSubsDialog(self):
 		if self.__loaded:
-			print '[Subtitles] hide dialog'
+			LogCSFD.WriteToFile('[Subtitles] hide dialog\n')
 			if self.__subsScreen:
 				self.__subsScreen.hide()
 
@@ -355,15 +367,15 @@ class SubsSupport(object):
 		del self.__startTimer
 		subtitles_settings.showSubtitles.setValue(True)
 		subtitles_settings.showSubtitles.save()
-		print '[SubsSupport] closing subtitleDisplay'
+		LogCSFD.WriteToFile('[SubsSupport] closing subtitleDisplay\n')
 		return
 
 	def __subsMenuCB(self, subfile, settings_changed, changed_encoding=False, changed_encoding_group=False):
 		if self.__loaded and self.__subsPath == subfile and settings_changed and not (changed_encoding or changed_encoding_group):
-			print '[SubsSupport] reset SubsScreen'
+			LogCSFD.WriteToFile('[SubsSupport] reset SubsScreen\n')
 			self.reloadSubsScreen()
 		elif changed_encoding or changed_encoding_group:
-			print '[SubsSupport] changed encoding or encoding_group'
+			LogCSFD.WriteToFile('[SubsSupport] changed encoding or encoding_group\n')
 			if changed_encoding_group:
 				self.resetSubs(resetEnc=True, resetEngine=False, newService=False)
 			else:
@@ -371,7 +383,7 @@ class SubsSupport(object):
 			self.loadSubs(subfile, newService=False)
 			self.playAfterSeek()
 		elif subfile != self.__subsPath:
-			print '[SubsSupport] changed subsfile'
+			LogCSFD.WriteToFile('[SubsSupport] changed subsfile\n')
 			if self.__loaded:
 				self.resetSubs(resetEnc=True, resetEngine=True, newService=False)
 				self.loadSubs(subfile, newService=False)
@@ -388,7 +400,7 @@ class SubsSupport(object):
 			if encoding is None or subText is None:
 				if self.__showGUIInfoMessages:
 					self.session.open(MessageBox, text=_('Cannot decode subtitles. Try another encoding group'), type=MessageBox.TYPE_WARNING, timeout=5)
-				print 'Cannot decode subtitles. Try another encoding group'
+				LogCSFD.WriteToFile('Cannot decode subtitles. Try another encoding group\n')
 				return (None, None)
 			subDict = None
 			for parser in PARSERS:
@@ -408,7 +420,7 @@ class SubsSupport(object):
 			if subDict is None:
 				if self.__showGUIInfoMessages:
 					self.session.open(MessageBox, text=_('Cannot parse subtitles'), type=MessageBox.TYPE_WARNING, timeout=5)
-				print 'Cannot parse subtitles'
+				LogCSFD.WriteToFile('Cannot parse subtitles\n')
 				return (None, None)
 			ss = SubStyler(subDict)
 			subsDict = ss.subDict
@@ -437,7 +449,7 @@ class SubsSupport(object):
 		self.resumeSubs()
 
 	def __serviceStarted(self):
-		print '[SubsSupport] Service Started'
+		LogCSFD.WriteToFile('[SubsSupport] Service Started\n')
 		if self.__working or self.isSubsLoaded():
 			while self.__working:
 				pass
@@ -462,12 +474,12 @@ class SubsSupport(object):
 			self.resetSubs(True)
 
 	def doSeekRelative(self, pts):
-		print '[SubsSupport] doSeekRelative'
+		LogCSFD.WriteToFile('[SubsSupport] doSeekRelative\n')
 		super(SubsSupport, self).doSeekRelative(pts)
 		self.playAfterSeek()
 
 	def doSeek(self, pts):
-		print '[SubsSupport] doSeek'
+		LogCSFD.WriteToFile('[SubsSupport] doSeek\n')
 		super(SubsSupport, self).doSeek(pts)
 		self.playAfterSeek()
 
@@ -526,7 +538,7 @@ class SubsScreen(Screen):
 		else:
 			self.skinName = 'CSFDSubtitleDisplay__'
 		self.stand_alone = True
-		print 'initializing subtitle display'
+		LogCSFD.WriteToFile('initializing subtitle display')
 		self['subtitles'] = Label('')
 		self['delay'] = Label('')
 
@@ -709,7 +721,7 @@ class SubsEngine(object):
 		if not self.isServiceSet:
 			self.isServiceSet = yield self.video.startService()
 			if not self.isServiceSet:
-				debug('cannot retrieve service, stopping')
+				debug('cannot retrieve service, stopping\n')
 				self.pause()
 			else:
 				doPlay()
@@ -1039,8 +1051,7 @@ class SubsMenu(Screen):
 		else:
 			self['info_subfile'].setText(_('None'))
 		self.title = _('Subtitles')
-		self.lst = [unicode(_('Choose subtitles'), 'utf-8'),
-		 unicode(_('Subtitles settings'), 'utf-8')]
+		self.lst = [unicode(_('Choose subtitles'), 'utf-8'), unicode(_('Subtitles settings'), 'utf-8')]
 		if subfile is not None:
 			self.lst.append(unicode(_('Change encoding'), 'utf-8'))
 		self.subfile = subfile
@@ -1294,7 +1305,7 @@ class SubFileList(FileList):
 					directories.append(directory + x + '/')
 					files.remove(x)
 
-		if directory is not None and self.showDirectories and not self.isTop:
+		if directory is not None and self.showDirectories:
 			if directory == self.current_mountpoint and self.showMountpoints:
 				self.list.append(FileEntryComponent(name='<' + _('List of Storage Devices') + '>', absolute=None, isDir=True))
 			elif directory != '/' and not (self.inhibitMounts and self.getMountpoint(directory) in self.inhibitMounts):
@@ -1340,7 +1351,7 @@ class SubsFileChooser(Screen):
 		defaultDir = subdir
 		if subdir is not None and not subdir.endswith('/'):
 			defaultDir = subdir + '/'
-		print '[SubsFileChooser] defaultdir', defaultDir
+		LogCSFD.WriteToFile('[SubsFileChooser] defaultdir %s\n' % defaultDir)
 		self.filelist = SubFileList(defaultDir)
 		self['filelist'] = self.filelist
 		self['actions'] = NumberActionMap(['OkCancelActions', 'DirectionActions'], {'ok': self.okClicked, 
@@ -1358,7 +1369,7 @@ class SubsFileChooser(Screen):
 			self.filelist.descent()
 		else:
 			filePath = os.path.join(self.filelist.current_directory, self.filelist.getFilename())
-			print '[SubsFileChooser]', filePath
+			LogCSFD.WriteToFile('[SubsFileChooser] %s\n' % filePath)
 			self.close(filePath)
 
 	def up(self):
@@ -1378,10 +1389,10 @@ class SubProcessPath(object):
 		self.current_encoding = current_encoding
 		if subfile[0:4] == 'http':
 			try:
-				print '[Subtitles] downloading from %s' % subfile
+				LogCSFD.WriteToFile('[Subtitles] downloading from %s\n' % subfile)
 				text = self.request(subfile)
 			except Exception:
-				print '[Subtitles] cannot download subtitles %s' % subfile
+				LogCSFD.WriteToFile('[Subtitles] cannot download subtitles %s\n' % subfile)
 				traceback.print_exc()
 			else:
 				self.text, self.encoding = self.decode(text)
@@ -1390,7 +1401,7 @@ class SubProcessPath(object):
 			try:
 				f = open(subfile, 'r')
 			except IOError:
-				print '[Subtitles] cannot open subtitle file %s' % subfile
+				LogCSFD.WriteToFile('[Subtitles] cannot open subtitle file %s\n' % subfile)
 				self.text = None
 			else:
 				text = f.read()
@@ -1418,13 +1429,13 @@ class SubProcessPath(object):
 		while current_idx != current_encoding_idx:
 			enc = self.encodings[current_idx]
 			try:
-				print 'trying enc', enc
+				LogCSFD.WriteToFile('trying enc %s\n' % enc)
 				utext = text.decode(enc)
 				used_encoding = enc
 				return (utext, used_encoding)
 			except Exception:
 				if enc == self.encodings[(-1)] and current_encoding_idx == -1:
-					print '[Subtitles] cannot decode file'
+					LogCSFD.WriteToFile('[Subtitles] cannot decode file\n')
 					return (None, None)
 				if enc == self.encodings[(-1)] and current_encoding_idx != -1:
 					current_idx = 0
@@ -1437,8 +1448,8 @@ class SubProcessPath(object):
 		 text.decode(self.current_encoding), self.current_encoding)
 
 	def request(self, url):
-		req = urllib2.Request(url)
-		response = urllib2.urlopen(req)
+		req = urllib_Request(url)
+		response = urllib_urlopen(req)
 		data = response.read()
 		response.close()
 		return data

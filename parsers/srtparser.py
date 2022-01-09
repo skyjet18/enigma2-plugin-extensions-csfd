@@ -5,7 +5,12 @@ import re
 import traceback
 from baseparser import BaseParser
 
-
+try:
+	# py2
+	long
+except:
+	# py3
+	long = int
 
 class SrtParser(BaseParser):
 	parsing = ('.srt')
@@ -14,8 +19,8 @@ class SrtParser(BaseParser):
 		try:
 			subdict = self.srt_to_dict(text)
 		except Exception:
-			print traceback.print_exc()
-			print '[srtParser] cannot parse srt subtitles'
+			print( traceback.print_exc() )
+			print( '[srtParser] cannot parse srt subtitles' )
 			return
 		return subdict
 	

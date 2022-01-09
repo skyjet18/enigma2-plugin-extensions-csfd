@@ -14,6 +14,15 @@ from Tools.LoadPixmap import LoadPixmap
 from CSFDLog import LogCSFD
 from CSFDSettings1 import CSFDGlobalVar
 
+try:
+	# py2
+	unicode
+	unichr
+except:
+	# py3
+	unicode = str
+	unichr = chr
+	
 class VirtualKeyBoardList(MenuList):
 
 	def __init__(self, listP, enableWrapAround=False):

@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
 import os
 
+try:
+	# py2
+	long
+except:
+	# py3
+	long = int
+
 class BaseParser():
 	parsing = ()
 	@classmethod

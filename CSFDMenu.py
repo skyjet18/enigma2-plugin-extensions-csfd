@@ -196,7 +196,7 @@ class CSFDIconMenu(Screen):
 
 		for x in self.itemlist:
 			if x[2] == self.currPage:
-				print 'newPage: ', x[1]
+				print( 'newPage: ' + x[1] )
 				self[('label' + str(x[1]))].setText(x[3])
 				if x[4].startswith('http'):
 					self[('thumb' + str(x[1]))].instance.setPixmapFromFile('/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/CSFDMenu_empty.png')

@@ -7,7 +7,7 @@ from os import path as os_path, remove as os_remove, rename as os_rename, fsync
 class CSFDLog:
 
 	def __init__(self):
-		print '[CSFD] CSFDLog Init - Start'
+		print('[CSFD] CSFDLog Init - Start')
 		self.level = -1
 		self.max_level = 10
 		self.key_word_start = 'ZACATEK'
@@ -23,7 +23,7 @@ class CSFDLog:
 		config.misc.CSFD.DirectoryTMP = ConfigText('/tmp/', fixed_size=False)
 		config.misc.CSFD.LogMaxSize = ConfigSelection(choices=[('50000', '50kB'), ('100000', '100kB'), ('200000', '200kB'), ('300000', '300kB'), ('400000', '400kB'), ('500000', '500kB'), ('1000000', '1MB')], default='300000')
 		self.LoadDefaults()
-		print '[CSFD] CSFDLog Init - End'
+		print('[CSFD] CSFDLog Init - End')
 
 	def LoadDefaults(self):
 		self.Log = config.misc.CSFD.Log.getValue()
@@ -93,9 +93,9 @@ class CSFDLog:
 		if self.LogConsole:
 			if self.LogConsoleTime:
 				scctime = datetime.now().strftime('%Y%m%d %H:%M:%S.%f')
-				print scctime, ' ', string
+				print(scctime + '  ' + string)
 			else:
-				print string
+				print(string)
 		self.CheckKeyWordEnd(string, vlakno)
 
 	def WriteToFileWithoutTime(self, string):
@@ -109,7 +109,7 @@ class CSFDLog:
 			fsync(soubor.fileno())
 			soubor.close()
 		if self.LogConsole:
-			print string
+			print(string)
 
 
 LogCSFD = CSFDLog()

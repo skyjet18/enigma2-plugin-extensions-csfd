@@ -5,7 +5,17 @@ from CSFDTools import char2Allowchar, strUni, ExtractNumbers, isBigCharInFirst, 
 from CSFDSettings2 import const_csfd_http_film
 from CSFDSettings1 import CSFDGlobalVar
 from datetime import datetime
-import re, traceback, htmlentitydefs
+import re, traceback
+
+try:
+	# py2
+	from htmlentitydefs import name2codepoint
+except:
+	# py3
+	from html.entities import name2codepoint
+	unichr = chr
+	unicode = str
+	
 zlib_exist = True
 try:
 	import zlib
@@ -609,7 +619,7 @@ class CSFDParser():
 					key1 = x1.group(0)
 					if key1 not in entitydict:
 						try:
-							entitydict[key1] = htmlentitydefs.name2codepoint[x1.group(1)]
+							entitydict[key1] = name2codepoint[x1.group(1)]
 						except KeyError:
 							pass
 
@@ -627,7 +637,7 @@ class CSFDParser():
 					if key3 not in entitydict:
 						entitydict[key3] = x3.group(1)
 
-			for key, codepoint in entitydict.items():
+			for key, codepoint in list(entitydict.items()):
 				inhtml = inhtml.replace(key, unichr(int(codepoint)).encode('utf8'))
 
 			inhtml_script = inhtml

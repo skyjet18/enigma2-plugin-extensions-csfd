@@ -26,10 +26,19 @@ class CSFDNumericalTextInput:
 		self.lastKey = -1
 		self.pos = -1
 		if search:
-			if isinstance(search, basestring):
-				self.mapping.append(unicode(search) + '0')
-			else:
-				self.mapping.append('%_0')
+			try:
+				# py2
+				if isinstance(search, basestring):
+					self.mapping.append(unicode(search) + '0')
+				else:
+					self.mapping.append('%_0')
+			except:
+				# py3
+				if isinstance(search, str):
+					self.mapping.append(str(search) + '0')
+				else:
+					self.mapping.append('%_0')
+				
 			self.mapping.append(' 1')
 			self.mapping.append('abc2')
 			self.mapping.append('def3')
@@ -99,7 +108,12 @@ class CSFDNumericalTextInput:
 			return
 
 	def setUseableChars(self, useable):
-		self.useableChars = unicode(useable)
+		try:
+			# py2
+			self.useableChars = unicode(useable)
+		except:
+			#py3
+			self.useableChars = str(useable)
 
 	def getKey(self, num):
 		cnt = 0

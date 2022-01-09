@@ -6,6 +6,11 @@ from CSFDNumericalTextInputHelpDialog import CSFDNumericalTextInputHelpDialog
 from Components.config import KEY_LEFT, KEY_RIGHT, KEY_HOME, KEY_END, KEY_DELETE, KEY_BACKSPACE, KEY_TOGGLEOW, KEY_ASCII, KEY_TIMEOUT, KEY_NUMBERS, getKeyNumber, ConfigElement
 from CSFDSettings1 import CSFDGlobalVar
 
+try:
+	unichr
+except NameError:
+	unichr = chr
+
 class CSFDConfigText(ConfigElement, CSFDNumericalTextInput):
 
 	def __init__(self, default='', fixed_size=True, visible_width=False):
@@ -149,7 +154,7 @@ class CSFDConfigText(ConfigElement, CSFDNumericalTextInput):
 			self.text = val.decode('utf-8')
 		except UnicodeDecodeError:
 			self.text = val.decode('utf-8', 'ignore')
-			print 'Broken UTF8!'
+			print( 'Broken UTF8!' )
 
 		self.changed()
 
@@ -162,14 +167,14 @@ class CSFDConfigText(ConfigElement, CSFDNumericalTextInput):
 	def getMulti(self, selected):
 		if self.visible_width:
 			if self.allmarked:
-				mark = range(0, min(self.visible_width, len(self.text)))
+				mark = list(range(0, min(self.visible_width, len(self.text))))
 			else:
 				mark = [
 				 self.marked_pos - self.offset]
 			return ('mtext'[1 - selected:], self.text[self.offset:self.offset + self.visible_width].encode('utf-8') + ' ', mark)
 		else:
 			if self.allmarked:
-				mark = range(0, len(self.text))
+				mark = list(range(0, len(self.text)))
 			else:
 				mark = [
 				 self.marked_pos]

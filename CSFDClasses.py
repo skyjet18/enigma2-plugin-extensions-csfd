@@ -29,7 +29,13 @@ from CSFDSettings2 import config
 from CSFDMovieCache import TVMovieCache
 from CSFDParser import GetCSFDNumberFromChannel, ParserTVCSFD, ParserOstCSFD
 from CSFDSkinLoader import *
-import time, urllib, traceback
+import time, traceback
+
+try:
+	from urllib.parse import urlencode
+except:
+	from urllib import urlencode
+
 
 def LoginToCSFD():
 	LogCSFD.WriteToFile('[CSFD] LoginToCSFD - zacatek\n', 1)
@@ -94,7 +100,7 @@ def LoginToCSFD():
 					   'send': 'Přihlásit+se', 
 					   '_token_': token, 
 					   '_do': 'form-submit'}
-					data = urllib.urlencode(values)
+					data = urlencode(values)
 					url = url_login
 					raise NameError('#2 Login do csfd nie je podporovany')
 #					page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False, saveCookie=True)

@@ -33,9 +33,9 @@ class IMDB(Screen):
 			from Plugins.Extensions.CSFD.plugin import CallCSFD	 # @UnresolvedImport
 			self.ret = CallCSFD(session=self.session, eventName=self.eventName, callbackNeeded=self.callbackNeeded)
 		except:
-			print "IMDB emulator for CSFD - error"
+			print("IMDB emulator for CSFD - error")
 			err = traceback.format_exc()
-			print err
+			print(err)
 			pass
 		self.exit()
 

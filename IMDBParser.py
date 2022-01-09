@@ -2,8 +2,14 @@
 
 from CSFDLog import LogCSFD
 from CSFDSettings2 import config
-import re, htmlentitydefs
+import re
 
+try:
+	from htmlentitydefs import name2codepoint
+except:
+	from html.entities import name2codepoint
+	unichr = chr
+	
 class IMDBConstParser:
 
 	def __init__(self):
@@ -54,7 +60,7 @@ class IMDBParser:
 				key1 = x1.group(0)
 				if key1 not in entitydict:
 					try:
-						entitydict[key1] = htmlentitydefs.name2codepoint[x1.group(1)]
+						entitydict[key1] = name2codepoint[x1.group(1)]
 					except KeyError:
 						pass
 
@@ -72,7 +78,7 @@ class IMDBParser:
 				if key3 not in entitydict:
 					entitydict[key3] = x3.group(1)
 
-		for key, codepoint in entitydict.items():
+		for key, codepoint in list(entitydict.items()):
 			inhtml = inhtml.replace(key, unichr(int(codepoint)).encode('utf8'))
 
 		return inhtml

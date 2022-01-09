@@ -163,30 +163,30 @@ class CSFDConfigListScreen:
 	def handleInputHelpers(self):
 		if self['config'].getCurrent() is not None:
 			if isinstance(self['config'].getCurrent()[1], CSFDConfigText) or isinstance(self['config'].getCurrent()[1], CSFDConfigPassword):
-				if self.has_key('VKeyIcon'):
+				if 'VKeyIcon' in self:
 					self['VirtualKB'].setEnabled(True)
 					self['VKeyIcon'].show()
 					self['VKeyIcon'].boolean = True
-				if self.has_key('VKeyText'):
+				if 'VKeyText' in self:
 					self['VKeyText'].show()
-				if self.has_key('HelpWindow'):
+				if 'HelpWindow' in self:
 					if self['config'].getCurrent()[1].help_window.instance is not None:
 						helpwindowpos = self['HelpWindow'].getPosition()
 						from enigma import ePoint
 						self['config'].getCurrent()[1].help_window.instance.move(ePoint(helpwindowpos[0], helpwindowpos[1]))
 			else:
-				if self.has_key('VKeyIcon'):
+				if 'VKeyIcon' in self:
 					self['VirtualKB'].setEnabled(False)
 					self['VKeyIcon'].boolean = False
 					self['VKeyIcon'].hide()
-				if self.has_key('VKeyText'):
+				if 'VKeyText' in self:
 					self['VKeyText'].hide()
 		else:
-			if self.has_key('VKeyIcon'):
+			if 'VKeyIcon' in self:
 				self['VirtualKB'].setEnabled(False)
 				self['VKeyIcon'].boolean = False
 				self['VKeyIcon'].hide()
-			if self.has_key('VKeyText'):
+			if 'VKeyText' in self:
 				self['VKeyText'].hide()
 		return
 

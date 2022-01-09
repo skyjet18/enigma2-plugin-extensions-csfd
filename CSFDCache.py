@@ -18,7 +18,7 @@ class CSFDCache:
 	def deleteOldItemsFromCache(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDCache - deleteOldItemsFromCache - zacatek\n')
 		tmpDict = self.cacheMovieScore.copy()
-		for key, value in tmpDict.iteritems():
+		for key, value in tmpDict.items():
 			now = int(time.time())
 			if now - value[2] > 43200:
 				del self.cacheMovieScore[key]
@@ -35,13 +35,13 @@ class CSFDCache:
 		 score, shoda100)
 
 	def AreMovieNamesInScoreCache(self, movienames):
-		if self.cacheMovieScore.has_key(movienames):
+		if movienames in self.cacheMovieScore:
 			return True
 		else:
 			return False
 
 	def delMovieNameFromScoreCache(self, movienames):
-		if self.cacheMovieScore.has_key(movienames):
+		if movienames in self.cacheMovieScore:
 			del self.cacheMovieScore[movienames]
 
 

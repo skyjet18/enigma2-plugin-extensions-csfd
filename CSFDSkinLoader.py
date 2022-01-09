@@ -23,7 +23,7 @@ for module in os_listdir(os_path.join(os_path.dirname(__file__), 'skins')):
 	if module == 'CSFDSkin_' + config.misc.CSFD.CurrentSkin.getValue():
 		LogCSFD.WriteToFile('[CSFD] SkinLoader - import - %s\n' % module)
 		try:
-			exec 'from %s.%s import *' % ('skins', module)
+			exec('from %s.%s import *' % ('skins', module))
 			LogCSFD.WriteToFile('[CSFD] SkinLoader - import OK - %s\n' % module)
 			moduleload = True
 		except:

@@ -150,12 +150,12 @@ def localeInit():
 			if lang == 'cs':
 				locale.setlocale(locale.LC_ALL, 'cs_CZ.UTF-8')
 				LogCSFD.WriteToFile('[CSFD] CSFDSettings2 - localeInit - LC_ALL nastaveno na cs_CZ.UTF-8\n')
-				print datetime.now().strftime('CSFD Init - Dnes je %A %d. %B %Y')
+				print(datetime.now().strftime('CSFD Init - Dnes je %A %d. %B %Y'))
 				LogCSFD.WriteToFile(datetime.now().strftime('CSFD Init - Dnes je %A %d. %B %Y') + '\\u')
 			elif lang == 'sk':
 				locale.setlocale(locale.LC_ALL, 'sk_SK.UTF-8')
 				LogCSFD.WriteToFile('[CSFD] CSFDSettings2 - localeInit - LC_ALL nastaveno na sk_SK.UTF-8\n')
-				print datetime.now().strftime('CSFD Init - Dnes je %A %d. %B %Y')
+				print(datetime.now().strftime('CSFD Init - Dnes je %A %d. %B %Y'))
 				LogCSFD.WriteToFile(datetime.now().strftime('CSFD Init - Dnes je %A %d. %B %Y') + '\\u')
 		except:
 			LogCSFD.WriteToFile('[CSFD] CSFDSettings2 - localeInit - nepodarilo se nastavit LC_ALL\n')

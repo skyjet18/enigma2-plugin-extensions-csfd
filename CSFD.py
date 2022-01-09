@@ -36,7 +36,15 @@ from Components.config import configfile
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 from os import path as os_path
 from random import randint, seed
-import time, urllib, traceback
+import time, traceback
+
+try:
+	from urllib.parse import urlencode
+	from urllib.parse import quote
+except:
+	from urllib import urlencode
+	from urllib import quote
+
 from CSFDAndroidClient import CSFDAndroidClient
 LogCSFD.WriteToFile('[CSFD] Iniciace modulu CSFD.py* - zacatek\n')
 deletetmpfiles()
@@ -3297,11 +3305,11 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			if self.FindAllItems or not self.CSFDqueryTV():
 				self['statusbar'].setText(_('Probíhá vyhledávání v databázi CSFD ... (') + self.eventNameLocal + ')')
 				try:
-					eventNameUrllib = urllib.quote(self.eventNameLocal)
+					eventNameUrllib = quote(self.eventNameLocal)
 					LogCSFD.WriteToFile('[CSFD] getCSFD - OK\n')
 				except:
 					LogCSFD.WriteToFile('[CSFD] getCSFD - chyba\n')
-					eventNameUrllib = urllib.quote(strUni(char2Diacritic(char2Allowchar(self.eventName)).strip()))
+					eventNameUrllib = quote(strUni(char2Diacritic(char2Allowchar(self.eventName)).strip()))
 					LogCSFD.WriteToFile('[CSFD] getCSFD - hledany film - chyba ' + eventNameUrllib + '\n')
 					err = traceback.format_exc()
 					LogCSFD.WriteToFile(err)
@@ -3309,7 +3317,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 #				if self.FindAllItems:
 #					fetchurl = CSFDGlobalVar.getHTTP() + const_www_csfd + '/hledat/complete-films/?q=' + eventNameUrllib
 #				elif self.eventMovieSourceOfDataEPG == False and len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
-#					yr = urllib.quote(strUni(' (' + str(self.eventMovieYears[0]) + ')'))
+#					yr = quote(strUni(' (' + str(self.eventMovieYears[0]) + ')'))
 #					fetchurl = CSFDGlobalVar.getHTTP() + const_www_csfd + '/hledat/?q=' + eventNameUrllib + yr
 #				else:
 #					fetchurl = CSFDGlobalVar.getHTTP() + const_www_csfd + '/hledat/?q=' + eventNameUrllib
@@ -3366,7 +3374,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 	def fetchFailed(self, string, url):
 		LogCSFD.WriteToFile('[CSFD] fetchFailed - Chyba pri stahovani\n')
-		print 'CSFD fetchFailed - Erorr:', string
+		print( 'CSFD fetchFailed - Error: ' + str(string) )
 		LogCSFD.WriteToFile('[CSFD] fetchFailed - Chyba pri stahovani: ' + Uni8(string.getErrorMessage()) + '\n')
 		LogCSFD.WriteToFile('[CSFD] fetchFailed - Chyba pri stahovani - url: ' + Uni8(url) + '\n')
 		self.stahnutoCSFD2 = ''
@@ -3376,20 +3384,20 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 	def fetchFailedOst(self, string, url):
 		LogCSFD.WriteToFile('[CSFD] fetchFailedOst - Chyba pri stahovani\n')
-		print 'CSFD fetchFailedOst - Erorr:', string
+		print( 'CSFD fetchFailedOst - Error: ' + str(string) )
 		LogCSFD.WriteToFile('[CSFD] fetchFailedOst - Chyba pri stahovani: ' + Uni8(string.getErrorMessage()) + '\n')
 		LogCSFD.WriteToFile('[CSFD] fetchFailedOst - Chyba pri stahovani - url: ' + Uni8(url) + '\n')
 
 	def fetchFailedPoster(self, string, url, localfile):
 		LogCSFD.WriteToFile('[CSFD] fetchFailedPoster - Chyba pri stahovani posteru\n')
-		print 'CSFD fetchFailedPoster - Erorr:', string
+		print( 'CSFD fetchFailedPoster - Erorr: ' + str(string) )
 		LogCSFD.WriteToFile('[CSFD] fetchFailedPoster - Chyba pri stahovani posteru: ' + Uni8(string.getErrorMessage()) + '\n')
 		LogCSFD.WriteToFile('[CSFD] fetchFailedPoster - Chyba pri stahovani posteru - url: ' + Uni8(url) + '\n')
 		LogCSFD.WriteToFile('[CSFD] fetchFailedPoster - Chyba pri stahovani posteru - localfile: ' + Uni8(localfile) + '\n')
 
 	def fetchFailedVideoPoster(self, string, url, localfile):
 		LogCSFD.WriteToFile('[CSFD] fetchFailedVideoPoster - Chyba pri stahovani video posteru\n')
-		print 'CSFD fetchFailedVideoPoster - Erorr:', string
+		print( 'CSFD fetchFailedVideoPoster - Erorr: ' + str(string) )
 		LogCSFD.WriteToFile('[CSFD] fetchFailedVideoPoster - Chyba pri stahovani video posteru: ' + Uni8(string.getErrorMessage()) + '\n')
 		LogCSFD.WriteToFile('[CSFD] fetchFailedVideoPoster - Chyba pri stahovani video posteru - url: ' + Uni8(url) + '\n')
 		LogCSFD.WriteToFile('[CSFD] fetchFailedVideoPoster - Chyba pri stahovani video posteru - localfile: ' + Uni8(localfile) + '\n')
@@ -5493,7 +5501,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - url: ' + url + '\n', 8)
 					values = {'rating': value_rating, 'film_comment': '',  '_token_': token}
 					LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - postdata: ' + str(values) + '\n', 8)
-					data = urllib.urlencode(values)
+					data = urlencode(values)
 					page = requestCSFD(url, headers=std_post_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False)
 						
 					if linkG == self.linkGlobal:
@@ -6423,7 +6431,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			   'send': 'Přihlásit+se', 
 			   '_token_': token, 
 			   '_do': 'form-submit'}
-			data = urllib.urlencode(values)
+			data = urlencode(values)
 			url = url_login
 			page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False, saveCookie=True)
 			url = 'https://www.csfd.cz/'
