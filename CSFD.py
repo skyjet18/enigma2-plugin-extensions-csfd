@@ -1913,26 +1913,27 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 			else:
 				self.BouquetIndex = -1
-			oldIndex = self.BouquetIndex
-			poc = 0
-			prac = True
-			while prac:
-				poc += 1
-				if poc > 20:
-					break
-				if nextP:
-					self.BouquetIndex += 1
-					if self.BouquetIndex >= len(self.BouquetMenuRot):
-						self.BouquetIndex = 0
-				else:
-					self.BouquetIndex -= 1
-					if self.BouquetIndex < 0:
-						self.BouquetIndex = len(self.BouquetMenuRot) - 1
-				typ = self.BouquetMenuRot[self.BouquetIndex]
-				if typ == 'nic' or typ in self.FunctionExists:
-					prac = True
-				else:
-					prac = False
+				
+		oldIndex = self.BouquetIndex
+		poc = 0
+		prac = True
+		while prac:
+			poc += 1
+			if poc > 20:
+				break
+			if nextP:
+				self.BouquetIndex += 1
+				if self.BouquetIndex >= len(self.BouquetMenuRot):
+					self.BouquetIndex = 0
+			else:
+				self.BouquetIndex -= 1
+				if self.BouquetIndex < 0:
+					self.BouquetIndex = len(self.BouquetMenuRot) - 1
+			typ = self.BouquetMenuRot[self.BouquetIndex]
+			if typ == 'nic' or typ in self.FunctionExists:
+				prac = True
+			else:
+				prac = False
 
 		if poc < 20 and oldIndex != self.BouquetIndex:
 			self.RunKey(typ)
