@@ -8,6 +8,7 @@ try:
 except:
 	from urllib import quote_plus
 
+from base64 import b64decode as bd
 
 from .CSFDLog import LogCSFD
 from .CSFDSettings2 import config
@@ -16,14 +17,13 @@ from .CSFDSettings2 import config
 
 class CSFDAndroidClient:
 	def __init__( self ):
-		self.client_key="061025241049"
-		self.client_secret="88af9526ee967179"
-		self.api_url="https://android-api.csfd.cz/"
-		self.headers = {
-			'User-Agent': 'CSFDroid/2.3.3.1544 (Samsung Galaxy S7; 6.0 REL)',
-			'X-App-Version': '1544'
-		}
-		
+		data = "MDYxMDI1MjQxMDQ5ODhhZjk1MjZlZTk2NzE3OWh0dHBzOi8vYW5kcm9pZC1hcGkuY3NmZC5jei9Vc2VyLUFnZW50Q1NGRHJvaWQvMi4zLjMuMTU0NCAoU2Ftc3VuZyBHYWxheHkgUzc7IDYuMCBSRUwpWC1BcHAtVmVyc2lvbjE1NDQg"
+		data = bd( data.encode( 'utf-8' ) ).decode('utf-8')
+
+		self.client_key=data[:12]
+		self.client_secret=data[12:28]
+		self.api_url=data[28:56]
+		self.headers = { data[56:66]: data[66:114], data[114:127]: data[127:131] }
 		self.oauth = OAuth1Session( self.client_key, client_secret=self.client_secret )
 
 	# ######################################################################################
