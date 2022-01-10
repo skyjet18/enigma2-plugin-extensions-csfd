@@ -198,7 +198,7 @@ def strUni(mystring):
 
 def Uni8(mystring):
 	if isinstance(mystring, str):
-		return unicode(mystring, 'utf-8')
+		return unicode(mystring, 'utf-8', errors='ignore')
 	else:
 		return mystring
 
