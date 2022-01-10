@@ -43,7 +43,7 @@ class CSFDLog:
 
 	def CreateEmptyLog(self):
 		if self.Log:
-			soubor = file(self.CSFDLogFile, 'w')
+			soubor = open(self.CSFDLogFile, 'w')
 			soubor.close()
 
 	def VerifyLogSize(self):
@@ -80,7 +80,7 @@ class CSFDLog:
 	def WriteToFile(self, string, vlakno=0):
 		self.CheckKeyWordStart(string, vlakno)
 		if self.Log:
-			soubor = file(self.CSFDLogFile, 'a')
+			soubor = open(self.CSFDLogFile, 'a')
 			scctime = datetime.now().strftime('%Y%m%d %H:%M:%S.%f')
 			if isinstance(string, str):
 				soubor.write(scctime + ' ' + self.SetOffset(vlakno) + string)
@@ -100,7 +100,7 @@ class CSFDLog:
 
 	def WriteToFileWithoutTime(self, string):
 		if self.Log:
-			soubor = file(self.CSFDLogFile, 'a')
+			soubor = open(self.CSFDLogFile, 'a')
 			if isinstance(string, str):
 				soubor.write(string)
 			else:

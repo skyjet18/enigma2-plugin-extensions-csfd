@@ -1381,7 +1381,7 @@ class CSFDHistory(Screen):
 	def ReadHistoryFromFile(self):
 		self.list = []
 		filename = resolveFilename(SCOPE_PLUGINS, 'Extensions/CSFD/CSFD_history.txt')
-		file_h = file(filename, 'r')
+		file_h = open(filename, 'r')
 		cisloRadku = 0
 		pamatradek = ''
 		rad_barva = CSFDratingColor_Nothing
