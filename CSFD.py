@@ -5108,7 +5108,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			
 			result = self.csfdAndroidClient.get_json_by_uri( '#movie_photos#' + id_filmu )
 			
-			self.PosterBasicCountPixAllG = 0
+			if self.PosterBasicCountPixAllG < 0:
+				self.PosterBasicCountPixAllG = len(result["photos"])
+
 			for photo in result["photos"]:
 				photo_url = photo["url"]
 				
