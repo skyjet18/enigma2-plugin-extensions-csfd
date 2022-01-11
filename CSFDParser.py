@@ -796,6 +796,9 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserRatingStars - zacatek\n')
 		try:
 			ratingstars = self.json_data["info"]["rating_average"]
+			
+			if ratingstars == None:
+				ratingstars = -1
 		except:
 			ratingstars = -1
 
@@ -1347,7 +1350,7 @@ class CSFDParser():
 			elif int(comment["rating"]) == 0:
 				rating_stars = "odpad!"
 			else:
-				rating_stars = "* " * (int(comment["rating"]) / 20)
+				rating_stars = "* " * int(int(comment["rating"]) / 20)
 				
 			searchresults.append( (comment["user"]["nick"], rating_stars , comment["inserted_datetime"][:-12], comment_text) )
 

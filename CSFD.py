@@ -2,7 +2,7 @@
 
 from enigma import eTimer, ePicLoad, eServiceCenter, eServiceReference, eConsoleAppContainer, gPixmapPtr, gRGB, RT_HALIGN_LEFT, RT_VALIGN_CENTER
 from .CSFDLog import LogCSFD
-from .CSFDTools import ItemList, ItemListServiceMenu, TextSimilarityBigram, TextSimilarityLD, TextCompare, max_positions, request, requestCSFD, requestFileCSFD, internet_on, fromRomanStr, StrtoRoman
+from .CSFDTools import ItemList, ItemListServiceMenu, TextSimilarityBigram, TextSimilarityLD, TextCompare, max_positions, request, requestFileCSFD, internet_on, fromRomanStr, StrtoRoman
 from .CSFDTools import IsHTTPSWorking, intWithSeparator, char2Diacritic, char2DiacriticSort, char2Allowchar, char2AllowcharNumbers, strUni, Uni8, deletetmpfiles, OdstranitDuplicityRadku, loadPixmapCSFD, picStartDecodeCSFD
 from .CSFDMenu import CSFDIconMenu
 from .CSFDParser import ParserCSFD, ParserOstCSFD, ParserVideoCSFD, ParserGallCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions
@@ -1302,7 +1302,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] UlozitVideoDownload - stahuji z url ' + videourl + ' do ' + localfilevideo + '\n')
 		self.session.open(MessageBox, _('Video bude staženo do : %s') % localfilevideo, type=MessageBox.TYPE_INFO, timeout=10)
 		
-		requestFileCSFD(videourl, localfilevideo, headers=std_media_header_UL2)
+		requestFileCSFD(videourl, localfilevideo)
 		self.closeUlozitVideo('')
 		
 		if titulkyurl != '':
@@ -1311,7 +1311,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			nazevtitulky = ss1[0] + '.' + ss[1]
 			localfiletitulky = config.misc.CSFD.DirectoryVideoDownload.getValue() + nazevtitulky
 			LogCSFD.WriteToFile('[CSFD] UlozitVideoDownload - stahuji z url ' + titulkyurl + ' do ' + localfiletitulky + '\n')
-			requestFileCSFD(titulkyurl, localfiletitulky, headers=std_media_header_UL2)
+			requestFileCSFD(titulkyurl, localfiletitulky )
 			self.closeUlozitTitulky('')
 			
 		LogCSFD.WriteToFile('[CSFD] UlozitVideoDownload - konec\n')
@@ -4408,52 +4408,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] Parse - konec\n')
 		return
 
-	def XXX_CSFDshowSpec(self):
-		LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - zacatek\n')
-		self['statusbar'].setText('')
-		if self.querySpecAkce == 'UserGallery' or self.querySpecAkce == 'UserPoster' or self.querySpecAkce == 'UserVideo':
-			self.CSFDquerySpec('')
-		else:
-			if CSFDGlobalVar.getCSFDDesktopWidth() > 1250:
-				self['statusbar'].setText(_('CSFD - stahování dalších informací probíhá ...'))
-				self['statusbar'].show()
-			else:
-				LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - nadpis NE\n')
-				self['statusbar'].setText('')
-			sss = str(self.PageSpec)
-			if self.querySpecAkce == 'UserComments':
-				self.linkSpec = self.linkComment
-				self.linkSpec = 'komentare/' + self.linkSpec + 'strana-%s/' % sss
-			elif self.querySpecAkce == 'UserExtReviews':
-				self.linkSpec = 'recenze/strana-%s/' % sss
-			elif self.querySpecAkce == 'UserPremiery':
-				self.linkSpec = self.linkComment
-				self.linkSpec = 'komentare/' + self.linkSpec + 'strana-%s/' % sss
-			elif self.querySpecAkce == 'UserDiscussion':
-				self.linkSpec = 'diskuze/strana-%s/' % sss
-			elif self.querySpecAkce == 'UserInteresting':
-				self.linkSpec = 'zajimavosti/strana-%s/' % sss
-				if self.linkExtra == '':
-					self.linkSpec = self.linkSpec + '?type=film'
-				else:
-					self.linkSpec = self.linkSpec + self.linkExtra
-			elif self.querySpecAkce == 'UserAwards':
-				self.linkSpec = 'oceneni/strana-%s/' % sss
-			elif self.querySpecAkce == 'UserReviews':
-				self.linkSpec = const_quick_page + '?expandUserList=1&ratings-page=%s' % sss
-			elif self.querySpecAkce == 'UserFans':
-				self.linkSpec = const_quick_page + '?expandUserList=1&fanclub-page=%s' % sss
-			fetchurl = CSFDGlobalVar.getHTTP() + const_csfd_http_film + self.linkGlobal + self.linkSpec
-			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - stahuji z url ' + fetchurl + '\n')
-			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - linkGlobal ' + self.linkGlobal + '\n')
-			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - linkSpec ' + self.linkSpec + '\n')
-			
-			page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-			CSFDGlobalVar.setParalelDownload(self.CSFDquerySpec, page)
-			self.DownloadTimer.start(10, True)
-			
-		LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - konec\n')
-
 	def CSFDshowSpec(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - zacatek\n')
 		
@@ -5001,10 +4955,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			localfile = pol[8]
 			LogCSFD.WriteToFile('[CSFD] CSFDRefreshVideoInformation - video poster - localfile: ' + localfile + '\n')
 			LogCSFD.WriteToFile('[CSFD] CSFDRefreshVideoInformation - video poster - url: ' + videoposterfile + '\n')
-			try:
-				idx1 = idx
-				requestFileCSFD(videoposterfile, localfile, headers=std_media_header_UL2, errHandling=False)
-				
+
+			idx1 = idx
+			if requestFileCSFD(videoposterfile, localfile ) == True:
 				if videoposterfile == self.VideoSlideList[idx1][6]:
 					self.VideoSlideList[idx1][6] = localfile
 					videoposterfile = localfile
@@ -5013,13 +4966,11 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					znovu = True
 					videoposterfile = resolveFilename(SCOPE_PLUGINS, 'Extensions/CSFD/icons/csfdnothing.png')
 				idx = idx1
-			except:
+			else:
 				LogCSFD.WriteToFile('[CSFD] CSFDRefreshVideoInformation - chyba - download video posteru\n')
 				LogCSFD.WriteToFile('[CSFD] CSFDRefreshVideoInformation - Chyba pri stahovani video posteru - url: ' + Uni8(videoposterfile) + '\n')
 				LogCSFD.WriteToFile('[CSFD] CSFDRefreshVideoInformation - Chyba pri stahovani video posteru - localfile: ' + Uni8(localfile) + '\n')
 				videoposterfile = resolveFilename(SCOPE_PLUGINS, 'Extensions/CSFD/icons/csfdnothing.png')
-				err = traceback.format_exc()
-				LogCSFD.WriteToFile(err)
 
 		sss = str(idx + 1)
 		self['page'].setText(_('Video č.%s' % sss))
@@ -5189,15 +5140,13 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				else:
 					self['statusbar'].setText(str( _('Stahuji obal k filmu: ') + resultText) )
 					LogCSFD.WriteToFile('[CSFD] CSFDPosterBasic - download main poster: ' + resultText + '\n', 6)
-					try:
-						requestFileCSFD(resultText, filename, headers=std_media_header_UL2, errHandling=False)
+
+					if requestFileCSFD(resultText, filename ) == True:
 						self.stahnutoCSFDImage = resultText
-					except:
+					else:
 						LogCSFD.WriteToFile('[CSFD] CSFDPosterBasic - chyba - download\n', 6)
 						readmainposter = False
 						filename = resolveFilename(SCOPE_PLUGINS, 'Extensions/CSFD/icons/no_poster.png')
-						err = traceback.format_exc()
-						LogCSFD.WriteToFile(err)
 
 					if id_filmu != self.linkGlobal:
 						LogCSFD.WriteToFile('[CSFD] CSFDPosterBasic - zruseno - nacitani jineho poradu\n', 6)
@@ -5445,7 +5394,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] DeleteRatingOnWeb - zacatek\n', 8)
 			try:
 				url = CSFDGlobalVar.getHTTP() + const_csfd_http_film + linkG
-				page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
+#				page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
 				ParserOstCSFD.setHTML2utf8(page)
 				del_url = ParserOstCSFD.parserDeleteRatingUrl()
 			except:
@@ -5459,7 +5408,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					del_url = CSFDGlobalVar.getHTTP() + const_www_csfd + del_url
 					LogCSFD.WriteToFile('[CSFD] DeleteRatingOnWeb - url: %s \n' % del_url, 8)
 					
-					page = requestCSFD(del_url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
+#					page = requestCSFD(del_url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
 					
 					if linkG == self.linkGlobal:
 						reloadMovieAfterRating(True)
@@ -5482,7 +5431,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			try:
 				url = CSFDGlobalVar.getHTTP() + const_csfd_http_film + linkG + 'komentare/'
 				LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - reload url : ' + url + '\n', 8)
-				page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
+#				page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
 				ParserOstCSFD.setHTML2utf8(page)
 				token = ParserOstCSFD.parserTokenRating()
 				time.sleep(2)
@@ -5505,7 +5454,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					values = {'rating': value_rating, 'film_comment': '',  '_token_': token}
 					LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - postdata: ' + str(values) + '\n', 8)
 					data = urlencode(values)
-					page = requestCSFD(url, headers=std_post_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False)
+#					page = requestCSFD(url, headers=std_post_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False)
 						
 					if linkG == self.linkGlobal:
 						reloadMovieAfterRating(True)
@@ -5896,20 +5845,19 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 									self.PosterBasicSlideList[idx][0] = self.PosterBasicSlideList[idx][4]
 									posterfile = self.PosterBasicSlideList[idx][0]
 								else:
-									try:
-										requestFileCSFD(posterfile, localfile, headers=std_media_header_UL2, errHandling=False)
-										self.PosterBasicSlideList[idx][0] = self.PosterBasicSlideList[idx][4]
-										posterfile = self.PosterBasicSlideList[idx][0]
-									except AttributeError:
-										return
-									except:
+
+									if requestFileCSFD(posterfile, localfile ) == True:
+										try:
+											self.PosterBasicSlideList[idx][0] = self.PosterBasicSlideList[idx][4]
+											posterfile = self.PosterBasicSlideList[idx][0]
+										except AttributeError:
+											return
+									else:
 										LogCSFD.WriteToFile('[CSFD] CSFDPosterBasicSlideShowEvent - chyba - downloadposter\n')
 										LogCSFD.WriteToFile('[CSFD] CSFDPosterBasicSlideShowEvent - Chyba pri stahovani posteru - url: ' + Uni8(posterfile) + '\n')
 										LogCSFD.WriteToFile('[CSFD] CSFDPosterBasicSlideShowEvent - Chyba pri stahovani posteru - localfile: ' + Uni8(localfile) + '\n')
 										posterfile = resolveFilename(SCOPE_PLUGINS, 'Extensions/CSFD/icons/no_poster.png')
 										chyba = True
-										err = traceback.format_exc()
-										LogCSFD.WriteToFile(err)
 
 							self.paintPosterBasicPixmap(posterfile)
 							if chyba:
@@ -5957,18 +5905,15 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						pol = self.GallerySlideList[idx]
 						gallfile = pol[0]
 					else:
-						try:
-							requestFileCSFD(gallfile, localfile, headers=std_media_header_UL2, errHandling=False)
+						if requestFileCSFD(gallfile, localfile ) == True:
 							self.GallerySlideList[idx][0] = pol[4]
 							pol = self.GallerySlideList[idx]
 							gallfile = pol[0]
-						except:
+						else:
 							LogCSFD.WriteToFile('[CSFD] CSFDGallerySlideShowStart - chyba - download gallerie\n')
 							LogCSFD.WriteToFile('[CSFD] CSFDGallerySlideShowStart - Chyba pri stahovani gallerie - url: ' + Uni8(gallfile) + '\n')
 							LogCSFD.WriteToFile('[CSFD] CSFDGallerySlideShowStart - Chyba pri stahovani gallerie - localfile: ' + Uni8(localfile) + '\n')
 							gallfile = resolveFilename(SCOPE_PLUGINS, 'Extensions/CSFD/icons/csfdnothing.png')
-							err = traceback.format_exc()
-							LogCSFD.WriteToFile(err)
 
 				self.paintGalleryPixmap(gallfile)
 				ss = strUni(char2Allowchar(_('Slideshow - ')))
@@ -6006,18 +5951,15 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 								pol = self.GallerySlideList[idx]
 								gallfile = pol[0]
 							else:
-								try:
-									requestFileCSFD(gallfile, localfile, headers=std_media_header_UL2, errHandling=False)
+								if requestFileCSFD(gallfile, localfile ) == True:
 									self.GallerySlideList[idx][0] = pol[4]
 									pol = self.GallerySlideList[idx]
 									gallfile = pol[0]
-								except:
+								else:
 									LogCSFD.WriteToFile('[CSFD] CSFDGallerySlideShowEvent - chyba - download gallerie\n')
 									LogCSFD.WriteToFile('[CSFD] CSFDGallerySlideShowEvent - Chyba pri stahovani gallerie - url: ' + Uni8(gallfile) + '\n')
 									LogCSFD.WriteToFile('[CSFD] CSFDGallerySlideShowEvent - Chyba pri stahovani gallerie - localfile: ' + Uni8(localfile) + '\n')
 									gallfile = resolveFilename(SCOPE_PLUGINS, 'Extensions/CSFD/icons/csfdnothing.png')
-									err = traceback.format_exc()
-									LogCSFD.WriteToFile(err)
 
 						self.paintGalleryPixmap(gallfile)
 						ss = strUni(char2Allowchar(_('Slideshow - ')))
@@ -6052,18 +5994,15 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 							pol = self.GallerySlideList[idx]
 							gallfile = pol[0]
 						else:
-							try:
-								requestFileCSFD(gallfile, localfile, headers=std_media_header_UL2, errHandling=False)
+							if requestFileCSFD(gallfile, localfile) == True:
 								self.GallerySlideList[idx][0] = pol[4]
 								pol = self.GallerySlideList[idx]
 								gallfile = pol[0]
-							except:
+							else:
 								LogCSFD.WriteToFile('[CSFD] CSFDGalleryShow - chyba - download gallerie\n')
 								LogCSFD.WriteToFile('[CSFD] CSFDGalleryShow - Chyba pri stahovani gallerie - url: ' + Uni8(gallfile) + '\n')
 								LogCSFD.WriteToFile('[CSFD] CSFDGalleryShow - Chyba pri stahovani gallerie - localfile: ' + Uni8(localfile) + '\n')
 								gallfile = resolveFilename(SCOPE_PLUGINS, 'Extensions/CSFD/icons/csfdnothing.png')
-								err = traceback.format_exc()
-								LogCSFD.WriteToFile(err)
 
 					self.paintGalleryPixmap(gallfile)
 					ss = str(idx + 1) + '/' + str(self.GalleryCountPix) + '	 ' + strUni(pol[2])
@@ -6109,18 +6048,15 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						pol = self.PosterSlideList[idx]
 						posterfile = pol[0]
 					else:
-						try:
-							requestFileCSFD(posterfile, localfile, headers=std_media_header_UL2, errHandling=False)
+						if requestFileCSFD(posterfile, localfile) == True:
 							self.PosterSlideList[idx][0] = pol[4]
 							pol = self.PosterSlideList[idx]
 							posterfile = pol[0]
-						except:
+						else:
 							LogCSFD.WriteToFile('[CSFD] CSFDPosterSlideShowStart - chyba - downloadposter\n')
 							LogCSFD.WriteToFile('[CSFD] CSFDPosterSlideShowStart - Chyba pri stahovani posteru - url: ' + Uni8(posterfile) + '\n')
 							LogCSFD.WriteToFile('[CSFD] CSFDPosterSlideShowStart - Chyba pri stahovani posteru - localfile: ' + Uni8(localfile) + '\n')
 							posterfile = resolveFilename(SCOPE_PLUGINS, 'Extensions/CSFD/icons/no_poster.png')
-							err = traceback.format_exc()
-							LogCSFD.WriteToFile(err)
 
 				self.paintPosterPixmap(posterfile)
 				ss = strUni(char2Allowchar(_('Slideshow - ')))
@@ -6158,12 +6094,11 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 								pol = self.PosterSlideList[idx]
 								posterfile = pol[0]
 							else:
-								try:
-									requestFileCSFD(posterfile, localfile, headers=std_media_header_UL2, errHandling=False)
+								if requestFileCSFD(posterfile, localfile) == True:
 									self.PosterSlideList[idx][0] = pol[4]
 									pol = self.PosterSlideList[idx]
 									posterfile = pol[0]
-								except:
+								else:
 									LogCSFD.WriteToFile('[CSFD] CSFDPosterSlideShowEvent - chyba - downloadposter\n')
 									LogCSFD.WriteToFile('[CSFD] CSFDPosterSlideShowEvent - Chyba pri stahovani posteru - url: ' + Uni8(posterfile) + '\n')
 									LogCSFD.WriteToFile('[CSFD] CSFDPosterSlideShowEvent - Chyba pri stahovani posteru - localfile: ' + Uni8(localfile) + '\n')
@@ -6204,18 +6139,15 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 							pol = self.PosterSlideList[idx]
 							posterfile = pol[0]
 						else:
-							try:
-								requestFileCSFD(posterfile, localfile, headers=std_media_header_UL2, errHandling=False)
+							if requestFileCSFD(posterfile, localfile) == True:
 								self.PosterSlideList[idx][0] = pol[4]
 								pol = self.PosterSlideList[idx]
 								posterfile = pol[0]
-							except:
+							else:
 								LogCSFD.WriteToFile('[CSFD] CSFDPosterShow - chyba - downloadposter\n')
 								LogCSFD.WriteToFile('[CSFD] CSFDPosterShow - Chyba pri stahovani posteru - url: ' + Uni8(posterfile) + '\n')
 								LogCSFD.WriteToFile('[CSFD] CSFDPosterShow - Chyba pri stahovani posteru - localfile: ' + Uni8(localfile) + '\n')
 								posterfile = resolveFilename(SCOPE_PLUGINS, 'Extensions/CSFD/icons/no_poster.png')
-								err = traceback.format_exc()
-								LogCSFD.WriteToFile(err)
 
 					self.paintPosterPixmap(posterfile)
 					ss = str(idx + 1) + '/' + str(self.PosterCountPix) + '	' + strUni(pol[2])
@@ -6254,10 +6186,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					localfile = pol[8]
 					LogCSFD.WriteToFile('[CSFD] CSFDVideoShow - video poster - localfile: ' + localfile + '\n')
 					LogCSFD.WriteToFile('[CSFD] CSFDVideoShow - video poster - url: ' + videoposterfile + '\n')
-					try:
-						idx1 = idx
-						requestFileCSFD(videoposterfile, localfile, headers=std_media_header_UL2, errHandling=False)
-						
+
+					idx1 = idx
+					if requestFileCSFD(videoposterfile, localfile) == True:
 						if videoposterfile == self.VideoSlideList[idx1][6]:
 							self.VideoSlideList[idx1][6] = localfile
 							videoposterfile = localfile
@@ -6266,13 +6197,11 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 							znovu = True
 							videoposterfile = resolveFilename(SCOPE_PLUGINS, 'Extensions/CSFD/icons/csfdnothing.png')
 						idx = idx1
-					except:
+					else:
 						LogCSFD.WriteToFile('[CSFD] CSFDVideoShow - chyba - download video posteru\n')
 						LogCSFD.WriteToFile('[CSFD] CSFDVideoShow - Chyba pri stahovani video posteru - url: ' + Uni8(videoposterfile) + '\n')
 						LogCSFD.WriteToFile('[CSFD] CSFDVideoShow - Chyba pri stahovani video posteru - localfile: ' + Uni8(localfile) + '\n')
 						videoposterfile = resolveFilename(SCOPE_PLUGINS, 'Extensions/CSFD/icons/csfdnothing.png')
-						err = traceback.format_exc()
-						LogCSFD.WriteToFile(err)
 
 				self.paintVideoPixmap(videoposterfile)
 				ss = str(idx + 1) + '/' + str(self.VideoCountPix) + '  ' + strUni(self.VideoSlideList[idx][2])
@@ -6330,9 +6259,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 	def TestLoginToCSFD1(self, console=None):
 		LogCSFD.WriteToFile('[CSFD] TestLoginToCSFD1 - zacatek\n', 9)
 		
-		CSFDGlobalVar.resetCSFDCookiesUL2()
-		cookies = CSFDGlobalVar.getCSFDCookiesUL2()
-		
 		test_txt = ''
 		txt = _('Je povoleno přihlašování do CSFD v Nastaveních')
 		if not config.misc.CSFD.LoginToCSFD.getValue():
@@ -6364,14 +6290,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			console.addText(text=txt, typeText=0)
 			LogCSFD.WriteToFile(txt, 9)
 		test_txt += txt
-		txt = _('Je nainstalovaná knihovna OpenSSL')
-		if CSFDGlobalVar.getOpenSSLexist():
-			txt += ' ..... OK\n'
-		else:
-			txt += ' ..... ERR\n'
-		console.addText(text=txt, typeText=0)
-		LogCSFD.WriteToFile(txt, 9)
-		test_txt += txt
 		txt = _('Je funkční internet')
 		if internet_on():
 			txt += ' ..... OK\n'
@@ -6394,7 +6312,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		url = 'https://www.csfd.cz/prihlaseni/'
 		try:
 			txt += ' (Urllib2)'
-			page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), saveCookie=True)
+#			page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), saveCookie=True)
 			txt += ' ..... OK\n'
 		except:
 			txt += ' ..... ERR\n'
@@ -6436,9 +6354,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			   '_do': 'form-submit'}
 			data = urlencode(values)
 			url = url_login
-			page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False, saveCookie=True)
+#			page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False, saveCookie=True)
 			url = 'https://www.csfd.cz/'
-			page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
+#			page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
 			txt += ' ..... OK\n'
 		except:
 			txt += ' ..... ERR\n'

@@ -11,6 +11,7 @@ from Tools.Directories import resolveFilename, SCOPE_PLUGINS, SCOPE_CURRENT_SKIN
 from Tools.LoadPixmap import LoadPixmap
 from .CSFDMenuList import CSFDMenuList
 import re, sys, operator, traceback
+import requests
 
 try:
 	# py2
@@ -22,7 +23,6 @@ try:
 	from urllib2 import HTTPErrorProcessor as HTTPError
 	from urllib2 import Request as urllib_Request
 	from urllib2 import urlopen as urllib_urlopen
-	from cookielib import CookieJar
 except:
 	# py3
 	from urllib.parse import urlencode
@@ -33,52 +33,13 @@ except:
 	from urllib.error import HTTPError as HTTPError
 	from urllib.request import Request as urllib_Request
 	from urllib.request import urlopen as urllib_urlopen
-	from http.cookiejar import CookieJar
 	xrange = range
 	unicode = str
 
-cj = CookieJar()
-	
-handlersUL2 = [urllib_HTTPHandler(), urllib_HTTPSHandler(), urllib_HTTPCookieProcessor(cj)]
-openerUL2 = urllib_build_opener(*handlersUL2)
 
-class NoRedirection( HTTPError ):
+csfd_session = requests.Session()
 
-	def http_response(self, request, response):
-		return response
-
-	https_response = http_response
-
-
-openerUL2NoRedirect = urllib_build_opener(NoRedirection, urllib_HTTPCookieProcessor(cj))
-try:
-	import ssl
-	contextSSL = hasattr(ssl, '_create_unverified_context') and ssl._create_unverified_context() or None
-	if contextSSL is not None:
-		ssl._create_default_https_context = ssl._create_unverified_context
-		CSFDGlobalVar.setOpenSSLcontext(True)
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - import ssl - context OK\n')
-	else:
-		CSFDGlobalVar.setOpenSSLcontext(False)
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - import ssl - context ERR\n')
-	CSFDGlobalVar.setOpenSSLexist(True)
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - import ssl - OK\n')
-except:
-	CSFDGlobalVar.setOpenSSLexist(False)
-	CSFDGlobalVar.setOpenSSLcontext(False)
-	err = traceback.format_exc()
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - import ssl - chyba\n')
-	LogCSFD.WriteToFile(err)
-
-google_URL = 'http://google.cz'
 csfd_URL_https = 'https://www.csfd.cz/'
-try:
-	import socket
-	google_IP = 'http://' + socket.gethostbyname('google.cz')
-except:
-	google_IP = google_URL
-
-LogCSFD.WriteToFile('[CSFD] CSFDTools - google_IP: ' + google_IP + '\n')
 
 try:
 	from twisted.web.client import downloadPage
@@ -210,17 +171,15 @@ def ExtractNumbers(mystring):
 def request(url, headers={}, timeout=None):
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - request - zacatek\n')
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - request - url: %s\n' % Uni8(url))
+	
+	if timeout == None:
+		timeout = config.misc.CSFD.DownloadTimeOut.getValue()
+		
 	try:
-		r = urllib_Request(url, headers=headers)
-		if timeout is None:
-			response = openerUL2.open(r)
-		else:
-			response = openerUL2.open(r, timeout=timeout)
-		data = response.read()
-		response.close()
+		data = csfd_session.get( url, headers=headers, timeout=timeout, stream=True ).raw.read()
 		LogCSFD.WriteToFile('[CSFD] CSFDTools - request - OK\n')
 	except:
-		data = ''
+		data = None
 		err = traceback.format_exc()
 		LogCSFD.WriteToFile('[CSFD] CSFDTools - request - chyba\n')
 		LogCSFD.WriteToFile(err)
@@ -229,91 +188,31 @@ def request(url, headers={}, timeout=None):
 	return data
 
 
-def requestCSFD(url, headers=[], timeout=None, data=None, redirect=True, saveCookie=False):
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - requestCSFD - zacatek\n')
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - requestCSFD - url: %s\n' % Uni8(url))
-	try:
-		if redirect:
-			op = openerUL2
-		else:
-			op = openerUL2NoRedirect
-		op.addheaders = headers
-		if timeout is None and data is None:
-			response = op.open(url)
-		elif timeout is not None and data is not None:
-			response = op.open(url, timeout=timeout, data=data)
-		elif timeout is not None:
-			response = op.open(url, timeout=timeout)
-		elif data is not None:
-			response = op.open(url, data=data)
-		else:
-			response = op.open(url)
-		data = response.read()
-		if saveCookie:
-			cookieUL2 = response.headers.getheader('Set-Cookie')
-			if cookieUL2 is not None:
-				CSFDGlobalVar.setCSFDCookiesUL2(cookieUL2)
-			LogCSFD.WriteToFile('Cookies response UL2: ' + str(cookieUL2) + '\n')
-		response.close()
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - requestCSFD - OK\n')
-	except:
-		data = ''
-		err = traceback.format_exc()
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - requestCSFD - chyba\n')
-		LogCSFD.WriteToFile(err)
-
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - requestCSFD - konec\n')
-	return data
-
-
-def requestFileCSFD(url='', fileout='', file_mode='wb', headers=[], timeout=None, errHandling=True, saveCookie=False):
+def requestFileCSFD(url='', fileout='' ):
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - zacatek\n')
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - url: %s\n' % Uni8(url))
+
 	if fileout == '':
 		LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - Neni co stahovat\n')
 		LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - konec\n')
-		return
-	else:
-		if errHandling:
-			try:
-				openerUL2.addheaders = headers
-				if timeout is not None:
-					response = openerUL2.open(url, timeout=timeout)
-				else:
-					response = openerUL2.open(url)
-				local_file = open(fileout, file_mode)
-				local_file.write(response.read())
-				local_file.close()
-				if saveCookie:
-					cookieUL2 = response.headers.getheader('Set-Cookie')
-					if cookieUL2 is not None:
-						CSFDGlobalVar.setCSFDCookiesUL2(cookieUL2)
-					LogCSFD.WriteToFile('Cookies response UL2: ' + str(cookieUL2) + '\n')
-				response.close()
-				LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - OK\n')
-			except:
-				err = traceback.format_exc()
-				LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - chyba\n')
-				LogCSFD.WriteToFile(err)
+		return False
+	
+	timeout = config.misc.CSFD.DownloadTimeOut.getValue()
+	ret = True
+	
+	try:
+		with open(fileout, 'wb') as f:
+			f.write( csfd_session.get( url, headers=std_media_header, timeout=timeout, stream=True ).raw.read() )
+		
+		LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - OK\n')
+	except:
+		err = traceback.format_exc()
+		LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - chyba\n')
+		LogCSFD.WriteToFile(err)
+		ret = False
 
-		else:
-			openerUL2.addheaders = headers
-			if timeout is not None:
-				response = openerUL2.open(url, timeout=timeout)
-			else:
-				response = openerUL2.open(url)
-			local_file = open(fileout, file_mode)
-			local_file.write(response.read())
-			local_file.close()
-			if saveCookie:
-				cookieUL2 = response.headers.getheader('Set-Cookie')
-				if cookieUL2 is not None:
-					CSFDGlobalVar.setCSFDCookiesUL2(cookieUL2)
-				LogCSFD.WriteToFile('Cookies response UL2: ' + str(cookieUL2) + '\n')
-			response.close()
-			LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - OK\n')
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - konec\n')
-		return
+	LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - konec\n')
+	return ret
 
 
 class CSFDHelpableActionMapChng(ActionMap):

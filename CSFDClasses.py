@@ -3,7 +3,7 @@
 from enigma import gRGB, gFont, iPlayableService, RT_HALIGN_LEFT, RT_WRAP, RT_VALIGN_TOP
 from enigma import eTimer, eSize, iServiceInformation, eServiceReference
 from .CSFDLog import LogCSFD
-from .CSFDTools import requestCSFD, internet_on, ItemListTypeSpecial, strUni, Uni8
+from .CSFDTools import internet_on, ItemListTypeSpecial, strUni, Uni8
 from Screens.Screen import Screen
 from Screens.InfoBarGenerics import InfoBarNotifications, InfoBarSubtitleSupport
 from Screens.MessageBox import MessageBox

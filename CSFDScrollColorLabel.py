@@ -350,7 +350,7 @@ class CSFDScrollColorLabel(HTMLComponent, GUIComponent):
 		start = -self.long_text.position().y() * 100 / self.total
 		vis = self.pageHeight * 100 / self.total
 		self.scrollbar.setStartEnd(0, 0)
-		self.scrollbar.setStartEnd(start, start + vis)
+		self.scrollbar.setStartEnd(int(start), int(start + vis))
 
 	def getText(self):
 		return self.message

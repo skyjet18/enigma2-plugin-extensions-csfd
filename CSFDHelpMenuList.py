@@ -2,7 +2,12 @@
 
 from Components.GUIComponent import GUIComponent
 from enigma import eListboxPythonMultiContent, eListbox, gFont
-from Tools.KeyBindings import queryKeyBinding, getKeyDescription
+from Tools.KeyBindings import getKeyDescription
+try:
+	from Tools.KeyBindings import queryKeyBinding
+except:
+	from Components.ActionMap import queryKeyBinding
+	
 from .CSFDLog import LogCSFD
 from .CSFDSettings1 import CSFDGlobalVar
 from .CSFDSettings2 import config
