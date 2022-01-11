@@ -151,14 +151,14 @@ def picStartDecodeCSFD(pic, name):
 
 
 def strUni(mystring):
-	if not isinstance(mystring, str):
+	if sys.version_info[0] < 3 and not isinstance(mystring, str):
 		return str(mystring.encode('utf-8'))
 	else:
 		return mystring
 
 
 def Uni8(mystring):
-	if isinstance(mystring, str):
+	if sys.version_info[0] < 3 and isinstance(mystring, str):
 		return unicode(mystring, 'utf-8', errors='ignore')
 	else:
 		return mystring
@@ -613,7 +613,7 @@ dictonaryDiacritic = {'Á': 'A', 'Ä': 'A', 'Ą': 'A', 'À': 'A', 'Â': 'A', 'Č
    'ö': 'o', 'ô': 'o', 'ő': 'o', 'œ': 'o', 'ř': 'r', 'ŕ': 'r', 'š': 's', 'ś': 's', 'ť': 't', 'ú': 'u', 'ů': 'u', 'ü': 'u', 'ű': 'u', 'ù': 'u', 'û': 'u', 'ý': 'y', 'ÿ': 'y', 'ž': 'z', 'ż': 'z', 'ź': 'z'}
 
 def char2Diacritic(line):
-	if isinstance(line, str):
+	if sys.version_info[0] < 3 and isinstance(line, str):
 		line = unicode(line, 'utf-8')
 	if unicodedataExist:
 		line = unicodedata.normalize('NFKD', line)
@@ -636,7 +636,7 @@ dictonarySortCZ = {'ch': 'h|', 'CH': 'H|', 'Ch': 'H|', 'Ch': 'h|', 'Á': 'A|', '
    'ů': 'u}', 'ü': 'u~', 'ý': 'y|', 'ÿ': 'y}', 'ž': 'z|'}
 
 def char2DiacriticSort(text):
-	if isinstance(text, str):
+	if sys.version_info[0] < 3 and isinstance(text, str):
 		text = unicode(text, 'utf-8')
 	for i, j in list(dictonarySortCZ.items()):
 		text = text.replace(i, j)
@@ -668,7 +668,7 @@ def char2Allowchar(mystring, typeControl=0):
 charAllowedNumbers = '1234567890.'
 
 def char2AllowcharNumbers(mystring):
-	if isinstance(mystring, str):
+	if sys.version_info[0] < 3 and isinstance(mystring, str):
 		mystring = unicode(mystring, 'utf-8')
 	roz = set(mystring) - set(charAllowedNumbers)
 	if roz is not None:
@@ -685,7 +685,7 @@ bigChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄĄÀÂČĆÇĎÉĚËĘÈÊÍÏÎĹĽŁ�
 
 def isBigCharInFirst(mystring):
 	result = False
-	if isinstance(mystring, str):
+	if sys.version_info[0] < 3 and isinstance(mystring, str):
 		mystring = unicode(mystring, 'utf-8')
 	mystring = mystring.strip()
 	if len(mystring) > 0:

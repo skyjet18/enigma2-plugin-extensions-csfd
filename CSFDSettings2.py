@@ -168,12 +168,24 @@ if CSFDGlobalVar.getCSFDlang() is None:
 	localeInit()
 	language.addCallback(localeInit)
 
-def _(txt):
+def _xxxxxx(txt):
 	t = gettext.dgettext('CSFD', txt.decode('utf-8'))
 	if t == txt:
 		t = t.encode('utf-8')
 	t = str(t)
 	return t
+
+def _(txt):
+	try:
+		txt = txt.decode('utf-8')
+	except:
+		pass
+	
+	t = gettext.dgettext('CSFD', txt )
+#	if t == txt:
+#		t = t.encode('utf-8')
+#	t = str(t)
+	return str(t)
 
 
 config.misc.CSFD.Detail100 = ConfigYesNo(default=True)

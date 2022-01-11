@@ -99,7 +99,8 @@ def VirtualKeyBoardEntryComponent(keys, selectedKey, shiftMode=False):
 			width = key_bg.size().width()
 			res.extend((
 			 MultiContentEntryPixmapAlphaTest(pos=(x, 0), size=(width, h), png=key_bg),
-			 MultiContentEntryText(pos=(x, 0), size=(width, h), font=0, text=key.encode('utf-8'), flags=RT_HALIGN_CENTER | RT_VALIGN_CENTER)))
+#			 MultiContentEntryText(pos=(x, 0), size=(width, h), font=0, text=key.encode('utf-8'), flags=RT_HALIGN_CENTER | RT_VALIGN_CENTER)))
+			 MultiContentEntryText(pos=(x, 0), size=(width, h), font=0, text=str(key), flags=RT_HALIGN_CENTER | RT_VALIGN_CENTER)))
 		if selectedKey == count:
 			width = key_sel.size().width()
 			res.append(MultiContentEntryPixmapAlphaTest(pos=(x, 0), size=(width, h), png=key_sel))
@@ -376,9 +377,11 @@ class CSFDVirtualKeyBoard(Screen):
 		self['countryFlag'].instance.setPixmapFromFile('/usr/share/enigma2/countries/' + name + '.png')
 
 	def backClicked(self):
-		ss = unicode(self['text'].getText(), 'utf-8')
+#		ss = unicode(self['text'].getText(), 'utf-8')
+		ss = self['text'].getText()
 		ss = ss[:-1]
-		self.text = str(ss.encode('utf-8'))
+#		self.text = str(ss.encode('utf-8'))
+		self.text = str(ss)
 		self['text'].setText(self.text)
 
 	def okClicked(self):
@@ -399,17 +402,19 @@ class CSFDVirtualKeyBoard(Screen):
 		if text is None:
 			return
 		else:
-			text = text.encode('utf-8')
+#			text = text.encode('utf-8')
 			if text == 'EXIT':
 				self.close(None)
 			elif text == 'BACKSPACE':
-				ss = unicode(self['text'].getText(), 'utf-8')
+#				ss = unicode(self['text'].getText(), 'utf-8')
+				ss = self['text'].getText()
 				ss = ss[:-1]
-				self.text = str(ss.encode('utf-8'))
-				self['text'].setText(self.text)
+#				self.text = str(ss.encode('utf-8'))
+				self.text = str(ss)
+				self['text'].setText(str(self.text))
 			elif text == 'CLEAR':
 				self.text = ''
-				self['text'].setText(self.text)
+				self['text'].setText(str(self.text))
 			elif text == 'SHIFT':
 				if self.shiftMode:
 					self.shiftMode = False
@@ -418,13 +423,13 @@ class CSFDVirtualKeyBoard(Screen):
 				self.buildVirtualKeyBoard(self.selectedKey)
 			elif text == 'SPACE':
 				self.text += ' '
-				self['text'].setText(self.text)
+				self['text'].setText(str(self.text))
 			elif text == 'OK':
 				self.close(self['text'].getText())
 			else:
 				self.text = self['text'].getText()
 				self.text += text
-				self['text'].setText(self.text)
+				self['text'].setText(str(self.text))
 			return
 
 	def ok(self):
@@ -490,7 +495,8 @@ class CSFDVirtualKeyBoard(Screen):
 		return False
 
 	def keyGotAscii(self):
-		char = str(unichr(getPrevAsciiCode()).encode('utf-8'))
+#		char = str(unichr(getPrevAsciiCode()).encode('utf-8'))
+		char = str(chr(getPrevAsciiCode()))
 		st_shift = self.shiftMode
 		if self.inShiftKeyList(char):
 			self.shiftMode = True

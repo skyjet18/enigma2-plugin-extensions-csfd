@@ -5232,7 +5232,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			try:
 				self['poster'].instance.setPixmap(gPixmapPtr())
 				if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-					if self.picload.startDecode(image_path, 0, 0, False) == 0:
+					if self.picload.startDecode(str(image_path), 0, 0, False) == 0:
 						ptr = self.picload.getData()
 						if ptr is not None:
 							self['poster'].instance.setPixmap(ptr)
@@ -5243,7 +5243,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					else:
 						LogCSFD.WriteToFile('[CSFD] paintPosterBasicPixmap - decode nenalezeno: ' + Uni8(image_path) + '\n')
 						self['poster'].show()
-				elif self.picload.startDecode(image_path, False) == 0:
+				elif self.picload.startDecode(str(image_path), False) == 0:
 					ptr = self.picload.getData()
 					if ptr is not None:
 						self['poster'].instance.setPixmap(ptr)
@@ -5267,7 +5267,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			try:
 				self['photolabel'].instance.setPixmap(gPixmapPtr())
 				if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-					if self.posterload.startDecode(image_path, 0, 0, False) == 0:
+					if self.posterload.startDecode(str(image_path), 0, 0, False) == 0:
 						ptr = self.posterload.getData()
 						if ptr is not None:
 							self['photolabel'].instance.setPixmap(ptr)
@@ -5278,7 +5278,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					else:
 						LogCSFD.WriteToFile('[CSFD] paintPosterPixmap - decode nenalezeno: ' + Uni8(image_path) + '\n')
 						self['photolabel'].show()
-				elif self.posterload.startDecode(image_path, False) == 0:
+				elif self.posterload.startDecode(str(image_path), False) == 0:
 					ptr = self.posterload.getData()
 					if ptr is not None:
 						self['photolabel'].instance.setPixmap(ptr)
@@ -5302,7 +5302,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			try:
 				self['photolabel'].instance.setPixmap(gPixmapPtr())
 				if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-					if self.galleryload.startDecode(image_path, 0, 0, False) == 0:
+					if self.galleryload.startDecode(str(image_path), 0, 0, False) == 0:
 						ptr = self.galleryload.getData()
 						if ptr is not None:
 							self['photolabel'].instance.setPixmap(ptr)
@@ -5313,7 +5313,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					else:
 						LogCSFD.WriteToFile('[CSFD] paintGalleryPixmap - decode nenalezeno: ' + Uni8(image_path) + '\n')
 						self['photolabel'].show()
-				elif self.galleryload.startDecode(image_path, False) == 0:
+				elif self.galleryload.startDecode(str(image_path), False) == 0:
 					ptr = self.galleryload.getData()
 					if ptr is not None:
 						self['photolabel'].instance.setPixmap(ptr)
@@ -5337,7 +5337,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			try:
 				self['photolabel'].instance.setPixmap(gPixmapPtr())
 				if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-					if self.videoload.startDecode(image_path, 0, 0, False) == 0:
+					if self.videoload.startDecode(str(image_path), 0, 0, False) == 0:
 						ptr = self.videoload.getData()
 						if ptr is not None:
 							self['photolabel'].instance.setPixmap(ptr)
@@ -5348,7 +5348,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					else:
 						LogCSFD.WriteToFile('[CSFD] paintVideoPixmap - decode nenalezeno: ' + Uni8(image_path) + '\n')
 						self['photolabel'].show()
-				elif self.videoload.startDecode(image_path, False) == 0:
+				elif self.videoload.startDecode(str(image_path), False) == 0:
 					ptr = self.videoload.getData()
 					if ptr is not None:
 						self['photolabel'].instance.setPixmap(ptr)
@@ -6651,7 +6651,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] restartGUI - konec\n')
 
 	def consoleAppContainer_avail(self, string):
-		self.container_output += string
+		self.container_output += string.decode("utf-8")
 
 	def PluginRepair(self, workingConfig=None):
 		LogCSFD.WriteToFile('[CSFD] PluginRepair - zacatek\n')

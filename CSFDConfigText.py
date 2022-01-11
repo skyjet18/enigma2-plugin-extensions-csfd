@@ -147,11 +147,14 @@ class CSFDConfigText(ConfigElement, CSFDNumericalTextInput):
 		self.changed()
 
 	def getValue(self):
-		return self.text.encode('utf-8')
+#		return self.text.encode('utf-8')
+		return self.text
 
 	def setValue(self, val):
 		try:
 			self.text = val.decode('utf-8')
+		except AttributeError:
+			self.text = str(val)
 		except UnicodeDecodeError:
 			self.text = val.decode('utf-8', 'ignore')
 			print( 'Broken UTF8!' )
