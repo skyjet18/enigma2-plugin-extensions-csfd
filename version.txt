@@ -1,8 +1,7 @@
-15.00
-enigma2-plugin-extensions-csfd_15-00-20220105_all.ipk
+15.20
+enigma2-plugin-extensions-csfd_15-20-20220111_all.ipk
 Hlavné zmeny:
-- oživenie pluginu a zverejnenie zdrojových súborov
-- zmena spôsobu získavania údajov z csfd - prechod na api
-- odstránenie twisted http klienta
-- zmena URL pre automatické aktualizácie
-- a mnoho iného súvisiaceho s opätovným oživením
+- opravená zobrazovanie obrázkov ak film neobsahuje poster
+- opravený pád pri nevalídnom UTF znaku v EPG
+- opravený pád pri stlačení kláves bouquet up/down
+- úpravy v súvislosti s python 3.x
