@@ -1,6 +1,13 @@
 HISTORIE  ZMĚN  V  PLUGINU  CSFD (autor: skyjet)
 $$$A¯
 $$$B_
+Verze 15.20  -  11.01.2022
+$$$A¯
+- opravená zobrazovanie obrázkov ak film neobsahuje poster
+- opravený pád pri nevalídnom UTF znaku v EPG
+- opravený pád pri stlačení kláves bouquet up/down
+- úpravy v súvislosti s python 3.x
+$$$B_
 Verze 15.10  -  09.01.2022
 $$$A¯
 - vylepšené logo pluginu
