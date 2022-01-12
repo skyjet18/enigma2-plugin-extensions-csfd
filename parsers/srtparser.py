@@ -42,4 +42,4 @@ class SrtParser(BaseParser):
 				subs.append(self.createSub(text, startTime, endTime))
 		return subs
 	
-parserClass = SrtParser
+# parserClass = SrtParser

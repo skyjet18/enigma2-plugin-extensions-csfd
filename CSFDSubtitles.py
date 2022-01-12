@@ -72,17 +72,21 @@ for f in list(FONT_CP.keys()):
 
 FONT_CP = None
 PARSERS = []
-for module in os.listdir(os.path.join(os.path.dirname(__file__), 'parsers')):
-	if module == '__init__.py' or module == 'baseparser.py' or module[-3:] != '.py':
-		continue
-	module = module[:-3]
-	exec('import %s.%s' % ('parsers', module))
-	parsermod = eval('%s.%s' % ('parsers', module))
-	parser = parsermod.parserClass
-	debug('found %s %s' % (parser, dir(parser)))
-	PARSERS.append(parser)
+#for module in os.listdir(os.path.join(os.path.dirname(__file__), 'parsers')):
+#	if module == '__init__.py' or module == 'baseparser.py' or module[-3:] != '.py':
+#		continue
+#	module = module[:-3]
+#	exec('import %s.%s' % ('parsers', module))
+#	parsermod = eval('%s.%s' % ('parsers', module))
+#	parser = parsermod.parserClass
+#	debug('found %s %s' % (parser, dir(parser)))
+#	PARSERS.append(parser)
+#del module
 
-del module
+# add subtitle parsers
+from .parsers.srtparser import SrtParser
+PARSERS.append( SrtParser )
+
 plugin_settings = getattr(config.misc, PLUGIN_NAME)
 setattr(plugin_settings, 'subtitles', ConfigSubsection())
 subtitles_settings = getattr(plugin_settings, 'subtitles')

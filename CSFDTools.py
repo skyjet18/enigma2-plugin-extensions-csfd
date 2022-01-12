@@ -246,40 +246,17 @@ class CSFDHelpableActionMapChng(ActionMap):
 		return
 
 
-def requestInclErr(url, headers={}):
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - requestInclErr - zacatek\n')
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - requestInclErr - url: %s\n' % Uni8(url))
-	chyba = False
-	try:
-		r = urllib_Request(url, headers=headers)
-		response = urllib_urlopen(r)
-		data = response.read()
-		response.close()
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - requestInclErr - OK\n')
-	except:
-		chyba = True
-		data = ''
-		err = traceback.format_exc()
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - requestInclErr - chyba\n')
-		LogCSFD.WriteToFile(err)
-
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - requestInclErr - OK\n')
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - requestInclErr - konec\n')
-	return (data, chyba)
-
-
 def internet_on(timeout_s=1):
 	if not config.misc.CSFD.InternetTest.getValue():
 		return True
 	OK = False
 	try:
-		urllib_urlopen(google_IP, timeout=timeout_s)
+		csfd_session.get("https://www.google.cz", timeout=timeout_s, stream=True).raw.read()
 		OK = True
 	except:
 		OK = False
 		err = traceback.format_exc()
 		LogCSFD.WriteToFile('[CSFD] CSFDTools - internet_on - chyba\n')
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - internet_on - google_IP: ' + google_IP + '\n')
 		LogCSFD.WriteToFile('[CSFD] CSFDTools - internet_on - timeout_s: ' + str(timeout_s) + '\n')
 		LogCSFD.WriteToFile(err)
 
@@ -287,28 +264,6 @@ def internet_on(timeout_s=1):
 		timeout_s += 3
 		OK = internet_on(timeout_s)
 	return OK
-
-
-std_header_UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3)'
-
-def post(url, data):
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - post - zacatek\n')
-	try:
-		postdata = urlencode(data)
-		req = urllib_Request(url, postdata)
-		req.add_header('User-Agent', std_header_UA)
-		response = urllib_urlopen(req)
-		data = response.read()
-		response.close()
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - post - OK\n')
-	except:
-		data = ''
-		err = traceback.format_exc()
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - post - chyba\n')
-		LogCSFD.WriteToFile(err)
-
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - post - konec\n')
-	return data
 
 
 def substr(data, start, end):
@@ -319,27 +274,14 @@ def substr(data, start, end):
 
 def GetInstallCommand():
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - GetInstallCommand - zacatek\n')
-	inst_c = 'ipkg'
-	err = False
-	try:
-		fileP = open('/usr/bin/opkg', 'r')
-	except:
-		err = True
 
-	if not err:
-		inst_c = 'opkg'
-		fileP.close()
-	err = False
-	try:
-		fileP = open('/usr/bin/dpkg', 'r')
-	except:
-		err = True
-
-	if not err:
-		inst_c = 'dpkg'
-		fileP.close()
-	if config.misc.CSFD.InstallCommand.getValue() != 'default':
+	if config.misc.CSFD.InstallCommand.getValue() == 'default':
 		inst_c = config.misc.CSFD.InstallCommand.getValue()
+	elif os_path.exists('/usr/bin/opkg'):
+		inst_c = 'opkg'
+	elif os_path.exists('/usr/bin/dpkg'):
+		inst_c = 'dpkg'
+
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - GetInstallCommand: %s\n' % Uni8(inst_c))
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - GetInstallCommand - konec\n')
 	return inst_c
@@ -347,164 +289,32 @@ def GetInstallCommand():
 
 def getBoxtypeCSFD():
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - BoxTypeCSFD - zacatek\n')
-	success = False
-	try:
-		filePointer = open('/proc/stb/info/vumodel')
-		success = True
-	except:
+	
+	box = None
+	for p in [ '/proc/stb/info/vumodel', '/proc/stb/info/model' ]:
 		try:
-			filePointer = open('/proc/stb/info/model')
-			success = True
+			with open(p, 'r') as f:
+				box = f.readline().strip()
+			break
 		except:
-			try:
-				filePointer = open('/proc/stb/info/azmodel')
-				success = True
-			except:
-				try:
-					filePointer = open('/hdd/model')
-					success = True
-				except:
-					pass
-
-	manu = 'Unknown'
+			pass
+		
 	model = 'Unknown'
-	arch = 'unk'
-	if success:
-		box = filePointer.readline().strip()
-		filePointer.close()
-		if box == 'ufs910':
-			manu = 'Kathrein'
-			model = 'UFS-910'
-			arch = 'sh4'
-		elif box == 'ufs912':
-			manu = 'Kathrein'
-			model = 'UFS-912'
-			arch = 'sh4'
-		elif box == 'ufs922':
-			manu = 'Kathrein'
-			model = 'UFS-922'
-			arch = 'sh4'
-		elif box == 'solo':
-			manu = 'VU+'
-			model = 'Solo'
-			arch = 'mipsel'
-		elif box == 'duo':
-			manu = 'VU+'
-			model = 'Duo'
-			arch = 'mipsel'
-		elif box == 'solo2':
-			manu = 'VU+'
-			model = 'Solo2'
-			arch = 'mipsel'
-		elif box == 'duo2':
-			manu = 'VU+'
-			model = 'Duo2'
-			arch = 'mipsel'
-		elif box == 'ultimo':
-			manu = 'VU+'
-			model = 'Ultimo'
-			arch = 'mipsel'
-		elif box == 'tf7700hdpvr':
-			manu = 'Topfield'
-			model = 'HDPVR-7700'
-			arch = 'sh4'
-		elif box == 'dm800':
-			manu = 'Dreambox'
+	if box != None:
+		if box == 'dm800':
 			model = '800'
-			arch = 'mipsel'
 		elif box == 'dm800se':
-			manu = 'Dreambox'
 			model = '800se'
-			arch = 'mipsel'
-		elif box == 'dm820hd' or box == 'dm820':
-			manu = 'Dreambox'
-			model = '820'
-			arch = 'mipsel'
-		elif box == 'dm8000':
-			manu = 'Dreambox'
+		elif box == 'dm8000' or box == "dm7020hd" or box == "dm7080" or box == 'dm7080hd':
 			model = '8000'
-			arch = 'mipsel'
-		elif box == 'dm500hd' or box == 'dm500':
-			manu = 'Dreambox'
-			model = '500hd'
-			arch = 'mipsel'
-		elif box == 'dm520hd' or box == 'dm520':
-			manu = 'Dreambox'
-			model = '520'
-			arch = 'mipsel'
 		elif box == 'dm900hd' or box == 'dm900':
-			manu = 'Dreambox'
 			model = '900'
-			arch = 'mipsel'
-		elif box == 'dm7025':
-			manu = 'Dreambox'
-			model = '7025'
-			arch = 'mipsel'
-		elif box == 'dm7020hd':
-			manu = 'Dreambox'
-			model = '7020hd'
-			arch = 'mipsel'
-		elif box == 'dm7080':
-			manu = 'Dreambox'
-			model = '7080'
-			arch = 'mipsel'
-		elif box == 'dm7080hd':
-			manu = 'Dreambox'
-			model = '7080'
-			arch = 'mipsel'
-		elif box == 'elite':
-			manu = 'Azbox'
-			model = 'Elite'
-			arch = 'mipsel'
-		elif box == 'premium':
-			manu = 'Azbox'
-			model = 'Premium'
-			arch = 'mipsel'
-		elif box == 'premium+':
-			manu = 'Azbox'
-			model = 'Premium+'
-			arch = 'mipsel'
-		elif box == 'cuberevo-mini':
-			manu = 'Cubarevo'
-			model = 'Mini'
-			arch = 'sh4'
-		elif box == 'hdbox':
-			manu = 'Fortis'
-			model = 'HdBox'
-			arch = 'sh4'
-		elif box == 'gbquad':
-			manu = 'Gigablue'
-			model = 'Quad'
-			arch = 'mipsel'
-		elif box == 'gbquadplus':
-			manu = 'Gigablue'
-			model = 'QuadPlus'
-			arch = 'mipsel'
-		elif box == 'gb800seplus':
-			manu = 'Gigablue'
-			model = '800SEPlus'
-			arch = 'mipsel'
-		elif box == 'gb800ueplus':
-			manu = 'Gigablue'
-			model = '800UEPlus'
-			arch = 'mipsel'
-		elif box == 'et8000':
-			manu = 'Xtrend'
-			model = '8000'
-			arch = 'mipsel'
-		elif box == 'et10000':
-			manu = 'Xtrend'
-			model = '10000'
-			arch = 'mipsel'
-		elif box == 'maram9':
-			manu = 'Odin'
-			model = 'M9'
-			arch = 'mipsel'
+
 	version, enigma = Uni8(getBoxArch())
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - BoxType - box=' + box + '\n')
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - BoxType - Vyrobce=' + manu + '; Model=' + model + '; Arch=' + arch + '; Image=' + version + '; Enigma=' + enigma + '\n')
+	LogCSFD.WriteToFile('[CSFD] CSFDTools - BoxType - Model=' + model + '; Image=' + version + '; Enigma=' + enigma + '\n')
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - BoxType - konec\n')
-	return (manu, model, arch, version, enigma)
+	return (model, version, enigma)
 
 
 def getBoxArch():
@@ -516,11 +326,8 @@ def getBoxArch():
 	if sys.version_info > (2, 7, 0):
 		ARCH = 'oe20'
 		enigma = '3'
-	try:
-		fileP = open('/usr/bin/dpkg', 'r')
+	if os_path.exists('/usr/bin/dpkg'):
 		ARCH = 'oe22'
-	except:
-		pass
 
 	try:
 		from enigma import eMediaDatabase
@@ -529,8 +336,7 @@ def getBoxArch():
 	except:
 		pass
 
-	return (
-	 ARCH, enigma)
+	return (ARCH, enigma)
 
 
 def getImagetype():
@@ -778,16 +584,8 @@ def grem(path, pattern):
 
 
 def deletetmpfiles():
-	grem(CSFDGlobalVar.getCSFDadresarTMP(), 'CSFDQuery.*?html')
-	grem(CSFDGlobalVar.getCSFDadresarTMP(), 'CSFDGallPoc.html')
-	grem(CSFDGlobalVar.getCSFDadresarTMP(), 'CSFDVideo.*?html')
-	grem(CSFDGlobalVar.getCSFDadresarTMP(), 'CSFDVPoster.*?jpg')
-	grem(CSFDGlobalVar.getCSFDadresarTMP(), 'CSFDPoster.*?jpg')
-	grem(CSFDGlobalVar.getCSFDadresarTMP(), 'CSFDGallery.*?jpg')
-	grem(CSFDGlobalVar.getCSFDadresarTMP(), 'CSFDversion.*?txt')
-	grem(CSFDGlobalVar.getCSFDadresarTMP(), 'CSFDtest.*?txt')
-	grem(CSFDGlobalVar.getCSFDadresarTMP(), 'poster.jpg')
-	grem(CSFDGlobalVar.getCSFDadresarTMP(), 'imdbquery.*?html')
+	for name in [ 'CSFDVPoster.*?jpg', 'CSFDPoster.*?jpg', 'CSFDGallery.*?jpg', 'CSFDversion.*?txt', 'imdbquery.*?html' ]:
+		grem(CSFDGlobalVar.getCSFDadresarTMP(), name )
 
 
 def TextCompare(s, t):
@@ -952,28 +750,6 @@ def IsThereBT_Parameters():
 	return OK
 
 
-def IsHTTPSWorking():
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - IsHTTPSWorking - zacatek\n')
-
-	OK = True
-	url = csfd_URL_https
-	try:
-		r = urllib_Request(url, headers=std_media_header)
-		response = urllib_urlopen(r)
-		response.read()
-		response.close()
-	except:
-		OK = False
-		err = traceback.format_exc()
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - IsHTTPSWorking - neni funkcni stahovani HTTPS v urllib2 - ' + url + '\n')
-		LogCSFD.WriteToFile(err)
-
-	if OK:
-		LogCSFD.WriteToFile('[CSFD] CSFDTools - IsHTTPSWorking - OK - ' + url + '\n')
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - IsHTTPSWorking - konec\n')
-	return OK
-
-
 def InitCSFDTools():
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - InitCSFDTools - zacatek\n')
 	CSFDGlobalVar.setCSFDBoxType(getBoxtypeCSFD())
@@ -981,8 +757,8 @@ def InitCSFDTools():
 	CSFDGlobalVar.setCSFDImageType(ImageType)
 	CSFDGlobalVar.setCSFDImageCompatibility(ImageCompatibility)
 	CSFDGlobalVar.setCSFDDesktopWidth(CSFD_Desktop_Width())
-	CSFDGlobalVar.setCSFDoeVersion(CSFDGlobalVar.getCSFDBoxType()[3])
-	CSFDGlobalVar.setCSFDEnigmaVersion(CSFDGlobalVar.getCSFDBoxType()[4])
+	CSFDGlobalVar.setCSFDoeVersion(CSFDGlobalVar.getCSFDBoxType()[1])
+	CSFDGlobalVar.setCSFDEnigmaVersion(CSFDGlobalVar.getCSFDBoxType()[2])
 	CSFDGlobalVar.setCSFDInstallCommand(GetInstallCommand())
 	CSFDGlobalVar.setBTParameters(IsThereBT_Parameters())
 	CSFDGlobalVar.setHTTP('https')

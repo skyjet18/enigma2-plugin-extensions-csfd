@@ -443,13 +443,13 @@ class CSFDEPGSelection(EPGSelection):
 class CSFDLCDSummary(Screen):
 	LogCSFD.WriteToFile('[CSFD] CSFDLCDSummary - zacatek\n')
 	if CSFDGlobalVar.getCSFDImageCompatibility() < 11:
-		if CSFDGlobalVar.getCSFDBoxType()[1] == '8000' or CSFDGlobalVar.getCSFDBoxType()[1] == '7020hd' or CSFDGlobalVar.getCSFDBoxType()[1] == '7080':
+		if CSFDGlobalVar.getCSFDBoxType()[0] == '8000':
 			skin = Screen_CSFDLCDSummary8000_7020hd
-		elif CSFDGlobalVar.getCSFDBoxType()[1] == '800se':
+		elif CSFDGlobalVar.getCSFDBoxType()[0] == '800se':
 			skin = Screen_CSFDLCDSummary800SE
-		elif CSFDGlobalVar.getCSFDBoxType()[1] == '900':
+		elif CSFDGlobalVar.getCSFDBoxType()[0] == '900':
 			skin = Screen_CSFDLCDSummary900
-		elif CSFDGlobalVar.getCSFDBoxType()[1] == '800':
+		elif CSFDGlobalVar.getCSFDBoxType()[0] == '800':
 			skin = Screen_CSFDLCDSummary800
 		else:
 			skin = Screen_CSFDLCDSummaryElseDMM
@@ -462,16 +462,16 @@ class CSFDLCDSummary(Screen):
 		LogCSFD.WriteToFile('[CSFD] CSFDLCDSummary - Init - zacatek\n')
 		if config.misc.CSFD.SkinOLEDxml.getValue():
 			if CSFDGlobalVar.getCSFDImageCompatibility() < 11:
-				if CSFDGlobalVar.getCSFDBoxType()[1] == '8000' or CSFDGlobalVar.getCSFDBoxType()[1] == '7020hd' or CSFDGlobalVar.getCSFDBoxType()[1] == '7080':
+				if CSFDGlobalVar.getCSFDBoxType()[0] == '8000':
 					self.skinName = [
 					 'CSFDLCDSummary8000_7020hd', 'CSFDLCDSummary']
-				elif CSFDGlobalVar.getCSFDBoxType()[1] == '800se':
+				elif CSFDGlobalVar.getCSFDBoxType()[0] == '800se':
 					self.skinName = [
 					 'CSFDLCDSummary800SE', 'CSFDLCDSummary']
-				elif CSFDGlobalVar.getCSFDBoxType()[1] == '900':
+				elif CSFDGlobalVar.getCSFDBoxType()[0] == '900':
 					self.skinName = [
 					 'CSFDLCDSummary900', 'CSFDLCDSummary']
-				elif CSFDGlobalVar.getCSFDBoxType()[1] == '800':
+				elif CSFDGlobalVar.getCSFDBoxType()[0] == '800':
 					self.skinName = [
 					 'CSFDLCDSummary800', 'CSFDLCDSummary']
 				else:
@@ -486,7 +486,7 @@ class CSFDLCDSummary(Screen):
 		self['headline'] = Label(_('CSFD.cz :'))
 		self['infomovie'] = Label('')
 		self.ColorLCD = 0
-		if (CSFDGlobalVar.getCSFDBoxType()[1] == '800se' or CSFDGlobalVar.getCSFDBoxType()[1] == '900') and CSFDGlobalVar.getCSFDImageCompatibility() < 11:
+		if (CSFDGlobalVar.getCSFDBoxType()[0] == '800se' or CSFDGlobalVar.getCSFDBoxType()[0] == '900') and CSFDGlobalVar.getCSFDImageCompatibility() < 11:
 			self.ColorLCD = 1
 
 	def setText(self, text, detail):

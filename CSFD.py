@@ -3,7 +3,7 @@
 from enigma import eTimer, ePicLoad, eServiceCenter, eServiceReference, eConsoleAppContainer, gPixmapPtr, gRGB, RT_HALIGN_LEFT, RT_VALIGN_CENTER
 from .CSFDLog import LogCSFD
 from .CSFDTools import ItemList, ItemListServiceMenu, TextSimilarityBigram, TextSimilarityLD, TextCompare, max_positions, request, requestFileCSFD, internet_on, fromRomanStr, StrtoRoman
-from .CSFDTools import IsHTTPSWorking, intWithSeparator, char2Diacritic, char2DiacriticSort, char2Allowchar, char2AllowcharNumbers, strUni, Uni8, deletetmpfiles, OdstranitDuplicityRadku, loadPixmapCSFD, picStartDecodeCSFD
+from .CSFDTools import intWithSeparator, char2Diacritic, char2DiacriticSort, char2Allowchar, char2AllowcharNumbers, strUni, Uni8, deletetmpfiles, OdstranitDuplicityRadku, loadPixmapCSFD, picStartDecodeCSFD
 from .CSFDMenu import CSFDIconMenu
 from .CSFDParser import ParserCSFD, ParserOstCSFD, ParserVideoCSFD, ParserGallCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions
 from .CSFDClasses import LoginToCSFD, GetMoviesForTVChannels, CSFDChannelSelection, CSFDEPGSelection, CSFDLCDSummary, CSFDSetup, CSFDInputText, CSFDAbout, CSFDHistory, CSFDVideoInfoScreen, CSFDPlayer, RefreshPlugins
@@ -6298,16 +6298,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		console.addText(text=txt, typeText=0)
 		LogCSFD.WriteToFile(txt, 9)
 		test_txt += txt
-		txt = _('Je funkční čtení stránek HTTPS')
-		
-		if IsHTTPSWorking():
-			txt += ' ..... OK\n'
-		else:
-			txt += ' ..... ERR\n'
-		console.addText(text=txt, typeText=0)
-		LogCSFD.WriteToFile(txt, 9)
-		test_txt += txt
-		page = ''
 		txt = _('Zkouším funkčnost načítání www stránek')
 		url = 'https://www.csfd.cz/prihlaseni/'
 		try:
