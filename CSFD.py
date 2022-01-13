@@ -4937,22 +4937,22 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					self.VideoSlideList.append([url, porVF, ss, s_video, videoklipurl, videotitulkyurl, x[5], char2DiacriticSort(ss), localfile, downloaded])
 					self.VideoCountPix += 1
 
-		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - VideoCountPix ' + str(self.VideoCountPix) + '\n')
-		if self.Page == 2 and self.querySpecAkce == 'UserVideo':
-			self.VideoSlideList.sort(key=lambda z: z[7])
-			if self.VideoIsNotFullyRead:
-				self.VideoIsNotFullyRead = False
-				if self['extralabel'].instance.isVisible():
-					self['extralabel'].hide()
-				if not self['playbutton'].instance.isVisible():
-					self['playbutton'].show()
-				if not self['photolabel'].instance.isVisible():
-					self['photolabel'].show()
-				self.CSFDVideoShow()
-			else:
-				idx = self.VideoActIdx
-				ss = str(idx + 1) + '/' + str(self.VideoCountPix) + '  ' + strUni(self.VideoSlideList[idx][2])
-				self['statusbar'].setText(ss)
+			LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - VideoCountPix ' + str(self.VideoCountPix) + '\n')
+			if self.Page == 2 and self.querySpecAkce == 'UserVideo':
+				self.VideoSlideList.sort(key=lambda z: z[7])
+				if self.VideoIsNotFullyRead:
+					self.VideoIsNotFullyRead = False
+					if self['extralabel'].instance.isVisible():
+						self['extralabel'].hide()
+					if not self['playbutton'].instance.isVisible():
+						self['playbutton'].show()
+					if not self['photolabel'].instance.isVisible():
+						self['photolabel'].show()
+					self.CSFDVideoShow()
+				else:
+					idx = self.VideoActIdx
+					ss = str(idx + 1) + '/' + str(self.VideoCountPix) + '  ' + strUni(self.VideoSlideList[idx][2])
+					self['statusbar'].setText(ss)
 
 		self.VideoSlideList.sort(key=lambda z: z[7])
 		self.VideoIsNotFullyRead = False
