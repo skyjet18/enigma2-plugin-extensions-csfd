@@ -105,6 +105,12 @@ class CSFDNumericalTextInput:
 				self.mapping.append('pqrs7PQRS')
 				self.mapping.append('tuv8TUV')
 				self.mapping.append('wxyz9WXYZ')
+			
+			m = []
+			for x in self.mapping:
+				m.append( x.decode('utf-8'))
+				
+			self.mapping = m
 			return
 
 	def setUseableChars(self, useable):
@@ -138,8 +144,7 @@ class CSFDNumericalTextInput:
 						return
 			break
 
-#		return self.mapping[num][self.pos]
-		return str(self.mapping[num][self.pos])
+		return self.mapping[num][self.pos]
 
 	def nextKey(self):
 		if self.timer is not None:
