@@ -1271,8 +1271,12 @@ class CSFDParser():
 				rating_stars = "odpad!"
 			else:
 				rating_stars = "* " * int(int(comment["rating"]) / 20)
-				
-			searchresults.append( (comment["user"]["nick"], rating_stars , comment["inserted_datetime"][:-12], comment_text) )
+			
+			# convert 2022-01-04 21:55 -> 04.01.2022 21:55
+			comment_date = comment["inserted_datetime"][:-15]
+			comment_date = comment_date[8:10] + '.' + comment_date[5:7] + '.' + comment_date[0:4] + '  ' + comment_date[11:]
+
+			searchresults.append( (comment["user"]["nick"], rating_stars , comment_date, comment_text) )
 
 		LogCSFD.WriteToFile('[CSFD] parserUserComments - konec\n')
 		if len(searchresults) == 0:
