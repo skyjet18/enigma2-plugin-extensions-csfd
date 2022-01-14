@@ -208,7 +208,7 @@ class CSFDAndroidClient:
 				}
 		
 		if response.status_code == 200:
-			LogCSFD.WriteToFile( "Status: %d, Response: %s\n" % (response.status_code, response.text), 2 )
+#			LogCSFD.WriteToFile( "Status: %d, Response: %s\n" % (response.status_code, response.text), 2 )
 #			print( response.text )
 			return json.loads(response.text)
 		

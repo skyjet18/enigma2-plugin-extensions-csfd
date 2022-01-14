@@ -502,7 +502,7 @@ def isBigCharInFirst(mystring):
 
 def OdstranitDuplicityRadku(text):
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - DuplicityRadku - zacatek\n')
-	LogCSFD.WriteToFileWithoutTime(text)
+	LogCSFD.WriteToFileWithoutTime(text + '\n')
 	sez = text.splitlines()
 	novy_text = ''
 	new_sez = []
