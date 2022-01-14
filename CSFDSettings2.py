@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from Components.config import config, ConfigSubsection, ConfigYesNo, ConfigSelection, ConfigInteger, configfile, NoSave
+from Components.config import config, ConfigSubsection, ConfigYesNo, ConfigSelection, ConfigInteger, ConfigText, configfile, NoSave
 from .CSFDConfigText import CSFDConfigText, CSFDConfigPassword
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
@@ -9,8 +9,10 @@ from datetime import datetime
 from .CSFDLog import LogCSFD
 from .CSFDSettings1 import CSFDGlobalVar
 import gettext, locale
+
 CSFDVersion='15.20'
 CSFDVersionData='11.01.2022'
+
 config.misc.CSFD = ConfigSubsection()
 config.misc.CSFD.Log = ConfigYesNo(default=True)
 config.misc.CSFD.LogConsole = ConfigYesNo(default=False)
@@ -33,85 +35,8 @@ config.misc.CSFD.VersionData = NoSave(CSFDConfigText(default=CSFDVersionData))
 const_www_csfd = '://www.csfd.cz'
 const_csfd_http_film = '://www.csfd.cz/film/'
 const_quick_page = 'komentare/strana-300/'
-std_headers = {'Host': 'www.csfd.cz', 
-   'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0', 
-   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 
-   'Accept-Language': 'sk,cs;q=0.8,en-US;q=0.5,en;q=0.3', 
-   'Accept-Encoding': 'gzip', 
-   'DNT': '1', 
-   'Referer': 'https://www.csfd.cz/', 
-   'Connection': 'keep-alive'}
-std_headers_UL2 = [
- ('Host', 'www.csfd.cz'),
- ('User-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'),
- ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
- ('Accept-Language', 'sk,cs;q=0.8,en-US;q=0.5,en;q=0.3'),
- ('Accept-Encoding', 'gzip'),
- ('DNT', '1'),
- ('Referer', 'https://www.csfd.cz/'),
- ('Connection', 'keep-alive')]
+
 std_media_header = {'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'}
-std_media_header_UL2 = [
- ('User-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0')]
-std_post_header = {'Host': 'www.csfd.cz', 
-   'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0', 
-   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 
-   'Accept-Language': 'sk,cs;q=0.8,en-US;q=0.5,en;q=0.3', 
-   'Accept-Encoding': 'gzip', 
-   'DNT': '1', 
-   'Referer': 'https://www.csfd.cz/', 
-   'Connection': 'keep-alive', 
-   'Content-Type': 'application/x-www-form-urlencoded', 
-   'Content-Length': '75'}
-std_post_header_UL2 = [
- ('Host', 'www.csfd.cz'),
- ('User-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'),
- ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
- ('Accept-Language', 'sk,cs;q=0.8,en-US;q=0.5,en;q=0.3'),
- ('Accept-Encoding', 'gzip'),
- ('DNT', '1'),
- ('Referer', 'https://www.csfd.cz/'),
- ('Connection', 'keep-alive'),
- ('Content-Type', 'application/x-www-form-urlencoded'),
- ('Content-Length', '75')]
-std_tv_post_header = {'Host': 'www.csfd.cz', 
-   'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0', 
-   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 
-   'Accept-Language': 'sk,cs;q=0.8,en-US;q=0.5,en;q=0.3', 
-   'Accept-Encoding': 'gzip', 
-   'DNT': '1', 
-   'Referer': 'https://www.csfd.cz/televize/', 
-   'Connection': 'keep-alive', 
-   'Content-Type': 'application/x-www-form-urlencoded'}
-std_tv_post_header_UL2 = [
- ('Host', 'www.csfd.cz'),
- ('User-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'),
- ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
- ('Accept-Language', 'sk,cs;q=0.8,en-US;q=0.5,en;q=0.3'),
- ('Accept-Encoding', 'gzip'),
- ('DNT', '1'),
- ('Referer', 'https://www.csfd.cz/televize/'),
- ('Connection', 'keep-alive'),
- ('Content-Type', 'application/x-www-form-urlencoded')]
-std_login_header = {'Host': 'www.csfd.cz', 
-   'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0', 
-   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 
-   'Accept-Language': 'sk,cs;q=0.8,en-US;q=0.5,en;q=0.3', 
-   'Accept-Encoding': 'gzip', 
-   'DNT': '1', 
-   'Referer': 'https://www.csfd.cz/prihlaseni/', 
-   'Connection': 'keep-alive', 
-   'Content-Type': 'application/x-www-form-urlencoded'}
-std_login_header_UL2 = [
- ('Host', 'www.csfd.cz'),
- ('User-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'),
- ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
- ('Accept-Language', 'sk,cs;q=0.8,en-US;q=0.5,en;q=0.3'),
- ('Accept-Encoding', 'gzip'),
- ('DNT', '1'),
- ('Referer', 'https://www.csfd.cz/prihlaseni/'),
- ('Connection', 'keep-alive'),
- ('Content-Type', 'application/x-www-form-urlencoded')]
 
 # MainUpdateUrl = 'http://downloads.tvplugins.cz/csfd/'
 MainUpdateUrl = 'https://raw.githubusercontent.com/skyjet18/enigma2-plugin-extensions-csfd/master/'
@@ -230,6 +155,7 @@ config.misc.CSFD.ShowLine = ConfigYesNo(default=True)
 config.misc.CSFD.LoginToCSFD = ConfigYesNo(default=False)
 config.misc.CSFD.UserNameCSFD = CSFDConfigText('', fixed_size=False)
 config.misc.CSFD.PasswordCSFD = CSFDConfigPassword('', fixed_size=False)
+config.misc.CSFD.TokenCSFD = ConfigText(default='', fixed_size=False)
 config.misc.CSFD.DownloadTimeOut = ConfigInteger(default=25, limits=(5, 120))
 config.misc.CSFD.TechnicalDownloadTimeOut = ConfigInteger(default=10, limits=(5, 120))
 config.misc.CSFD.InternetTest = ConfigYesNo(default=True)
@@ -246,17 +172,18 @@ config.misc.CSFD.QualityPoster = ConfigYesNo(default=False)
 config.misc.CSFD.QualityGallery = ConfigYesNo(default=False)
 config.misc.CSFD.QualityVideoPoster = ConfigYesNo(default=False)
 CSFDActionDict = [
- ('komentare', 'UserComments'),
- ('ext.recenze', 'UserExtReviews'),
- ('diskuze', 'UserDiscussion'),
- ('zajimavosti', 'UserInteresting'),
- ('oceneni', 'UserAwards'),
- ('premiery', 'UserPremiery'),
- ('hodnoceni', 'UserReviews'),
- ('fanousci', 'UserFans'),
- ('galerie', 'UserGallery'),
- ('postery', 'UserPoster'),
- ('video', 'UserVideo')]
+	('komentare', 'UserComments'),
+	('ext.recenze', 'UserExtReviews'),
+	('diskuze', 'UserDiscussion'),
+	('zajimavosti', 'UserInteresting'),
+	('oceneni', 'UserAwards'),
+	('premiery', 'UserPremiery'),
+	('hodnoceni', 'UserReviews'),
+	('fanousci', 'UserFans'),
+	('galerie', 'UserGallery'),
+	('postery', 'UserPoster'),
+	('video', 'UserVideo')
+]
 
 def ResetParams():
 	config.misc.CSFD.Log.saved_value = None
@@ -271,6 +198,7 @@ def ResetParams():
 	config.misc.CSFD.LastLoginError.saved_value = None
 	config.misc.CSFD.LanErrorWaiting.saved_value = None
 	config.misc.CSFD.LoginErrorWaiting.saved_value = None
+	config.misc.CSFD.TokenCSFD.saved_value = None
 	config.misc.CSFD.AutomaticVersionCheck.saved_value = None
 	config.misc.CSFD.AutomaticBetaVersionCheck.saved_value = None
 	config.misc.CSFD.TestVersion.saved_value = None
@@ -375,6 +303,7 @@ def ResetParams():
 	config.misc.CSFD.LastLoginError.load()
 	config.misc.CSFD.LanErrorWaiting.load()
 	config.misc.CSFD.LoginErrorWaiting.load()
+	config.misc.CSFD.TokenCSFD.load()
 	config.misc.CSFD.AutomaticVersionCheck.load()
 	config.misc.CSFD.AutomaticBetaVersionCheck.load()
 	config.misc.CSFD.TestVersion.load()
@@ -489,88 +418,51 @@ def InitParamsLangImpact():
 	config.misc.CSFD.FontHeightFullHD = ConfigSelection(choices=[('24', '24'), ('25', '25'), ('26', '26'), ('27', '27'), ('28', '28'), ('29', '29'), ('30', '30'), ('31', '31'), ('32', '32'), ('33', '33'), ('34', '34'), ('35', '35'), ('36', '36'), ('37', '37'), ('38', '38'), ('39', '39'), ('40', '40'), ('41', '41'), ('42', '42'), ('43', '43'), ('44', '44'), ('45', '45'), ('46', '46'), ('47', '47'), ('48', '48'), ('49', '49'), ('50', '50'), ('51', '51'), ('52', '52'), ('53', '53'), ('54', '54'), ('55', '55'), ('56', '56')], default='28')
 	config.misc.CSFD.ThousandsSeparator = ConfigSelection(choices=[('', _('žádný')), (' ', _('mezera')), ('.', _('tečka')), (',', _('čárka'))], default=' ')
 	config.misc.CSFD.InstallCommand = ConfigSelection(choices=[('default', 'default'), ('ipkg', 'ipkg'), ('opkg', 'opkg'), ('dpkg', 'dpkg')], default='default')
+	
 	HotKeysMenu = [
-	 (
-	  'nic', _('Bez akce')),
-	 (
-	  'aktEPG', _('Výběr pořadu z EPG akt.programu')),
-	 (
-	  'vyberEPG', _('Výběr pořadu ze všech kanálů')),
-	 (
-	  'zadejporad', _('Zadání pořadu')),
-	 (
-	  'spustitIMDB', _('Vyhledat pořad v IMDB')),
-	 (
-	  'souvisejici', _('Zobrazit související pořady')),
-	 (
-	  'podobne', _('Zobrazit podobné pořady')),
-	 (
-	  'serie', _('Zobrazit řady seriálu')),
-	 (
-	  'epizody', _('Zobrazit epizody seriálu')),
-	 (
-	  'komentare', _('Zobrazit komentáře')),
-	 (
-	  'ext.recenze', _('Zobrazit ext.recenze')),
-	 (
-	  'diskuze', _('Zobrazit diskuzi')),
-	 (
-	  'zajimavosti', _('Zobrazit zajímavosti')),
-	 (
-	  'oceneni', _('Zobrazit ocenění')),
-	 (
-	  'galerie', _('Zobrazit galerii')),
-	 (
-	  'postery', _('Zobrazit postery')),
-	 (
-	  'video', _('Zobrazit videa')),
-	 (
-	  'ulozvideo', _('Uložit video')),
-	 (
-	  'spustitvideo', _('Spustit video ukázku')),
-	 (
-	  'premiery', _('Zobrazit premiéry')),
-	 (
-	  'hodnoceni', _('Zobrazit hodnocení uživatelů')),
-	 (
-	  'fanousci', _('Zobrazit fanoušky pořadu')),
-	 (
-	  'ownrating', _('Zadat/změnit hodnocení')),
-	 (
-	  'nastaveni', _('Nastavení')),
-	 (
-	  'novaverze', _('Stáhnout novou verzi pluginu')),
-	 (
-	  'historie', _('Historie změn v pluginu')),
-	 (
-	  'skin', _('Změna skinu')),
-	 (
-	  'about', _('O pluginu'))]
+		('nic', _('Bez akce')),
+		('aktEPG', _('Výběr pořadu z EPG akt.programu')),
+		('vyberEPG', _('Výběr pořadu ze všech kanálů')),
+		('zadejporad', _('Zadání pořadu')),
+		('spustitIMDB', _('Vyhledat pořad v IMDB')),
+		('souvisejici', _('Zobrazit související pořady')),
+		('podobne', _('Zobrazit podobné pořady')),
+		('serie', _('Zobrazit řady seriálu')),
+		('epizody', _('Zobrazit epizody seriálu')),
+		('komentare', _('Zobrazit komentáře')),
+		('ext.recenze', _('Zobrazit ext.recenze')),
+		('diskuze', _('Zobrazit diskuzi')),
+		('zajimavosti', _('Zobrazit zajímavosti')),
+		('oceneni', _('Zobrazit ocenění')),
+		('galerie', _('Zobrazit galerii')),
+		('postery', _('Zobrazit postery')),
+		('video', _('Zobrazit videa')),
+		('ulozvideo', _('Uložit video')),
+		('spustitvideo', _('Spustit video ukázku')),
+		('premiery', _('Zobrazit premiéry')),
+		('hodnoceni', _('Zobrazit hodnocení uživatelů')),
+		('fanousci', _('Zobrazit fanoušky pořadu')),
+		('ownrating', _('Zadat/změnit hodnocení')),
+		('nastaveni', _('Nastavení')),
+		('novaverze', _('Stáhnout novou verzi pluginu')),
+		('historie', _('Historie změn v pluginu')),
+		('skin', _('Změna skinu')),
+		('about', _('O pluginu'))
+	]
 	BouquetMenu = [
-	 (
-	  'nic', _('Bez akce')),
-	 (
-	  'komentare', _('Zobrazit komentáře')),
-	 (
-	  'ext.recenze', _('Zobrazit ext.recenze')),
-	 (
-	  'diskuze', _('Zobrazit diskuzi')),
-	 (
-	  'zajimavosti', _('Zobrazit zajímavosti')),
-	 (
-	  'oceneni', _('Zobrazit ocenění')),
-	 (
-	  'premiery', _('Zobrazit premiéry')),
-	 (
-	  'hodnoceni', _('Zobrazit hodnocení uživatelů')),
-	 (
-	  'fanousci', _('Zobrazit fanoušky pořadu')),
-	 (
-	  'galerie', _('Zobrazit galerii')),
-	 (
-	  'postery', _('Zobrazit postery')),
-	 (
-	  'video', _('Zobrazit videa'))]
+		('nic', _('Bez akce')),
+		('komentare', _('Zobrazit komentáře')),
+		('ext.recenze', _('Zobrazit ext.recenze')),
+		('diskuze', _('Zobrazit diskuzi')),
+		('zajimavosti', _('Zobrazit zajímavosti')),
+		 ('oceneni', _('Zobrazit ocenění')),
+		('premiery', _('Zobrazit premiéry')),
+		('hodnoceni', _('Zobrazit hodnocení uživatelů')),
+		('fanousci', _('Zobrazit fanoušky pořadu')),
+		('galerie', _('Zobrazit galerii')),
+		('postery', _('Zobrazit postery')),
+		('video', _('Zobrazit videa'))
+	]
 	config.misc.CSFD.HotKey4 = ConfigSelection(choices=HotKeysMenu, default='aktEPG')
 	config.misc.CSFD.HotKey5 = ConfigSelection(choices=HotKeysMenu, default='oceneni')
 	config.misc.CSFD.HotKey6 = ConfigSelection(choices=HotKeysMenu, default='komentare')
@@ -598,6 +490,5 @@ def InitParamsLangImpact():
 	config.misc.CSFD.LastLanError.setValue(int(0))
 	config.misc.CSFD.LastLanError.save()
 	LogCSFD.WriteToFile('[CSFD] CSFDSettings2 - InitParamsLangImpact - konec\n')
-
 
 InitParamsLangImpact()

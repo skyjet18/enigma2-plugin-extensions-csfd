@@ -138,7 +138,8 @@ class CSFDNumericalTextInput:
 						return
 			break
 
-		return self.mapping[num][self.pos]
+#		return self.mapping[num][self.pos]
+		return str(self.mapping[num][self.pos])
 
 	def nextKey(self):
 		if self.timer is not None:

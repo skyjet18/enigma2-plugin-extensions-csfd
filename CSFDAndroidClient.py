@@ -4,9 +4,9 @@ import requests
 import json
 import re
 import traceback
+import time
 
 from requests_oauthlib import OAuth1Session
-from pickle import NONE
 try:
 	from urllib.parse import quote_plus
 except:
@@ -16,6 +16,7 @@ from base64 import b64decode as bd
 
 from .CSFDLog import LogCSFD
 from .CSFDSettings2 import config
+from .CSFDTools import internet_on
 
 # ######################################################################################
 
@@ -26,7 +27,9 @@ class CSFDAndroidClient:
 
 		self.oauth_token=None
 		self.oauth_token_secret=None
-
+		self.logged_user=None
+		self.logged_user_id=None
+		
 		if login_token != None:
 			s = login_token.split(':')
 			
@@ -62,6 +65,12 @@ class CSFDAndroidClient:
 	# ######################################################################################
 	
 	def __login( self, username, password ):
+		if username == None or username == '':
+			raise ValueError("Username is empty")
+
+		if password == None or password == '':
+			raise ValueError("Password is empty")
+		
 		# Init oauth with oauth callback
 		callback_uri='csfdroid://oauth-callback'
 		self.oauth = OAuth1Session( self.client_key, client_secret=self.client_secret, callback_uri=callback_uri )
@@ -126,7 +135,8 @@ class CSFDAndroidClient:
 			self.__login( username, password)
 		except:
 			self.init_oauth_session()
-			print( traceback.format_exc() )
+			LogCSFD.WriteToFile( "Login to CSFD failed:", 2 )
+			LogCSFD.WriteToFile( traceback.format_exc() )
 			return False
 		
 		return True
@@ -185,9 +195,12 @@ class CSFDAndroidClient:
 
 	# ######################################################################################
 	
-	def do_request( self, params ):
+	def do_request( self, params, data=None ):
 		try:
-			response = self.oauth.get( self.api_url + '/' + params, headers=self.headers, timeout=config.misc.CSFD.DownloadTimeOut.getValue() )
+			if data == None:
+				response = self.oauth.get( self.api_url + '/' + params, headers=self.headers, timeout=config.misc.CSFD.DownloadTimeOut.getValue() )
+			else:
+				response = self.oauth.post( self.api_url + '/' + params, headers=self.headers, data=data, timeout=config.misc.CSFD.DownloadTimeOut.getValue() )
 		except:
 			return {
 				"http_error": 666,
@@ -209,24 +222,45 @@ class CSFDAndroidClient:
 	
 	def get_user_identity(self):
 		if self.is_logged():
-			return self.do_request('identity')['identity']
+			ret = self.do_request('identity')['identity']
+			
+			if self.logged_user == None:
+				self.logged_user = ret["nick"]
+				self.logged_user_id = int(ret["id"])
+			return ret
 		else:
-			return {}
+			return None
 	
 	# ######################################################################################
 
 	def get_user_info(self, user_id=None):
 		if user_id == None:
-			x = self.get_user_identity()
-			if "id" in x:
-				user_id = x['id']
-			else:
-				return {}
+			if self.logged_user_id == None:
+				self.get_user_identity()
+				user_id = self.logged_user_id
 			
-		if self.is_logged():
+		if self.is_logged() and user_id != None:
 			return self.do_request( 'user/%d' % user_id )
 		else:
 			return {}
+	
+	# ######################################################################################
+	
+	def get_logged_user(self):
+		if self.logged_user == None or self.logged_user_id == None:
+			self.get_user_identity()
+		
+		return self.logged_user, self.logged_user_id
+	
+	# ######################################################################################
+
+	def set_movie_rating(self, movie_id, rating):
+		if self.is_logged():
+			if movie_id.startswith('#movie#'):
+				movie_id = movie_id[7:]
+			return self.do_request( 'film/%d/my-rating' % int(movie_id), 'rating=%d' % int(rating) )
+		
+		return None
 	
 	# ######################################################################################
 	
@@ -361,4 +395,65 @@ class CSFDAndroidClient:
 		return { "internal_error": "unknown uri %s" % uri }
 	
 	# ######################################################################################
+
+csfdAndroidClient = None
+
+def CreateCSFDAndroidClient( ignore_checks=False ):
+	LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - zacatek\n', 1)
+
+	global csfdAndroidClient
 	
+	if csfdAndroidClient == None:
+		# create anonymous session
+		csfdAndroidClient = CSFDAndroidClient()
+
+	if csfdAndroidClient.is_logged():
+		LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - aktualni session jiz je autorizovana\n', 1)
+		LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - konec\n', 1)
+		return
+		
+	if ignore_checks == False:
+		if not config.misc.CSFD.LoginToCSFD.getValue():
+			LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - neprihlasovat do CSFD\n', 1)
+			LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - konec\n', 1)
+			return
+		
+		if int(time.time()) - config.misc.CSFD.LastLoginError.getValue() < config.misc.CSFD.LoginErrorWaiting.getValue() * 60:
+			LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - jeste nevyprsel casovy limit z duvodu login chyby\n', 1)
+			LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - konec\n', 1)
+			return
+		
+		if not internet_on():
+			config.misc.CSFD.LastLoginError.setValue(int(time.time()))
+			config.misc.CSFD.LastLoginError.save()
+			LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - neni funkcni internet\n', 1)
+			LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - konec\n', 1)
+			return
+
+	login_token = config.misc.CSFD.TokenCSFD.getValue()
+	
+	if login_token == None or login_token == '':
+		# login anonymous session
+		csfdAndroidClient.login( config.misc.CSFD.UserNameCSFD.getValue(), config.misc.CSFD.PasswordCSFD.getValue() )
+		
+		# save login token
+		login_token = csfdAndroidClient.get_login_token()
+		config.misc.CSFD.TokenCSFD.setValue( login_token )
+		config.misc.CSFD.TokenCSFD.save()
+		
+		if login_token == None or login_token == '':
+			config.misc.CSFD.LastLoginError.setValue(int(time.time()))
+			config.misc.CSFD.LastLoginError.save()
+			LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - selhalo - spatne jmeno/heslo nebo jina chyba\n', 1)
+		else:
+			LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - login token: ' + login_token + '\n', 1)
+
+	else:
+		# create authorized session using login_token
+		csfdAndroidClient = CSFDAndroidClient(login_token)
+		LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - mam prihlasovaci token\n', 1)
+
+	LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - konec\n', 1)
+	return
+
+CreateCSFDAndroidClient()

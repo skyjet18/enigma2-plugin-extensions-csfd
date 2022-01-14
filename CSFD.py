@@ -6,10 +6,10 @@ from .CSFDTools import ItemList, ItemListServiceMenu, TextSimilarityBigram, Text
 from .CSFDTools import intWithSeparator, char2Diacritic, char2DiacriticSort, char2Allowchar, char2AllowcharNumbers, strUni, Uni8, deletetmpfiles, OdstranitDuplicityRadku, loadPixmapCSFD, picStartDecodeCSFD
 from .CSFDMenu import CSFDIconMenu
 from .CSFDParser import ParserCSFD, ParserOstCSFD, ParserVideoCSFD, ParserGallCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions
-from .CSFDClasses import LoginToCSFD, GetMoviesForTVChannels, CSFDChannelSelection, CSFDEPGSelection, CSFDLCDSummary, CSFDSetup, CSFDInputText, CSFDAbout, CSFDHistory, CSFDVideoInfoScreen, CSFDPlayer, RefreshPlugins
+from .CSFDClasses import GetMoviesForTVChannels, CSFDChannelSelection, CSFDEPGSelection, CSFDLCDSummary, CSFDSetup, CSFDInputText, CSFDAbout, CSFDHistory, CSFDVideoInfoScreen, CSFDPlayer, RefreshPlugins
 from .CSFDMovieCache import TVMovieCache
 from .CSFDSettings1 import CSFDGlobalVar
-from .CSFDSettings2 import _, localeInit, CSFDActionDict, std_headers, std_headers_UL2, std_media_header, std_media_header_UL2, std_post_header, std_post_header_UL2, std_login_header, std_login_header_UL2, MainUpdateUrl, MainUpdateUrlIpk, const_www_csfd, const_csfd_http_film, const_quick_page, ResetParams
+from .CSFDSettings2 import _, localeInit, CSFDActionDict, std_media_header, MainUpdateUrl, MainUpdateUrlIpk, const_www_csfd, const_csfd_http_film, const_quick_page, ResetParams
 from .CSFDSettings2 import config
 from .CSFDSkinSelect import CSFDSkinSelect
 from .CSFDSkinLoader import *
@@ -45,7 +45,8 @@ except:
 	from urllib import urlencode
 	from urllib import quote
 
-from .CSFDAndroidClient import CSFDAndroidClient
+from .CSFDAndroidClient import csfdAndroidClient, CreateCSFDAndroidClient
+
 LogCSFD.WriteToFile('[CSFD] Iniciace modulu CSFD.py* - zacatek\n')
 deletetmpfiles()
 
@@ -334,81 +335,56 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self.BouquetMenuRot.append(config.misc.CSFD.Bouquet10.getValue())
 		if config.misc.CSFD.Bouquet11.getValue() != 'nic' and not self.DuplBouquet(config.misc.CSFD.Bouquet11.getValue()):
 			self.BouquetMenuRot.append(config.misc.CSFD.Bouquet11.getValue())
-		self['CSFDActions'] = HelpableActionMap(self, 'CSFDActions', {'CSFDOK': self.KeyOK, 
-		   'CSFDOKLong': self.KeyOK, 
-		   'CSFDExit': (
-					  self.KeyExit, 'key_exit'), 
-		   'CSFDExitLong': self.KeyExitLong, 
-		   'CSFDEsc': self.KeyEsc, 
-		   'CSFDEscLong': self.KeyEscLong, 
-		   'CSFDRight': self.pageExtraDown, 
-		   'CSFDRightRepeated': self.pageExtraDown, 
-		   'CSFDLeft': self.pageExtraUp, 
-		   'CSFDLeftRepeated': self.pageExtraUp, 
-		   'CSFDDown': self.pageDown, 
-		   'CSFDDownRepeated': self.pageDown, 
-		   'CSFDUp': self.pageUp, 
-		   'CSFDUpRepeated': self.pageUp, 
-		   'CSFDS1Red': (
-					   self.KeyRedButton, 'key_s_red'), 
-		   'CSFDS1RedLong': (
-						   self.keyLR, 'key_s_red_l'), 
-		   'CSFDS2Green': (
-						 self.KeyGreenButton, 'key_s_green'), 
-		   'CSFDS2GreenLong': (
-							 self.keyLG, 'key_s_green_l'), 
-		   'CSFDS3Yellow': (
-						  self.KeyYellowButton, 'key_s_yellow'), 
-		   'CSFDS3YellowLong': (
-							  self.keyLY, 'key_s_yellow_l'), 
-		   'CSFDS4Blue': (
-						self.KeyBlueButton, 'key_s_blue'), 
-		   'CSFDS4BlueLong': (
-							self.keyLB, 'key_s_blue_l'), 
-		   'CSFDMenu': (
-					  self.KeyMainMenu, 'key_menu'), 
-		   'CSFDSetUp': (
-					   self.KeySetUp, 'key_text'), 
-		   'CSFDInfo': (
-					  self.KeyshowEventInfo, 'key_info'), 
-		   'CSFDInfoLong': self.KeyshowEventInfo, 
-		   'CSFDKeyForward': (
-							self.keyNumber3, 'key_right'), 
-		   'CSFDKeyBackward': (
-							 self.keyNumber1, 'key_left'), 
-		   'CSFDVideo': (
-					   self.KeyVideoButton, 'key_video'), 
-		   'CSFDbqNext': (
-						self.KeybqNext, 'key_bq_up'), 
-		   'CSFDbqPrev': (
-						self.KeybqPrev, 'key_bq_down'), 
-		   '0': (
-			   self.keyNumber0, 'key_0'), 
-		   '1': (
-			   self.keyNumber1, 'key_1'), 
-		   '2': (
-			   self.KeyExtraMenu, 'key_2'), 
-		   '3': (
-			   self.keyNumber3, 'key_3'), 
-		   '4': (
-			   self.keyNumber4, 'key_4'), 
-		   '5': (
-			   self.keyNumber5, 'key_5'), 
-		   '6': (
-			   self.keyNumber6, 'key_6'), 
-		   '7': (
-			   self.keyNumber7, 'key_7'), 
-		   '8': (
-			   self.keyNumber8, 'key_8'), 
-		   '9': (
-			   self.keyNumber9, 'key_9'), 
-		   'CSFDplay': (
-					  self.keyPlay, 'key_play'), 
-		   'CSFDpause': (
-					   self.keyPause, 'key_playpause'), 
-		   'CSFDplaypause': (
-						   self.keyPlayPause, 'key_playpause'), 
-		   'CSFDtestkey': self.keyTestMenu}, -2)
+			
+		self['CSFDActions'] = HelpableActionMap(self,
+			'CSFDActions', {
+				'CSFDOK': self.KeyOK, 
+				'CSFDOKLong': self.KeyOK, 
+				'CSFDExit': (self.KeyExit, 'key_exit'), 
+				'CSFDExitLong': self.KeyExitLong, 
+				'CSFDEsc': self.KeyEsc, 
+				'CSFDEscLong': self.KeyEscLong, 
+				'CSFDRight': self.pageExtraDown, 
+				'CSFDRightRepeated': self.pageExtraDown, 
+				'CSFDLeft': self.pageExtraUp, 
+				'CSFDLeftRepeated': self.pageExtraUp, 
+				'CSFDDown': self.pageDown, 
+				'CSFDDownRepeated': self.pageDown, 
+				'CSFDUp': self.pageUp, 
+				'CSFDUpRepeated': self.pageUp, 
+				'CSFDS1Red': (self.KeyRedButton, 'key_s_red'), 
+				'CSFDS1RedLong': (self.keyLR, 'key_s_red_l'), 
+				'CSFDS2Green': (self.KeyGreenButton, 'key_s_green'), 
+				'CSFDS2GreenLong': (self.keyLG, 'key_s_green_l'), 
+				'CSFDS3Yellow': (self.KeyYellowButton, 'key_s_yellow'), 
+				'CSFDS3YellowLong': (self.keyLY, 'key_s_yellow_l'), 
+				'CSFDS4Blue': (self.KeyBlueButton, 'key_s_blue'), 
+				'CSFDS4BlueLong': (self.keyLB, 'key_s_blue_l'), 
+				'CSFDMenu': (self.KeyMainMenu, 'key_menu'), 
+				'CSFDSetUp': (self.KeySetUp, 'key_text'), 
+				'CSFDInfo': (self.KeyshowEventInfo, 'key_info'), 
+				'CSFDInfoLong': self.KeyshowEventInfo, 
+				'CSFDKeyForward': (self.keyNumber3, 'key_right'), 
+				'CSFDKeyBackward': (self.keyNumber1, 'key_left'), 
+				'CSFDVideo': (self.KeyVideoButton, 'key_video'), 
+				'CSFDbqNext': (self.KeybqNext, 'key_bq_up'), 
+				'CSFDbqPrev': (self.KeybqPrev, 'key_bq_down'), 
+				'0': (self.keyNumber0, 'key_0'), 
+				'1': (self.keyNumber1, 'key_1'), 
+				'2': (self.KeyExtraMenu, 'key_2'), 
+				'3': (self.keyNumber3, 'key_3'), 
+				'4': (self.keyNumber4, 'key_4'), 
+				'5': (self.keyNumber5, 'key_5'), 
+				'6': (self.keyNumber6, 'key_6'), 
+				'7': (self.keyNumber7, 'key_7'), 
+				'8': (self.keyNumber8, 'key_8'), 
+				'9': (self.keyNumber9, 'key_9'), 
+				'CSFDplay': (self.keyPlay, 'key_play'), 
+				'CSFDpause': (self.keyPause, 'key_playpause'), 
+				'CSFDplaypause': (self.keyPlayPause, 'key_playpause'), 
+				'CSFDtestkey': self.keyTestMenu
+				},
+			-2 )
 		self.CSFDTipsLoad()
 		self.OldKeyHelp = self.helpList
 		self.getHelpKeyDescr()
@@ -420,7 +396,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self.onLayoutFinish.append(self.layoutFinished)
 		SKIN_Setup()
 		
-		self.csfdAndroidClient = CSFDAndroidClient()
 		LogCSFD.WriteToFile('[CSFD] CSFDClass - init - konec\n')
 		return
 
@@ -1716,7 +1691,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					return
 			else:
 				self.exitServiceMenu()
-			searchresults = ParserCSFD.parserListOfRelatedMovies(self.csfdAndroidClient )
+			searchresults = ParserCSFD.parserListOfRelatedMovies()
 			if len(searchresults) > 0:
 				self.Detail100Exit = False
 				self.Detail100Pozice = 0
@@ -1743,7 +1718,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					return
 			else:
 				self.exitServiceMenu()
-			searchresults = ParserCSFD.parserListOfSimilarMovies( self.csfdAndroidClient )
+			searchresults = ParserCSFD.parserListOfSimilarMovies()
 			if len(searchresults) > 0:
 				self.Detail100Exit = False
 				self.Detail100Pozice = 0
@@ -1770,7 +1745,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					return
 			else:
 				self.exitServiceMenu()
-			searchresults = ParserCSFD.parserListOfSeries( self.csfdAndroidClient )
+			searchresults = ParserCSFD.parserListOfSeries()
 			if len(searchresults) > 0:
 				self.Detail100Exit = False
 				self.Detail100Pozice = 0
@@ -1797,7 +1772,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					return
 			else:
 				self.exitServiceMenu()
-			searchresults = ParserCSFD.parserListOfEpisodes( self.csfdAndroidClient )
+			searchresults = ParserCSFD.parserListOfEpisodes()
 			if len(searchresults) > 0:
 				self.Detail100Exit = False
 				self.Detail100Pozice = 0
@@ -2700,7 +2675,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - linkGlobal ' + self.linkGlobal + '\n', 2)
 		
 		fetchurl = self.linkGlobal
-		data = self.csfdAndroidClient.get_json_by_uri( fetchurl )
+		data = csfdAndroidClient.get_json_by_uri( fetchurl )
 		ParserCSFD.setJson( data )
 		
 #		page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
@@ -2768,7 +2743,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 #		page = requestCSFD(self.LastDownloadedMovieUrl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
 #		ParserCSFD.setHTML2utf8(page)
 
-		data = self.csfdAndroidClient.get_json_by_uri( self.LastDownloadedMovieUrl )
+		data = csfdAndroidClient.get_json_by_uri( self.LastDownloadedMovieUrl )
 		ParserCSFD.setJson( data )
 
 		self.CSFDParseMainPart()
@@ -3325,7 +3300,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 				if self.FindAllItems:
 					fetchurl = '#search_movie#' + eventNameUrllib
-				elif self.eventMovieSourceOfDataEPG == False and len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
+#				elif self.eventMovieSourceOfDataEPG == False and len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
+				elif len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
 					yr = ' (' + str(self.eventMovieYears[0]) + ')'
 					fetchurl = '#search_movie#' + eventNameUrllib + yr
 				else:
@@ -3334,7 +3310,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				LogCSFD.WriteToFile('[CSFD] getCSFD - stahuji z url ' + fetchurl + '\n')
 				
 #				page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-				page = self.csfdAndroidClient.get_json_by_uri( fetchurl )	
+				page = csfdAndroidClient.get_json_by_uri( fetchurl )	
 				CSFDGlobalVar.setParalelDownload(self.CSFDquery, page)
 				self.DownloadTimer.start(10, True)
 				
@@ -3695,7 +3671,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					fetchurl = link
 					LogCSFD.WriteToFile('[CSFD] GetOtherMovieNamesFromDetail - stahuji z url ' + Uni8(fetchurl) + '\n')
 
-					res = self.csfdAndroidClient.get_json_by_uri( fetchurl )
+					res = csfdAndroidClient.get_json_by_uri( fetchurl )
 					ParserOstCSFD.setJson( res)
 					res_name = ParserOstCSFD.parserOrigMovieTitle()
 					if res_name is not None:
@@ -3922,18 +3898,17 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 	def CSFDparseUser(self):
 		LogCSFD.WriteToFile('[CSFD] parseUser - zacatek\n')
-#		resultText = ParserCSFD.parserLoggedUser()
-		resultText = None
+		resultText = csfdAndroidClient.get_logged_user()[0]
 		if resultText is not None and resultText != '':
 			LogCSFD.WriteToFile('[CSFD] parseUser - Logged User: ' + Uni8(resultText) + '\n')
 			self.LoggedUser = resultText
-			sss = _('Filmová databáze CSFD') + '	-  ' + _('Verze: ') + strUni(self.versionCSFD) + '	' + 'www.TVplugins.cz' + '	-  ' + strUni(self.LoggedUser)
+			sss = _('Filmová databáze CSFD') + '  -  ' + _('Verze: ') + ' ' + strUni(self.versionCSFD) + '  -  ' + _('Přihlášen jako:') + ' ' + strUni(self.LoggedUser)
 			self.setTitle(sss)
 		else:
 			if config.misc.CSFD.LoginToCSFD.getValue():
-				LoginToCSFD()
+				CreateCSFDAndroidClient()
 			self.LoggedUser = ''
-			sss = _('Filmová databáze CSFD') + '	-  ' + _('Verze: ') + strUni(self.versionCSFD) + '	' + 'www.TVplugins.cz'
+			sss = _('Filmová databáze CSFD') + '  -  ' + _('Verze: ') + ' ' + strUni(self.versionCSFD)
 			self.setTitle(sss)
 		LogCSFD.WriteToFile('[CSFD] parseUser - konec\n')
 		return
@@ -4039,8 +4014,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
 		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - vlastni hodnoceni\n')
-#		resultText = ParserCSFD.parserOwnRating()[0]
-		resultText = None
+		resultText = ParserCSFD.parserOwnRating()[0]
 		if resultText is not None and resultText is not '':
 			ss = ParserCSFD.parserDateOwnRating()
 			if ss is not None and ss is not '':
@@ -4452,7 +4426,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 #			self.DownloadTimer.start(10, True)
 
 			if self.linkSpec.startswith('#'):
-				page = self.csfdAndroidClient.get_json_by_uri(self.linkSpec, self.PageSpec )
+				page = csfdAndroidClient.get_json_by_uri(self.linkSpec, self.PageSpec )
 				self.CSFDquerySpec(page)
 		LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - konec\n')
 
@@ -4865,7 +4839,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		porVF = 0
 		
 		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - stahuji z url ' + id_filmu + '\n')
-		result = self.csfdAndroidClient.get_json_by_uri( '#movie_videos#' + id_filmu )
+		result = csfdAndroidClient.get_json_by_uri( '#movie_videos#' + id_filmu )
 
 		ParserVideoCSFD.setJson(result)
 		results = ParserVideoCSFD.parserVideoDetail(config.misc.CSFD.QualityVideoPoster.getValue())
@@ -5058,7 +5032,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 #			timeoutGall = config.misc.CSFD.DownloadTimeOut.getValue()
 			
-			result = self.csfdAndroidClient.get_json_by_uri( '#movie_photos#' + id_filmu )
+			result = csfdAndroidClient.get_json_by_uri( '#movie_photos#' + id_filmu )
 			
 			if self.PosterBasicCountPixAllG < 0:
 				self.PosterBasicCountPixAllG = len(result["photos"])
@@ -5393,10 +5367,11 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		def DeleteRatingOnWeb():
 			LogCSFD.WriteToFile('[CSFD] DeleteRatingOnWeb - zacatek\n', 8)
 			try:
-				url = CSFDGlobalVar.getHTTP() + const_csfd_http_film + linkG
+#				url = CSFDGlobalVar.getHTTP() + const_csfd_http_film + linkG
 #				page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
-				ParserOstCSFD.setHTML2utf8(page)
-				del_url = ParserOstCSFD.parserDeleteRatingUrl()
+#				ParserOstCSFD.setHTML2utf8(page)
+#				del_url = ParserOstCSFD.parserDeleteRatingUrl()
+				del_url = None
 			except:
 				LogCSFD.WriteToFile('[CSFD] DeleteRatingOnWeb - reload url - chyba\n', 8)
 				err = traceback.format_exc()
@@ -5405,8 +5380,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 			if del_url is not None and del_url != '':
 				try:
-					del_url = CSFDGlobalVar.getHTTP() + const_www_csfd + del_url
-					LogCSFD.WriteToFile('[CSFD] DeleteRatingOnWeb - url: %s \n' % del_url, 8)
+#					del_url = CSFDGlobalVar.getHTTP() + const_www_csfd + del_url
+#					LogCSFD.WriteToFile('[CSFD] DeleteRatingOnWeb - url: %s \n' % del_url, 8)
 					
 #					page = requestCSFD(del_url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
 					
@@ -5428,46 +5403,17 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 		def SaveRatingOnWeb(value_rating):
 			LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - zacatek\n', 8)
-			try:
-				url = CSFDGlobalVar.getHTTP() + const_csfd_http_film + linkG + 'komentare/'
-				LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - reload url : ' + url + '\n', 8)
-#				page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
-				ParserOstCSFD.setHTML2utf8(page)
-				token = ParserOstCSFD.parserTokenRating()
-				time.sleep(2)
-			except:
-				LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - reload url - chyba\n', 8)
-				err = traceback.format_exc()
-				LogCSFD.WriteToFile(err, 8)
+			if csfdAndroidClient.set_movie_rating( linkG, value_rating ) != None:
+				if linkG == self.linkGlobal:
+					reloadMovieAfterRating(True)
+				else:
+					self.session.open(MessageBox, _('Hodnocení uloženo'), type=MessageBox.TYPE_INFO, timeout=5)
+			else:
+				LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - chyba\n', 8)
 				self.session.open(MessageBox, _('Chyba při ukládání hodnocení'), type=MessageBox.TYPE_ERROR, timeout=10)
 
-			if token is None or token == '':
-				LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - chyba: nenalezen token\n', 8)
-				self.session.open(MessageBox, _('Nenalezen token pro uložení hodnocení'), type=MessageBox.TYPE_ERROR, timeout=10)
-				return
-			else:
-				LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - token: %s\n' % token, 8)
-				LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - rating: %s\n' % value_rating, 8)
-				try:
-					url = CSFDGlobalVar.getHTTP() + const_csfd_http_film + linkG + 'komentare/' + '?do=ratingForm-submit'
-					LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - url: ' + url + '\n', 8)
-					values = {'rating': value_rating, 'film_comment': '',  '_token_': token}
-					LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - postdata: ' + str(values) + '\n', 8)
-					data = urlencode(values)
-#					page = requestCSFD(url, headers=std_post_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False)
-						
-					if linkG == self.linkGlobal:
-						reloadMovieAfterRating(True)
-					else:
-						self.session.open(MessageBox, _('Hodnocení uloženo'), type=MessageBox.TYPE_INFO, timeout=5)
-				except:
-					LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - chyba\n', 8)
-					err = traceback.format_exc()
-					LogCSFD.WriteToFile(err, 8)
-					self.session.open(MessageBox, _('Chyba při ukládání hodnocení'), type=MessageBox.TYPE_ERROR, timeout=10)
-
-				LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - konec\n', 8)
-				return
+			LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - konec\n', 8)
+			return
 
 		def leaveChoiceBoxRating(answer):
 			LogCSFD.WriteToFile('[CSFD] - leaveChoiceBoxRating - zacatek\n', 8)
@@ -5481,14 +5427,22 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		ss, ss1 = ParserCSFD.parserOwnRating()
 		if ss is not None and ss is not '':
 			akt_rating = ss
-			select = (ss1 / 20 - 5) * -1
+			select = int((ss1 / 20 - 5) * -1)
 		else:
 			akt_rating = _('ještě nehodnoceno')
 			select = 0
-		token = ParserCSFD.parserTokenRating()
-		if token is not None and token != '':
+#		token = ParserCSFD.parserTokenRating()
+#		if token is not None and token != '':
+		if ParserCSFD.parserRatingAllowed() == True:
 			listP = (
-			 ('100%	  * * * * *', '100'), ('80%		* * * *', '80'), ('60%	   * * *', '60'), ('40%		* *', '40'), ('20%	   *', '20'), ('0%		 odpad!', '0'))
+				('100%	* * * * *', '100'),
+				('80% 	  * * * *', '80'),
+				('60% 	    * * *', '60'),
+				('40% 	      * *', '40'),
+				('20% 	        *', '20'),
+				('0%  	   odpad!', '0')
+			)
+			
 			if ParserCSFD.parserDeleteRatingUrl():
 				listP = listP + ((_('smazat hodnocení'), 'smazat'),)
 			listP = listP + ((_('ukončit'), 'exit'),)
@@ -5549,120 +5503,64 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 	def CSFDTipsLoad(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDTipsLoad - zacatek\n')
 		self.Tips = [
-		 (
-		  'key_menu.png', '', _('zobrazí menu s aktuálně dostupnými akcemi'), '', ''),
-		 (
-		  'HOTKEY', 'aktEPG', _('výběr hledaného pořadu z EPG aktuálního kanálu'), _('v menu můžete provést výběr hledaného pořadu z EPG aktuálního kanálu'), ''),
-		 (
-		  'HOTKEY', 'vyberEPG', _('výběr hledaného pořadu ze všech kanálů'), _('v menu můžete provést výběr hledaného pořadu ze všech kanálů'), ''),
-		 (
-		  'HOTKEY', 'zadejporad', _('manuální zadání hledaného pořadu'), _('v menu můžete provést manuální zadání hledaného pořadu'), ''),
-		 (
-		  'HOTKEY', 'spustitIMDB', _('vyhledání aktuálního pořadu v mezinárodní filmové databázi IMDB'), _('v menu můžete vyhledat aktuální pořad v mezinárodní filmové databázi IMDB'), 'IMDBexist'),
-		 (
-		  'HOTKEY', 'komentare', _('zobrazí komentáře uživatelů k pořadu'), _('v menu můžete zobrazit komentáře uživatelů k pořadu'), 'Page>0'),
-		 (
-		  'HOTKEY', 'ext.recenze', _('zobrazí externí recenze k pořadu'), _('v menu můžete zobrazit externí recenze k pořadu'), 'Page>0'),
-		 (
-		  'HOTKEY', 'ownrating', _('máte možnost ohodnotit vyhledaný pořad'), _('v menu můžete ohodnotit vyhledaný pořad'), 'Page>0'),
-		 (
-		  'HOTKEY', 'diskuze', _('zobrazí diskuzi uživatelů k pořadu'), _('v menu můžete zobrazit diskuzi uživatelů k pořadu'), 'Page>0'),
-		 (
-		  'HOTKEY', 'zajimavosti', _('zobrazí zajímavosti o pořadu'), _('v menu můžete zobrazit zajímavosti o pořadu'), 'Page>0'),
-		 (
-		  'HOTKEY', 'oceneni', _('zobrazí získaná ocenění'), _('v menu můžete zobrazit získaná ocenění'), 'Page>0'),
-		 (
-		  'HOTKEY', 'souvisejici', _('zobrazí související filmy'), _('v menu můžete zobrazit související filmy'), 'Page>0'),
-		 (
-		  'HOTKEY', 'serie', _('zobrazí řady seriálu'), _('v menu můžete zobrazit řady seriálu'), 'Page>0'),
-		 (
-		  'HOTKEY', 'epizody', _('zobrazí epizody seriálu'), _('v menu můžete zobrazit epizody seriálu'), 'Page>0'),
-		 (
-		  'HOTKEY', 'galerie', _('zobrazí galerii fotek z pořadu'), _('v menu můžete zobrazit galerii fotek z pořadu'), 'Page>0'),
-		 (
-		  'HOTKEY', 'postery', _('zobrazí postery (filmové plakáty) k pořadu'), _('v menu můžete zobrazit postery (filmové plakáty) k pořadu'), 'Page>0'),
-		 (
-		  'HOTKEY', 'ulozvideo', _('uloží video ukázku do definovaného adresáře'), _('v menu můžete uložit video ukázku do definovaného adresáře'), 'Page=2 and UserVideo and pocetV>0'),
-		 (
-		  'HOTKEY', 'spustitvideo', _('spustí aktuální video ukázku'), _('v menu můžete spustit aktuální video ukázku'), 'Page=2 and UserVideo and pocetV>0'),
-		 (
-		  'HOTKEY', 'premiery', _('zobrazí premiéry pořadu'), _('v menu můžete zobrazit premiéry pořadu'), 'Page>0'),
-		 (
-		  'HOTKEY', 'hodnoceni', _('zobrazí detailní hodnocení pořadu'), _('v menu můžete zobrazit detailní hodnocení pořadu'), 'Page>0'),
-		 (
-		  'HOTKEY', 'fanousci', _('zobrazí fanoušky pořadu'), _('v menu můžete zobrazit fanoušky pořadu'), 'Page>0'),
-		 (
-		  'HOTKEY', 'skin', _('možnost změny skinu'), _('v menu můžete změnit skin'), ''),
-		 (
-		  'HOTKEY', 'historie', _('zobrazí historii změn v pluginu'), _('v menu můžete zobrazit historii změn v pluginu'), ''),
-		 (
-		  'HOTKEY', 'novaverze', _('zobrazí informaci, zda je k dostupná nová verze'), _('v menu můžete zjistit, zda je dostupná nová verze pluginu'), ''),
-		 (
-		  '', '', _('v menu můžete setřídit vyhledané položky podle pořadí na CSFD'), '', 'Page=0'),
-		 (
-		  '', '', _('v menu můžete setřídit vyhledané položky podle vhodnosti názvu'), '', 'Page=0'),
-		 (
-		  '', '', _('v menu můžete setřídit vyhledané položky podle abecedy'), '', 'Page=0'),
-		 (
-		  '', '', _('v menu můžete vyhledat všechny podobné názvy k danému pořadu'), '', 'Page=0 and not(FindAllItems)'),
-		 (
-		  'key_video.png', '', _('zobrazí video ukázky z pořadu'), '', 'Page>0'),
-		 (
-		  'key_text.png', '', _('možnost změny nastavení různých parametrů pluginu'), '', ''),
-		 (
-		  'key_help.png', '', _('zobrazí nápovědu k jednotlivým tlačítkům v pluginu'), '', ''),
-		 (
-		  'key_exit.png', '', _('zpět v jednotlivých položkách nebo ukončení pluginu'), '', ''),
-		 (
-		  'key_s_red.png', '', _('zpět v jednotlivých položkách nebo ukončení pluginu'), '', ''),
-		 (
-		  'key_s_green.png', '', _('zobrazí seznam vyhledaných pořadů'), '', 'Page>0'),
-		 (
-		  'key_s_green.png', '', _('výběr hledaného pořadu z EPG aktuálního kanálu'), '', 'Page=0'),
-		 (
-		  'key_s_yellow.png', '', _('zobrazí detaily o pořadu'), '', ''),
-		 (
-		  'key_info.png', '', _('zobrazí detaily o pořadu'), '', ''),
-		 (
-		  'key_epg.png', '', _('zobrazí detaily o pořadu'), '', ''),
-		 (
-		  'key_s_blue.png', '', _('manuální zadání hledaného pořadu'), '', 'Page=0'),
-		 (
-		  'key_s_blue.png', '', _('zobrazí další detaily o pořadu dle aktuálního kontextu'), '', 'Page>0'),
-		 (
-		  'key_2.png', '', _('můžete setřídit komentáře podle počtu bodů uživatele'), '', 'komentare'),
-		 (
-		  'key_2.png', '', _('můžete setřídit komentáře od nejnovějších po nejstarší'), '', 'komentare'),
-		 (
-		  'key_2.png', '', _('můžete setřídit komentáře podle hodnocení uživatelů'), '', 'komentare'),
-		 (
-		  'key_1.png', '', _('posun na předchozí stránku nebo položku'), '', 'Page=2'),
-		 (
-		  'key_3.png', '', _('posun na následující stránku nebo položku'), '', 'Page=2'),
-		 (
-		  'key_1.png', '', _('změna třídění vyhledaných pořadů'), '', 'Page=0'),
-		 (
-		  'key_3.png', '', _('změna třídění vyhledaných pořadů'), '', 'Page=0'),
-		 (
-		  'key_left.png', '', _('posun na předchozí stránku nebo položku'), '', 'Page=2'),
-		 (
-		  'key_right.png', '', _('posun na následující stránku nebo položku'), '', 'Page=2'),
-		 (
-		  'key_left.png', '', _('změna třídění vyhledaných pořadů'), '', 'Page=0'),
-		 (
-		  'key_right.png', '', _('změna třídění vyhledaných pořadů'), '', 'Page=0'),
-		 (
-		  'key_bq_up.png', '', _('rotace po jednotlivých informacích o pořadu'), '', 'Page>0'),
-		 (
-		  'key_bq_down.png', '', _('rotace po jednotlivých informacích o pořadu'), '', 'Page>0'),
-		 (
-		  'key_play.png', '', _('spustí aktuální video ukázku'), '', 'Page=2 and UserVideo and pocetV>0'),
-		 (
-		  'key_ok.png', '', _('spustí aktuální video ukázku'), '', 'Page=2 and UserVideo and pocetV>0'),
-		 (
-		  'key_play.png', '', _('spustí slideshow'), '', 'galerie or postery'),
-		 (
-		  'key_pause.png', '', _('zastaví slideshow'), '', 'galerie or postery')]
+			('key_menu.png', '', _('zobrazí menu s aktuálně dostupnými akcemi'), '', ''),
+			('HOTKEY', 'aktEPG', _('výběr hledaného pořadu z EPG aktuálního kanálu'), _('v menu můžete provést výběr hledaného pořadu z EPG aktuálního kanálu'), ''),
+			('HOTKEY', 'vyberEPG', _('výběr hledaného pořadu ze všech kanálů'), _('v menu můžete provést výběr hledaného pořadu ze všech kanálů'), ''),
+			('HOTKEY', 'zadejporad', _('manuální zadání hledaného pořadu'), _('v menu můžete provést manuální zadání hledaného pořadu'), ''),
+			('HOTKEY', 'spustitIMDB', _('vyhledání aktuálního pořadu v mezinárodní filmové databázi IMDB'), _('v menu můžete vyhledat aktuální pořad v mezinárodní filmové databázi IMDB'), 'IMDBexist'),
+			('HOTKEY', 'komentare', _('zobrazí komentáře uživatelů k pořadu'), _('v menu můžete zobrazit komentáře uživatelů k pořadu'), 'Page>0'),
+			('HOTKEY', 'ext.recenze', _('zobrazí externí recenze k pořadu'), _('v menu můžete zobrazit externí recenze k pořadu'), 'Page>0'),
+			('HOTKEY', 'ownrating', _('máte možnost ohodnotit vyhledaný pořad'), _('v menu můžete ohodnotit vyhledaný pořad'), 'Page>0'),
+			('HOTKEY', 'diskuze', _('zobrazí diskuzi uživatelů k pořadu'), _('v menu můžete zobrazit diskuzi uživatelů k pořadu'), 'Page>0'),
+			('HOTKEY', 'zajimavosti', _('zobrazí zajímavosti o pořadu'), _('v menu můžete zobrazit zajímavosti o pořadu'), 'Page>0'),
+			('HOTKEY', 'oceneni', _('zobrazí získaná ocenění'), _('v menu můžete zobrazit získaná ocenění'), 'Page>0'),
+			('HOTKEY', 'souvisejici', _('zobrazí související filmy'), _('v menu můžete zobrazit související filmy'), 'Page>0'),
+			('HOTKEY', 'serie', _('zobrazí řady seriálu'), _('v menu můžete zobrazit řady seriálu'), 'Page>0'),
+			('HOTKEY', 'epizody', _('zobrazí epizody seriálu'), _('v menu můžete zobrazit epizody seriálu'), 'Page>0'),
+			('HOTKEY', 'galerie', _('zobrazí galerii fotek z pořadu'), _('v menu můžete zobrazit galerii fotek z pořadu'), 'Page>0'),
+			('HOTKEY', 'postery', _('zobrazí postery (filmové plakáty) k pořadu'), _('v menu můžete zobrazit postery (filmové plakáty) k pořadu'), 'Page>0'),
+			('HOTKEY', 'ulozvideo', _('uloží video ukázku do definovaného adresáře'), _('v menu můžete uložit video ukázku do definovaného adresáře'), 'Page=2 and UserVideo and pocetV>0'),
+			('HOTKEY', 'spustitvideo', _('spustí aktuální video ukázku'), _('v menu můžete spustit aktuální video ukázku'), 'Page=2 and UserVideo and pocetV>0'),
+			('HOTKEY', 'premiery', _('zobrazí premiéry pořadu'), _('v menu můžete zobrazit premiéry pořadu'), 'Page>0'),
+			('HOTKEY', 'hodnoceni', _('zobrazí detailní hodnocení pořadu'), _('v menu můžete zobrazit detailní hodnocení pořadu'), 'Page>0'),
+			('HOTKEY', 'fanousci', _('zobrazí fanoušky pořadu'), _('v menu můžete zobrazit fanoušky pořadu'), 'Page>0'),
+			('HOTKEY', 'skin', _('možnost změny skinu'), _('v menu můžete změnit skin'), ''),
+			('HOTKEY', 'historie', _('zobrazí historii změn v pluginu'), _('v menu můžete zobrazit historii změn v pluginu'), ''),
+			('HOTKEY', 'novaverze', _('zobrazí informaci, zda je k dostupná nová verze'), _('v menu můžete zjistit, zda je dostupná nová verze pluginu'), ''),
+			('', '', _('v menu můžete setřídit vyhledané položky podle pořadí na CSFD'), '', 'Page=0'),
+			('', '', _('v menu můžete setřídit vyhledané položky podle vhodnosti názvu'), '', 'Page=0'),
+			('', '', _('v menu můžete setřídit vyhledané položky podle abecedy'), '', 'Page=0'),
+			('', '', _('v menu můžete vyhledat všechny podobné názvy k danému pořadu'), '', 'Page=0 and not(FindAllItems)'),
+			('key_video.png', '', _('zobrazí video ukázky z pořadu'), '', 'Page>0'),
+			('key_text.png', '', _('možnost změny nastavení různých parametrů pluginu'), '', ''),
+			('key_help.png', '', _('zobrazí nápovědu k jednotlivým tlačítkům v pluginu'), '', ''),
+			('key_exit.png', '', _('zpět v jednotlivých položkách nebo ukončení pluginu'), '', ''),
+			('key_s_red.png', '', _('zpět v jednotlivých položkách nebo ukončení pluginu'), '', ''),
+			('key_s_green.png', '', _('zobrazí seznam vyhledaných pořadů'), '', 'Page>0'),
+			('key_s_green.png', '', _('výběr hledaného pořadu z EPG aktuálního kanálu'), '', 'Page=0'),
+			('key_s_yellow.png', '', _('zobrazí detaily o pořadu'), '', ''),
+			('key_info.png', '', _('zobrazí detaily o pořadu'), '', ''),
+			('key_epg.png', '', _('zobrazí detaily o pořadu'), '', ''),
+			('key_s_blue.png', '', _('manuální zadání hledaného pořadu'), '', 'Page=0'),
+			('key_s_blue.png', '', _('zobrazí další detaily o pořadu dle aktuálního kontextu'), '', 'Page>0'),
+			('key_2.png', '', _('můžete setřídit komentáře podle počtu bodů uživatele'), '', 'komentare'),
+			('key_2.png', '', _('můžete setřídit komentáře od nejnovějších po nejstarší'), '', 'komentare'),
+			('key_2.png', '', _('můžete setřídit komentáře podle hodnocení uživatelů'), '', 'komentare'),
+			('key_1.png', '', _('posun na předchozí stránku nebo položku'), '', 'Page=2'),
+			('key_3.png', '', _('posun na následující stránku nebo položku'), '', 'Page=2'),
+			('key_1.png', '', _('změna třídění vyhledaných pořadů'), '', 'Page=0'),
+			('key_3.png', '', _('změna třídění vyhledaných pořadů'), '', 'Page=0'),
+			('key_left.png', '', _('posun na předchozí stránku nebo položku'), '', 'Page=2'),
+			('key_right.png', '', _('posun na následující stránku nebo položku'), '', 'Page=2'),
+			('key_left.png', '', _('změna třídění vyhledaných pořadů'), '', 'Page=0'),
+			('key_right.png', '', _('změna třídění vyhledaných pořadů'), '', 'Page=0'),
+			('key_bq_up.png', '', _('rotace po jednotlivých informacích o pořadu'), '', 'Page>0'),
+			('key_bq_down.png', '', _('rotace po jednotlivých informacích o pořadu'), '', 'Page>0'),
+			('key_play.png', '', _('spustí aktuální video ukázku'), '', 'Page=2 and UserVideo and pocetV>0'),
+			('key_ok.png', '', _('spustí aktuální video ukázku'), '', 'Page=2 and UserVideo and pocetV>0'),
+			('key_play.png', '', _('spustí slideshow'), '', 'galerie or postery'),
+			('key_pause.png', '', _('zastaví slideshow'), '', 'galerie or postery')
+		]
 		seed()
 		self['tips_label'].setText(_('Tipy:'))
 		LogCSFD.WriteToFile('[CSFD] CSFDTipsLoad - konec\n')
@@ -6259,7 +6157,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 	def TestLoginToCSFD1(self, console=None):
 		LogCSFD.WriteToFile('[CSFD] TestLoginToCSFD1 - zacatek\n', 9)
 		
-		test_txt = ''
 		txt = _('Je povoleno přihlašování do CSFD v Nastaveních')
 		if not config.misc.CSFD.LoginToCSFD.getValue():
 			txt += ' ..... ERR\n'
@@ -6267,7 +6164,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			txt += ' ..... OK\n'
 		console.addText(text=txt, typeText=0)
 		LogCSFD.WriteToFile(txt, 9)
-		test_txt += txt
+
 		txt = _('Je vyplněno uživatelské jméno v Nastaveních')
 		ss = config.misc.CSFD.UserNameCSFD.getValue()
 		if ss is not None and ss != '':
@@ -6277,7 +6174,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			txt += ' ..... ERR\n'
 		console.addText(text=txt, typeText=0)
 		LogCSFD.WriteToFile(txt, 9)
-		test_txt += txt
+
 		txt = _('Je vyplněno heslo v Nastaveních')
 		ss = config.misc.CSFD.PasswordCSFD.getValue()
 		if ss is not None and ss != '':
@@ -6289,7 +6186,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			txt += ' ..... ERR\n'
 			console.addText(text=txt, typeText=0)
 			LogCSFD.WriteToFile(txt, 9)
-		test_txt += txt
+
 		txt = _('Je funkční internet')
 		if internet_on():
 			txt += ' ..... OK\n'
@@ -6297,77 +6194,44 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			txt += ' ..... ERR\n'
 		console.addText(text=txt, typeText=0)
 		LogCSFD.WriteToFile(txt, 9)
-		test_txt += txt
-		txt = _('Zkouším funkčnost načítání www stránek')
-		url = 'https://www.csfd.cz/prihlaseni/'
-		try:
-			txt += ' (Urllib2)'
-#			page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), saveCookie=True)
-			txt += ' ..... OK\n'
-		except:
-			txt += ' ..... ERR\n'
-			txt += traceback.format_exc() + '\n'
 
-		console.addText(text=txt, typeText=0)
-		LogCSFD.WriteToFile(txt, 9)
-		test_txt += txt
-		txt = _('Je funkční dekódování www stránek (zlib)')
-		try:
-			import zlib
+		txt = _('Zkouším funkčnost přihlášení')
+		if csfdAndroidClient.is_logged():
 			txt += ' ..... OK\n'
-		except:
-			txt += ' ..... ERR\n'
-
-		console.addText(text=txt, typeText=0)
-		LogCSFD.WriteToFile(txt, 9)
-		test_txt += txt
-		ParserOstCSFD.setHTML2utf8(page)
-		token = ParserOstCSFD.parserTokenLogin('')
-		if token is None or token == '':
-			token = ''
-			LogCSFD.WriteToFile('[CSFD] TestLoginToCSFD1 - token neni na strance - chyba\n', 9)
+			console.addText(text=txt, typeText=0)
+			LogCSFD.WriteToFile(txt, 9)
 		else:
-			LogCSFD.WriteToFile('[CSFD] TestLoginToCSFD1 - token OK\n', 9)
-		url_login = ParserOstCSFD.parserURLLogin('')
-		if url_login is None or url_login == '':
-			url_login = ''
-			LogCSFD.WriteToFile('[CSFD] TestLoginToCSFD1 - url pro login neni na strance - chyba\n', 9)
-		else:
-			LogCSFD.WriteToFile('[CSFD] TestLoginToCSFD1 - url pro login OK\n', 9)
-		page = ''
-		txt = _('Zkouším se zalogovat na stránky CSFD')
-		try:
-			values = {'username': config.misc.CSFD.UserNameCSFD.getValue(), 'password': config.misc.CSFD.PasswordCSFD.getValue(), 
-			   'permanent': 'on', 
-			   'send': 'Přihlásit+se', 
-			   '_token_': token, 
-			   '_do': 'form-submit'}
-			data = urlencode(values)
-			url = url_login
-#			page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False, saveCookie=True)
-			url = 'https://www.csfd.cz/'
-#			page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
-			txt += ' ..... OK\n'
-		except:
 			txt += ' ..... ERR\n'
-			txt += traceback.format_exc() + '\n'
+			console.addText(text=txt, typeText=0)
+			LogCSFD.WriteToFile(txt, 9)
 
-		console.addText(text=txt, typeText=0)
-		LogCSFD.WriteToFile(txt, 9)
-		test_txt += txt
-		ParserOstCSFD.setHTML2utf8(page)
-		page = ParserOstCSFD.getParserHTML()
+			txt = _('Zkouším se zalogovat na stránky CSFD')
+			CreateCSFDAndroidClient( True )
+			
+			if csfdAndroidClient.is_logged():
+				txt += ' ..... OK\n'
+			else:
+				txt += ' ..... ERR\n'
+	
+			console.addText(text=txt, typeText=0)
+			LogCSFD.WriteToFile(txt, 9)
+		
 		txt = _('Ověřuji přihlášení na CSFD')
-		if page.find('prihlaseni/odhlaseni') >= 0:
+		if csfdAndroidClient.get_user_identity() != None:
 			txt += ' ..... OK\n'
 		else:
 			txt += ' ..... ERR\n'
+			txt += _('Resetuju přihlašovací token - zkuste spustit tento test ješte jednou') + '\n'
+			csfdAndroidClient.logout()
+			config.misc.CSFD.TokenCSFD.setValue('')
+			config.misc.CSFD.TokenCSFD.save()
+			
 		console.addText(text=txt, typeText=0)
 		LogCSFD.WriteToFile(txt, 9)
-		test_txt += txt
+
 		txt = _('Zjišťuji zalogovaného uživatele na CSFD')
 		loggedUser = False
-		user = ParserOstCSFD.parserLoggedUser()
+		user = csfdAndroidClient.get_logged_user()[0]
 		if user is not None and user != '':
 			loggedUser = True
 			txt += ' ..... OK\n'
@@ -6376,7 +6240,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			txt += ' ..... ERR\n'
 		console.addText(text=txt, typeText=0)
 		LogCSFD.WriteToFile(txt, 9)
-		test_txt += txt
+
 		if loggedUser:
 			txt = '\n' + _('TEST PROBĚHL ÚSPĚŠNĚ') + '\n' + _('Můžete hodnotit filmy na CSFD')
 			if not config.misc.CSFD.LoginToCSFD.getValue():
@@ -6385,7 +6249,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			console.addText(text=txt, typeText=2)
 			console.setReturnValue(0)
 			LogCSFD.WriteToFile(txt, 9)
-			test_txt += txt
+
 			config.misc.CSFD.LastLoginError.setValue(int(0))
 			config.misc.CSFD.LastLanError.setValue(int(0))
 			config.misc.CSFD.LastLanError.save()
@@ -6394,7 +6258,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			console.addText(text=txt, typeText=2)
 			console.setReturnValue(1)
 			LogCSFD.WriteToFile(txt, 9)
-			test_txt += txt
+
 			config.misc.CSFD.LastLoginError.setValue(int(time.time()))
 		config.misc.CSFD.LastLoginError.save()
 		configfile.save()

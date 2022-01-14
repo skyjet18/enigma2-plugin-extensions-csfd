@@ -31,8 +31,6 @@ try:
 except:
 	CSFDGlobalVar.setAudioSelectionexist(False)
 
-LoginTimer = None
-LoginTimerConn = None
 TVTimer = None
 TVTimerConn = None
 InitIMDBchanges()
@@ -84,34 +82,6 @@ def CallCSFD(session, eventName='', callbackNeeded=False, EPG='', sourceEPG=Fals
 	ret = RunCSFD(session, eventName, callbackNeeded, EPG, sourceEPG, DVBchannel)
 	LogCSFD.WriteToFile('[CSFD] Externi volani CSFD pluginu - konec\n')
 	return ret
-
-
-def LoginToCSFDTimer():
-	global LoginTimer
-	global LoginTimerConn
-	LogCSFD.WriteToFile('[CSFD] LoginToCSFDTimer - zacatek\n', 1)
-	if LoginTimer is not None:
-		if LoginTimer.isActive():
-			LoginTimer.stop()
-		LoginTimerConn = None
-		LoginTimer = None
-	from .CSFDClasses import LoginToCSFD
-	LoginToCSFD()
-	LogCSFD.WriteToFile('[CSFD] LoginToCSFDTimer - konec\n', 1)
-	return
-
-
-if config.misc.CSFD.LoginToCSFD.getValue():
-	LoginTimer = eTimer()
-	if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-		LoginTimer.callback.append(LoginToCSFDTimer)
-		LoginTimerConn = None
-	else:
-		LoginTimerConn = LoginTimer.timeout.connect(LoginToCSFDTimer)
-	LoginTimer.start(300, True)
-else:
-	LogCSFD.WriteToFile('[CSFD] LoginToCSFD - neprihlasovat do CSFD\n')
-	LogCSFD.WriteToFile('[CSFD] LoginToCSFD - konec\n')
 
 def TimerEventGetMoviesForTVChannels():
 	global TVTimer

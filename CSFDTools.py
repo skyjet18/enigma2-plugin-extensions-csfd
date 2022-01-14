@@ -4,7 +4,7 @@ from .CSFDLog import LogCSFD
 from enigma import getDesktop, eListboxPythonMultiContent, eListboxPythonStringContent, gFont
 from os import remove as os_remove, listdir as os_listdir, path as os_path
 from .CSFDSettings1 import CSFDGlobalVar
-from .CSFDSettings2 import config, std_media_header, std_login_header, std_headers
+from .CSFDSettings2 import config, std_media_header
 from Components.MenuList import MenuList
 from Components.ActionMap import ActionMap
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS, SCOPE_CURRENT_SKIN

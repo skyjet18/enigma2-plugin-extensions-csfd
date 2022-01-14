@@ -24,7 +24,7 @@ from .CSFDConfigList import CSFDConfigListScreen
 from .CSFDConfigText import CSFDConfigText, CSFDConfigPassword
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 from .CSFDSettings1 import CSFDGlobalVar
-from .CSFDSettings2 import _, const_www_csfd, std_login_header, std_tv_post_header, std_login_header_UL2, std_tv_post_header_UL2, std_headers_UL2
+from .CSFDSettings2 import _, const_www_csfd
 from .CSFDSettings2 import config
 from .CSFDMovieCache import TVMovieCache
 from .CSFDParser import GetCSFDNumberFromChannel, ParserTVCSFD, ParserOstCSFD
@@ -35,107 +35,6 @@ try:
 	from urllib.parse import urlencode
 except:
 	from urllib import urlencode
-
-
-def LoginToCSFD():
-	LogCSFD.WriteToFile('[CSFD] LoginToCSFD - zacatek\n', 1)
-#	if not config.misc.CSFD.LoginToCSFD.getValue():
-	if True:		
-		LogCSFD.WriteToFile('[CSFD] LoginToCSFD - neprihlasovat do CSFD\n', 1)
-		LogCSFD.WriteToFile('[CSFD] LoginToCSFD - konec\n', 1)
-		return
-	if int(time.time()) - config.misc.CSFD.LastLoginError.getValue() < config.misc.CSFD.LoginErrorWaiting.getValue() * 60:
-		LogCSFD.WriteToFile('[CSFD] LoginToCSFD - jeste nevyprsel casovy limit z duvodu login chyby\n', 1)
-		LogCSFD.WriteToFile('[CSFD] LoginToCSFD - konec\n', 1)
-		return
-	if not internet_on():
-		config.misc.CSFD.LastLoginError.setValue(int(time.time()))
-		config.misc.CSFD.LastLoginError.save()
-		LogCSFD.WriteToFile('[CSFD] LoginToCSFD - neni funkcni internet\n', 1)
-		LogCSFD.WriteToFile('[CSFD] LoginToCSFD - konec\n', 1)
-		return
-
-	def LogToWeb():
-		LogCSFD.WriteToFile('[CSFD] LogToWeb - zacatek\n', 1)
-		url = CSFDGlobalVar.getHTTP() + const_www_csfd + '/prihlaseni/'
-		page = ''
-		try:
-			raise NameError('#1 Login do csfd nie je podporovany')
-		
-#			page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), saveCookie=True)
-		except:
-			LogCSFD.WriteToFile('[CSFD] LogToWeb - get token - chyba - konec\n', 1)
-			config.misc.CSFD.LastLoginError.setValue(int(time.time()))
-			config.misc.CSFD.LastLoginError.save()
-			err = traceback.format_exc()
-			LogCSFD.WriteToFile(err)
-
-		LogCSFD.WriteToFile('[CSFD] LogToWeb 1a0\n', 1)
-		ParserOstCSFD.setHTML2utf8(page)
-		token = ParserOstCSFD.parserTokenLogin('')
-		if token is None or token == '':
-			token = ''
-			LogCSFD.WriteToFile('[CSFD] LogToWeb - token neni na strance - chyba\n', 1)
-			config.misc.CSFD.LastLoginError.setValue(int(time.time()))
-			config.misc.CSFD.LastLoginError.save()
-			err = traceback.format_exc()
-			LogCSFD.WriteToFile(err)
-		else:
-			LogCSFD.WriteToFile('[CSFD] LogToWeb - token OK\n', 1)
-			LogCSFD.WriteToFile('[CSFD] LogToWeb - token: ' + token + '\n', 1)
-			url_login = ParserOstCSFD.parserURLLogin('')
-			if url_login is None or url_login == '':
-				url_login = ''
-				LogCSFD.WriteToFile('[CSFD] LogToWeb - url pro login neni na strance - chyba\n', 1)
-				config.misc.CSFD.LastLoginError.setValue(int(time.time()))
-				config.misc.CSFD.LastLoginError.save()
-				err = traceback.format_exc()
-				LogCSFD.WriteToFile(err)
-			else:
-				LogCSFD.WriteToFile('[CSFD] LogToWeb - url pro login OK\n', 1)
-				page = ''
-				try:
-					values = {'username': config.misc.CSFD.UserNameCSFD.getValue(), 'password': config.misc.CSFD.PasswordCSFD.getValue(), 
-					   'permanent': 'on', 
-					   'send': 'Přihlásit+se', 
-					   '_token_': token, 
-					   '_do': 'form-submit'}
-					data = urlencode(values)
-					url = url_login
-					raise NameError('#2 Login do csfd nie je podporovany')
-#					page = requestCSFD(url, headers=std_login_header_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue(), data=data, redirect=False, saveCookie=True)
-#					url = 'https://www.csfd.cz/'
-#					page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
-				except:
-					LogCSFD.WriteToFile('[CSFD] LogToWeb - login - chyba - konec\n', 1)
-					config.misc.CSFD.LastLoginError.setValue(int(time.time()))
-					config.misc.CSFD.LastLoginError.save()
-					err = traceback.format_exc()
-					LogCSFD.WriteToFile(err)
-
-				ParserOstCSFD.setHTML2utf8(page)
-				page = ParserOstCSFD.getParserHTML()
-				if page.find('prihlaseni/odhlaseni') >= 0:
-					LogCSFD.WriteToFile('[CSFD] LogToWeb - prihlaseni OK\n', 1)
-				else:
-					LogCSFD.WriteToFile('[CSFD] LogToWeb - prihlaseni ERR\n', 1)
-					config.misc.CSFD.LastLoginError.setValue(int(time.time()))
-					config.misc.CSFD.LastLoginError.save()
-		LogCSFD.WriteToFile('[CSFD] LogToWeb - konec\n', 1)
-		LogCSFD.WriteToFile('[CSFD] LoginToCSFD - konec\n', 1)
-		return
-
-	LogCSFD.WriteToFile('[CSFD] LoginToCSFD - LogToWeb\n', 1)
-	try:
-		LogToWeb()
-	except:
-		LogCSFD.WriteToFile('[CSFD] LoginToCSFD - LogToWeb - chyba\n', 1)
-		config.misc.CSFD.LastLoginError.setValue(int(time.time()))
-		config.misc.CSFD.LastLoginError.save()
-		err = traceback.format_exc()
-		LogCSFD.WriteToFile(err)
-		LogCSFD.WriteToFile('[CSFD] LoginToCSFD - konec\n', 1)
-
 
 isFirstGetMovies = True
 
@@ -512,7 +411,6 @@ def RefreshPlugins():
 	LogCSFD.LoadDefaults()
 	PathTMPInit()
 	localeInit()
-	LoginToCSFD()
 	InitParamsLangImpact()
 	InitCSFDTools()
 	plugins.clearPluginList()
@@ -750,10 +648,10 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list1.append(getConfigListEntry(_('Rotovat ratingy?'), config.misc.CSFD.RatingRotation))
 		self.list1.append(getConfigListEntry(_('Změna jednotlivých ratingů') + _('-def.15 (02 až 50)*0,5s'), config.misc.CSFD.RatingRotationTime))
 		self.list2 = []
-#		self.list2.append(getConfigListEntry(_('Přihlásit se do CSFD?'), config.misc.CSFD.LoginToCSFD))
-#		self.list2.append(getConfigListEntry(_('Uživatelské jméno pro CSFD:'), config.misc.CSFD.UserNameCSFD))
-#		self.list2.append(getConfigListEntry(_('Heslo pro CSFD:'), config.misc.CSFD.PasswordCSFD))
-#		self.list2.append(getConfigListEntry(_('Jak dlouho se nepřihlašovat po chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LoginErrorWaiting))
+		self.list2.append(getConfigListEntry(_('Přihlásit se do CSFD?'), config.misc.CSFD.LoginToCSFD))
+		self.list2.append(getConfigListEntry(_('Uživatelské jméno pro CSFD:'), config.misc.CSFD.UserNameCSFD))
+		self.list2.append(getConfigListEntry(_('Heslo pro CSFD:'), config.misc.CSFD.PasswordCSFD))
+		self.list2.append(getConfigListEntry(_('Jak dlouho se nepřihlašovat po chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LoginErrorWaiting))
 		self.list2.append(getConfigListEntry(_('Při plné shodě ihned načíst detail?'), config.misc.CSFD.Detail100))
 		self.list2.append(getConfigListEntry(_('Vyhledané výsledky třídit defaultně podle'), config.misc.CSFD.Default_Sort))
 		self.list2.append(getConfigListEntry(_('Vyhledat defaultně všechny podobné pořady?'), config.misc.CSFD.FindAllItems))
@@ -765,7 +663,7 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list2.append(getConfigListEntry(_('Načíst další názvy z detailu kolika filmů?') + _(' def.2 (0 až 4)'), config.misc.CSFD.NumberOfReadMovieNameFromDetail))
 #		self.list2.append(getConfigListEntry(_('Načíst seznam pořadů z CSFD pro daný kanál do cache?'), config.misc.CSFD.TVCache))
 #		self.list2.append(getConfigListEntry(_('Jak dlouho nenačítat cache po net chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LanErrorWaiting))
-#		self.list2.append(getConfigListEntry(_('Třídící algoritmus pro vyhledané položky?'), config.misc.CSFD.SortFindItems))
+		self.list2.append(getConfigListEntry(_('Třídící algoritmus pro vyhledané položky?'), config.misc.CSFD.SortFindItems))
 		self.list2.append(getConfigListEntry(_('Zadávání znaků'), config.misc.CSFD.Input_Type))
 		self.list2.append(getConfigListEntry(_('Při zadávání předvyplnit poslední hledaný pořad?'), config.misc.CSFD.SaveSearch))
 		self.list2.append(getConfigListEntry(_('Volat místo IMDB plugin CSFD?'), config.misc.CSFD.CSFDreplaceIMDB))
