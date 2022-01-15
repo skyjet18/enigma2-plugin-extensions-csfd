@@ -371,7 +371,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				'CSFDbqPrev': (self.KeybqPrev, 'key_bq_down'), 
 				'0': (self.keyNumber0, 'key_0'), 
 				'1': (self.keyNumber1, 'key_1'), 
-				'2': (self.KeyExtraMenu, 'key_2'), 
+#				'2': (self.KeyExtraMenu, 'key_2'), #used for sorting in comments and change types of interests 
 				'3': (self.keyNumber3, 'key_3'), 
 				'4': (self.keyNumber4, 'key_4'), 
 				'5': (self.keyNumber5, 'key_5'), 
@@ -4567,24 +4567,30 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				ExtratextCol += coltextUzivatel + self['extralabel'].CalculateSizeInSpaceSimple(uzivtext) + coltextHodnoceni + ' \n'
 				ExtratextCol = self['extralabel'].AddRowIntoText(Extratext, ExtratextCol)
 
-		if Extratext == '':
-			if self.PageSpec > 1:
-				Extratext = '\n' + _('Žádné další komentáře v databázi.')
-			else:
-				Extratext = '\n' + _('Žádné komentáře v databázi.')
-		if self.linkComment == 'podle-datetime/':
-			cc = _('seřazené od nejnovějších po nejstarší')
-		elif self.linkComment == 'podle-rating/':
-			cc = _('seřazené podle hodnocení')
-		else:
-			cc = _('seřazené podle počtu bodů uživatele')
-		Extradopln = _('Komentáře uživatelů ')
+#		if Extratext == '':
+#			if self.PageSpec > 1:
+#				Extratext = '\n' + _('Žádné další komentáře v databázi.')
+#			else:
+#				Extratext = '\n' + _('Žádné komentáře v databázi.')
+#		if self.linkComment == 'podle-datetime/':
+#			cc = _('seřazené od nejnovějších po nejstarší')
+#		elif self.linkComment == 'podle-rating/':
+#			cc = _('seřazené podle hodnocení')
+#		else:
+#			cc = _('seřazené podle počtu bodů uživatele')
+#		Extradopln = _('Komentáře uživatelů ')
+#		pocet = ParserCSFD.parserUserCommentsNumber()
+#		if pocet is not None:
+#			Extradopln += cc + ' (' + _('počet komentářů:') + ' ' + intWithSeparator(pocet) + ')\n'
+#		else:
+#			Extradopln += cc + ' :\n'
+#		Extradopln += _('(změnit třídění komentářů můžete pomocí klávesy 2)') + '\n\n'
 		pocet = ParserCSFD.parserUserCommentsNumber()
 		if pocet is not None:
-			Extradopln += cc + ' (' + _('počet komentářů:') + ' ' + intWithSeparator(pocet) + ')\n'
+			Extradopln = _('Celkový počet komentářů:') + ' ' + intWithSeparator(pocet) + '\n\n'
 		else:
-			Extradopln += cc + ' :\n'
-		Extradopln += _('(změnit třídění komentářů můžete pomocí klávesy 2)') + '\n\n'
+			Extradopln = ''
+			
 		textFree = self['extralabel'].AddRowIntoText(Extradopln, '')
 		self['extralabel'].setTextHead(Extradopln)
 		Extratext = textFree + Extratext
@@ -4699,7 +4705,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Extradopln += '\n'
 		else:
 			Extradopln += ':\n'
-		Extradopln += _('(změnit typ zajímavostí můžete pomocí klávesy 2)') + '\n\n'
+#		Extradopln += _('(změnit typ zajímavostí můžete pomocí klávesy 2)') + '\n\n'
+		Extradopln += '\n'
 		textFree = self['extralabel'].AddRowIntoText(Extradopln, '')
 		self['extralabel'].setTextHead(Extradopln)
 		Extratext = textFree + Extratext
