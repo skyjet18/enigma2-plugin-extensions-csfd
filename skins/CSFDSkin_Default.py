@@ -257,10 +257,10 @@ Screen_CSFD_SD = """
 		<widget name="detailslabel" position="180,53" size="415,201" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
 		<widget name="contentlabel" position="10,258" size="585,201" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
 		<widget name="extralabel" position="10,53" size="585,376" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
-		<widget name="photolabel" position="10,53" size="585,376" backgroundColor="#31000000" zPosition="1" alphatest="off" />
+		<widget name="photolabel" position="10,53" size="585,376" backgroundColor="#31000000" zPosition="1" alphatest="on" />
 		<widget name="playbutton" position="277,216" size="50,50" zPosition="2" transparent="1" alphatest="on" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/play_button.png"/>
 		<widget name="statusbar" position="10,465" size="585,17" font="Regular;15" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="4"	transparent="1" />
-		<widget name="poster" position="4,53" size="170,201" backgroundColor="#31000000" zPosition="1" alphatest="off" />
+		<widget name="poster" position="4,53" size="170,201" backgroundColor="#31000000" zPosition="1" alphatest="on" />
 		<widget name="menu" position="10,53" size="585,397" zPosition="3" scrollbarMode="showOnDemand" backgroundColor="#31000000" transparent="1" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu.png" enableWrapAround="1" />
 		<widget name="servicemenuBackG" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/border_menu_430.png" position="85,50" size="430,340" zPosition="4" alphatest="on" />
 		<widget name="servicemenuTop" position="90,55" size="420,25" valign="center" halign="center" backgroundColor="black" foregroundColor="#f0b400" font="Regular;22" zPosition="4" />
@@ -302,10 +302,10 @@ Screen_CSFD_HD = """
 		<widget name="line" position="320,285" zPosition="1" size="750,1" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/line.png" />
 		<widget name="contentlabel" position="320,289" size="770,228" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
 		<widget name="extralabel" position="10,53" size="1080,436" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
-		<widget name="photolabel" position="10,53" size="1080,436" backgroundColor="#31000000" zPosition="1" alphatest="off" />
+		<widget name="photolabel" position="10,53" size="1080,436" backgroundColor="#31000000" zPosition="1" alphatest="on" />
 		<widget name="playbutton" position="525,246" size="50,50" zPosition="2" transparent="1" alphatest="on" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/play_button.png"/>
 		<widget name="statusbar" position="10,525" size="1080,17" font="Regular;16" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="4" transparent="1" />
-		<widget name="poster" position="4,53" size="310,460" backgroundColor="#31000000" zPosition="1" alphatest="off" />
+		<widget name="poster" position="4,53" size="310,460" backgroundColor="#31000000" zPosition="1" alphatest="on" />
 		<widget name="menu" position="10,53" size="1080,455" zPosition="3" scrollbarMode="showOnDemand" transparent="1" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu.png" enableWrapAround="1" />
 		<widget name="servicemenuBackG" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/border_menu_430.png" position="335,50" size="430,340" zPosition="4" alphatest="on" />
 		<widget name="servicemenuTop" position="340,55" size="420,25" valign="center" halign="center" backgroundColor="black" foregroundColor="#f0b400" font="Regular;22" zPosition="4" />
@@ -352,10 +352,10 @@ Screen_CSFD_FullHD = """
 		<widget name="line" position="475,428" zPosition="1" size="1110,2" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/line.png" />
 		<widget name="contentlabel" position="475,435" size="1140,343" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
 		<widget name="extralabel" position="15,80" size="1600,654" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
-		<widget name="photolabel" position="15,80" size="1600,654" backgroundColor="#31000000" zPosition="1" alphatest="off" />
+		<widget name="photolabel" position="15,80" size="1600,654" backgroundColor="#31000000" zPosition="1" alphatest="on" />
 		<widget name="playbutton" position="780,369" size="50,50" zPosition="2" transparent="1" alphatest="on" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/play_button.png"/>
 		<widget name="statusbar" position="15,785" size="1600,26" font="Regular;21" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="4" transparent="1" />
-		<widget name="poster" position="6,80" size="460,690" backgroundColor="#31000000" zPosition="1" alphatest="off" />
+		<widget name="poster" position="6,80" size="460,690" backgroundColor="#31000000" zPosition="1" alphatest="on" />
 		<widget name="menu" position="15,80" size="1600,680" zPosition="3" scrollbarMode="showOnDemand" transparent="1" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-fhd.png" enableWrapAround="1" />
 		<widget name="servicemenuBackG" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/border_menu_520.png" position="470,75" size="660,520" zPosition="4" alphatest="on" />
 		<widget name="servicemenuTop" position="475,83" size="650,36" valign="center" halign="center" backgroundColor="black" foregroundColor="#f0b400" font="Regular;28" zPosition="4" />
@@ -402,7 +402,7 @@ Screen_CSFDIMDB_SD = """
 		<widget name="storylinelabel" position="303,258" size="292,201" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
 		<widget name="extralabel" position="10,53" size="585,376" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
 		<widget name="statusbar" position="10,465" size="585,17" font="Regular;15" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="4" transparent="1" />
-		<widget name="poster" position="4,53" size="170,201" backgroundColor="#31000000" zPosition="1" alphatest="off" />
+		<widget name="poster" position="4,53" size="170,201" backgroundColor="#31000000" zPosition="1" alphatest="on" />
 		<widget name="ratinglabel" position="375,24" size="220,22" halign="right" font="Regular;21" foregroundColor="#f0b400" backgroundColor="#31000000" transparent="1" />
 		<widget name="menu" position="10,53" size="585,397" zPosition="3" foregroundColor="#cccccc" backgroundColor="#31000000" scrollbarMode="showOnDemand" transparent="1" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu.png" enableWrapAround="1" />
 		<widget name="starsbg" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_empty.png" position="385,2" zPosition="0" size="210,21" transparent="1" alphatest="on" />
@@ -427,7 +427,7 @@ Screen_CSFDIMDB_HD = """
 		<widget name="storylinelabel" position="705,289" size="385,230" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
 		<widget name="extralabel" position="10,53" size="1080,436" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
 		<widget name="statusbar" position="10,525" size="1080,17" font="Regular;16" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="4" transparent="1" />
-		<widget name="poster" position="4,53" size="310,460" backgroundColor="#31000000" zPosition="1" alphatest="off" />
+		<widget name="poster" position="4,53" size="310,460" backgroundColor="#31000000" zPosition="1" alphatest="on" />
 		<widget name="ratinglabel" position="870,24" size="220,22" halign="right" font="Regular;22" foregroundColor="#f0b400" backgroundColor="#31000000" transparent="1" />
 		<widget name="menu" position="10,53" size="1080,455" zPosition="3" foregroundColor="#cccccc" backgroundColor="#31000000" scrollbarMode="showOnDemand" transparent="1" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu.png" enableWrapAround="1" />
 		<widget name="starsbg" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_empty.png" position="880,2" zPosition="0" size="210,21" transparent="1" alphatest="on" />
@@ -452,7 +452,7 @@ Screen_CSFDIMDB_FullHD = """
 		<widget name="storylinelabel" position="1045,435" size="570,345" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
 		<widget name="extralabel" position="15,80" size="1600,654" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
 		<widget name="statusbar" position="15,785" size="1600,26" font="Regular;21" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="4" transparent="1" />
-		<widget name="poster" position="6,80" size="460,690" backgroundColor="#31000000" zPosition="1" alphatest="off" />
+		<widget name="poster" position="6,80" size="460,690" backgroundColor="#31000000" zPosition="1" alphatest="on" />
 		<widget name="ratinglabel" position="1160,36" size="460,33" halign="right" font="Regular;28" foregroundColor="#f0b400" backgroundColor="#31000000" transparent="1" />
 		<widget name="menu" position="15,80" size="1600,680" zPosition="3" foregroundColor="#cccccc" backgroundColor="#31000000" scrollbarMode="showOnDemand" transparent="1" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-fhd.png" enableWrapAround="1" />
 		<widget name="starsbg" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_empty.png" position="1410,3" zPosition="0" size="210,21" transparent="1" alphatest="on" />
