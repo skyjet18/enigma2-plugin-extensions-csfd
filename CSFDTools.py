@@ -39,6 +39,13 @@ except:
 
 csfd_session = requests.Session()
 
+from requests.packages.urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
+
+http_adaptor = HTTPAdapter(max_retries=Retry(total=3, backoff_factor=0.1))
+csfd_session.mount('http://', http_adaptor)
+csfd_session.mount('https://', http_adaptor)
+
 csfd_URL_https = 'https://www.csfd.cz/'
 
 try:

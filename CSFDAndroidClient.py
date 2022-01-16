@@ -7,6 +7,11 @@ import traceback
 import time
 
 from requests_oauthlib import OAuth1Session
+from requests.packages.urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
+
+http_adaptor = HTTPAdapter(max_retries=Retry(total=3, backoff_factor=0.1))
+
 try:
 	from urllib.parse import quote_plus
 except:
@@ -61,7 +66,9 @@ class CSFDAndroidClient:
 	
 	def init_oauth_session(self):
 		self.oauth = OAuth1Session( self.client_key, client_secret=self.client_secret, resource_owner_key=self.oauth_token, resource_owner_secret=self.oauth_token_secret )
-	
+		self.oauth.mount('http://', http_adaptor)
+		self.oauth.mount('https://', http_adaptor)
+
 	# ######################################################################################
 	
 	def __login( self, username, password ):
@@ -202,14 +209,13 @@ class CSFDAndroidClient:
 			else:
 				response = self.oauth.post( self.api_url + '/' + params, headers=self.headers, data=data, timeout=config.misc.CSFD.DownloadTimeOut.getValue() )
 		except:
+			LogCSFD.WriteToFile( "Exception in requests\n", 2 )
 			return {
 				"http_error": 666,
 				"http_error_text": "exception"
 				}
 		
 		if response.status_code == 200:
-#			LogCSFD.WriteToFile( "Status: %d, Response: %s\n" % (response.status_code, response.text), 2 )
-#			print( response.text )
 			return json.loads(response.text)
 		
 		LogCSFD.WriteToFile( "Status: %d, Response: %s\n" % (response.status_code, response.text), 2 )
@@ -350,47 +356,49 @@ class CSFDAndroidClient:
 	# ######################################################################################
 	
 	def get_json_by_uri(self, uri, page=1 ):
-		
-		if uri.startswith('#search_movie#'):
-			LogCSFD.WriteToFile( "Searching movie: \"%s\"\n" % uri[14:], 2 )
-
-			return self.search_by_name( uri[14:], (page - 1) * 30, 30 )
-			
-		elif uri.startswith('#movie#'):
-			LogCSFD.WriteToFile( "Requesting movie info for \"%s\"\n" % uri[7:], 2 )
-
-			data1 = self.get_movie_info( uri[7:])["info"]
-			data2 = self.get_movie_creators( uri[7:], 0, 30 )["creators"]
-			
-			ret = { "info": data1, "creators" : data2 }
-			
-			if "root_id" in data1:
-				ret["root_info"] = self.get_movie_info( data1["root_id"] )["info"]
+		try:
+			if uri.startswith('#search_movie#'):
+				LogCSFD.WriteToFile( "Searching movie: \"%s\"\n" % uri[14:], 2 )
+	
+				return self.search_by_name( uri[14:], (page - 1) * 30, 30 )
 				
-			return ret 
-
-		elif uri.startswith('#movie_photos#'):
-			LogCSFD.WriteToFile( "Requesting movie photos for \"%s\"\n" % uri[14:], 2 )
-
-			return self.get_movie_photos( uri[14:], (page - 1) * 20, 20 )
-		elif uri.startswith('#movie_videos#'):
-			LogCSFD.WriteToFile( "Requesting movie videos for \"%s\"\n" % uri[14:], 2 )
-
-			return self.get_movie_videos( uri[14:], (page - 1) * 20, 20 )
-		elif uri.startswith('#movie_comments#'):
-			LogCSFD.WriteToFile( "Requesting movie comments for \"%s\"\n" % uri[16:], 2 )
-
-			return self.get_movie_comments( uri[16:], (page - 1) * 10, 10 )
-		elif uri.startswith('#movie_trivia#'):
-			LogCSFD.WriteToFile( "Requesting movie trivia for \"%s\"\n" % uri[14:], 2 )
-
-			return self.get_movie_trivia( uri[14:], (page - 1) * 10, 10 )
-		elif uri.startswith('#movie_premiere#'):
-			LogCSFD.WriteToFile( "Requesting movie premiere for \"%s\"\n" % uri[16:], 2 )
-
-			return {}
-		elif uri.startswith('#creator#'):
-			return self.get_creator_info( uri[9:])
+			elif uri.startswith('#movie#'):
+				LogCSFD.WriteToFile( "Requesting movie info for \"%s\"\n" % uri[7:], 2 )
+	
+				data1 = self.get_movie_info( uri[7:])["info"]
+				data2 = self.get_movie_creators( uri[7:], 0, 30 )["creators"]
+				
+				ret = { "info": data1, "creators" : data2 }
+				
+				if "root_id" in data1:
+					ret["root_info"] = self.get_movie_info( data1["root_id"] )["info"]
+					
+				return ret 
+	
+			elif uri.startswith('#movie_photos#'):
+				LogCSFD.WriteToFile( "Requesting movie photos for \"%s\"\n" % uri[14:], 2 )
+	
+				return self.get_movie_photos( uri[14:], (page - 1) * 20, 20 )
+			elif uri.startswith('#movie_videos#'):
+				LogCSFD.WriteToFile( "Requesting movie videos for \"%s\"\n" % uri[14:], 2 )
+	
+				return self.get_movie_videos( uri[14:], (page - 1) * 20, 20 )
+			elif uri.startswith('#movie_comments#'):
+				LogCSFD.WriteToFile( "Requesting movie comments for \"%s\"\n" % uri[16:], 2 )
+	
+				return self.get_movie_comments( uri[16:], (page - 1) * 10, 10 )
+			elif uri.startswith('#movie_trivia#'):
+				LogCSFD.WriteToFile( "Requesting movie trivia for \"%s\"\n" % uri[14:], 2 )
+	
+				return self.get_movie_trivia( uri[14:], (page - 1) * 10, 10 )
+			elif uri.startswith('#movie_premiere#'):
+				LogCSFD.WriteToFile( "Requesting movie premiere for \"%s\"\n" % uri[16:], 2 )
+	
+				return {}
+			elif uri.startswith('#creator#'):
+				return self.get_creator_info( uri[9:])
+		except:
+			return { "internal_error": "download error for uri: " % uri }
 		
 		return { "internal_error": "unknown uri %s" % uri }
 	
