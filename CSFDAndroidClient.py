@@ -77,24 +77,21 @@ class CSFDAndroidClient:
 
 		if password == None or password == '':
 			raise ValueError("Password is empty")
+
+		data = 'Y3NmZHJvaWQ6Ly9vYXV0aC1jYWxsYmFja1VzZXItQWdlbnRBcGFjaGUtSHR0cENsaWVudC9VTkFWQUlMQUJMRSAoamF2YSAxLjQpTW96aWxsYS81LjAgKExpbnV4OyBBbmRyb2lkIDYuMDsgU2Ftc3VuZyBHYWxheHkgUzcgQnVpbGQvTVJBNThLOyB3dikgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgVmVyc2lvbi80LjAgQ2hyb21lLzc0LjAuMzcyOS4xODYgTW9iaWxlIFNhZmFyaS81MzcuMzZBY2NlcHR0ZXh0L2h0bWwsYXBwbGljYXRpb24veGh0bWwreG1sLGFwcGxpY2F0aW9uL3htbDtxPTAuOSxpbWFnZS93ZWJwLGltYWdlL2FwbmcsKi8qO3E9MC44LGFwcGxpY2F0aW9uL3NpZ25lZC1leGNoYW5nZTt2PWIzWC1SZXF1ZXN0ZWQtV2l0aGN6LmNzZmQuY3NmZHJvaWQvb2F1dGgvcmVxdWVzdC10b2tlbi9vYXV0aC9hdXRob3JpemUvb2F1dGgvYWNjZXNzLXRva2VuaHR0cHM6Ly93d3cuY3NmZC5jei9jc2Zkcm9pZC9mYi9pbml0'
+		data = bd( data.encode( 'utf-8' ) ).decode('utf-8')
 		
 		# Init oauth with oauth callback
-		callback_uri='csfdroid://oauth-callback'
-		self.oauth = OAuth1Session( self.client_key, client_secret=self.client_secret, callback_uri=callback_uri )
+		self.oauth = OAuth1Session( self.client_key, client_secret=self.client_secret, callback_uri=data[0:25] )
 
 		# Step 1 - fetch request token
-		self.oauth.fetch_request_token( self.api_url + '/oauth/request-token', headers={ 'User-Agent': 'Apache-HttpClient/UNAVAILABLE (java 1.4)' } )
+		self.oauth.fetch_request_token( self.api_url + data[392:412], headers={ data[25:35]: data[35:75] } )
 
 		# Step 2 - create authorization url, and do login
-		headers = {
-			"User-Agent": 'Mozilla/5.0 (Linux; Android 6.0; Samsung Galaxy S7 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.186 Mobile Safari/537.36',
-			'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-			'X-Requested-With': 'cz.csfd.csfdroid'
-		}
-
-		auth_url = self.oauth.authorization_url( self.api_url + '/oauth/authorize', None, oauth_callback=callback_uri, fb_callback='https://www.csfd.cz/csfdroid/fb/init' )
+		auth_url = self.oauth.authorization_url( self.api_url + data[412:428], None, oauth_callback=data[0:25], fb_callback=data[447:483] )
 
 		# Step 3 - download login page
+		headers = { data[25:35]: data[75:236], data[236:242]: data[242:360], data[360:376]: data[376:392] }
 		login_page = requests.get(auth_url, headers=headers)
 		
 		if login_page.status_code != 200:
@@ -119,7 +116,7 @@ class CSFDAndroidClient:
 				elif r.status_code >= 300 and r.status_code < 400:
 					login_url = r.headers['Location']
 					
-					if r.headers['Location'].startswith( callback_uri ):
+					if r.headers['Location'].startswith( data[0:25] ):
 						login_response = login_url
 						break
 					
@@ -131,7 +128,7 @@ class CSFDAndroidClient:
 		self.oauth.parse_authorization_response(login_response)
 		
 		# Step7 - fetch access token
-		ret = self.oauth.fetch_access_token( self.api_url + '/oauth/access-token', headers={ 'User-Agent': 'Apache-HttpClient/UNAVAILABLE (java 1.4)' } )
+		ret = self.oauth.fetch_access_token( self.api_url + data[428:447], headers={ data[25:35]: data[35:75] } )
 		self.oauth_token = ret.get('oauth_token')
 		self.oauth_token_secret = ret.get('oauth_token_secret')
 	
