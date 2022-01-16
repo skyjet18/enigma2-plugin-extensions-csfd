@@ -5,7 +5,7 @@ from .CSFDLog import LogCSFD
 from .CSFDTools import ItemList, ItemListServiceMenu, TextSimilarityBigram, TextSimilarityLD, TextCompare, max_positions, request, requestFileCSFD, internet_on, fromRomanStr, StrtoRoman
 from .CSFDTools import intWithSeparator, char2Diacritic, char2DiacriticSort, char2Allowchar, char2AllowcharNumbers, strUni, Uni8, deletetmpfiles, OdstranitDuplicityRadku, loadPixmapCSFD, picStartDecodeCSFD
 from .CSFDMenu import CSFDIconMenu
-from .CSFDParser import ParserCSFD, ParserOstCSFD, ParserVideoCSFD, ParserGallCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions
+from .CSFDParser import ParserCSFD, ParserOstCSFD, ParserVideoCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions
 from .CSFDClasses import GetMoviesForTVChannels, CSFDChannelSelection, CSFDEPGSelection, CSFDLCDSummary, CSFDSetup, CSFDInputText, CSFDAbout, CSFDHistory, CSFDVideoInfoScreen, CSFDPlayer, RefreshPlugins
 from .CSFDMovieCache import TVMovieCache
 from .CSFDSettings1 import CSFDGlobalVar
@@ -681,7 +681,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		ParserCSFD.resetValues()
 		ParserOstCSFD.resetValues()
 		ParserVideoCSFD.resetValues()
-		ParserGallCSFD.resetValues()
 		ParserIMDB.resetValues()
 		deletetmpfiles()
 		self.PosterBasicSlideList = []
@@ -4891,7 +4890,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 		self.VideoSlideList.sort(key=lambda z: z[7])
 		self.VideoIsNotFullyRead = False
-		ParserVideoCSFD.setParserHTML('')
+		ParserVideoCSFD.setJson({})
 		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - konec\n')
 		return
 
@@ -5082,7 +5081,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 
 			self.GalleryIsNotFullyRead = False
-			ParserGallCSFD.setParserHTML('')
 			LogCSFD.WriteToFile('[CSFD] GalleryFiles - konec\n', 5)
 			LogCSFD.WriteToFile('[CSFD] CSFDAllGalleryDownload - konec\n', 5)
 			return

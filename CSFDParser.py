@@ -496,35 +496,6 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] setParserHTML - konec\n')
 		return
 
-	def HTML_CSFD_Conversion(self, inhtml):
-		LogCSFD.WriteToFile('[CSFD] HTML_CSFD_Conversion - zacatek\n')
-		if inhtml == '':
-			outhtml = ''
-		elif self.parserTestHTML(inhtml):
-			outhtml = inhtml
-		elif zlib_exist:
-			LogCSFD.WriteToFile('[CSFD] HTML_CSFD_Conversion - dekomprese dat do html\n')
-			try:
-				html = zlib.decompress(inhtml, 16 + zlib.MAX_WBITS)
-				if self.parserTestHTML(html):
-					LogCSFD.WriteToFile('[CSFD] HTML_CSFD_Conversion - dekomprese dat do html - OK\n')
-					outhtml = html
-				else:
-					LogCSFD.WriteToFile('[CSFD] HTML_CSFD_Conversion - dekomprese dat do html - ERR - chyba\n')
-					LogCSFD.WriteToFileWithoutTime(inhtml)
-					outhtml = ''
-			except:
-				err = traceback.format_exc()
-				LogCSFD.WriteToFile('[CSFD] HTML_CSFD_Conversion - dekomprese dat do html - ERR 1 - chyba\n')
-				LogCSFD.WriteToFile(err)
-				LogCSFD.WriteToFileWithoutTime(inhtml)
-				outhtml = ''
-
-		else:
-			LogCSFD.WriteToFile('[CSFD] HTML_CSFD_Conversion - nelze provest dekompresi dat do html - neni knihovna zlib - ERR 2 - chyba\n')
-		LogCSFD.WriteToFile('[CSFD] HTML_CSFD_Conversion - konec\n')
-		return outhtml
-
 	def getParserHTML(self):
 		return self.inhtml
 
@@ -1639,5 +1610,4 @@ class CSFDParser():
 ParserCSFD = CSFDParser()
 ParserOstCSFD = CSFDParser()
 ParserVideoCSFD = CSFDParser()
-ParserGallCSFD = CSFDParser()
 ParserTVCSFD = CSFDParser()
