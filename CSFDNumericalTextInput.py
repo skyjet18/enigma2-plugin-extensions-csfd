@@ -106,11 +106,16 @@ class CSFDNumericalTextInput:
 				self.mapping.append('tuv8TUV')
 				self.mapping.append('wxyz9WXYZ')
 			
-			m = []
-			for x in self.mapping:
-				m.append( x.decode('utf-8'))
-				
-			self.mapping = m
+			try:
+				# py2:
+				m = []
+				for x in self.mapping:
+					m.append( x.decode('utf-8'))
+					
+				self.mapping = m
+			except:
+				pass
+			
 			return
 
 	def setUseableChars(self, useable):

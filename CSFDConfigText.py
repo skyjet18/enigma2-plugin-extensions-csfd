@@ -8,8 +8,10 @@ from .CSFDSettings1 import CSFDGlobalVar
 
 try:
 	unichr
+	is_py2 = True
 except NameError:
 	unichr = chr
+	is_py2 = False
 
 class CSFDConfigText(ConfigElement, CSFDNumericalTextInput):
 
@@ -148,7 +150,7 @@ class CSFDConfigText(ConfigElement, CSFDNumericalTextInput):
 
 	def getValue(self):
 #		return self.text.encode('utf-8')
-		return self.text
+		return str(self.text)
 
 	def setValue(self, val):
 		try:
@@ -165,7 +167,8 @@ class CSFDConfigText(ConfigElement, CSFDNumericalTextInput):
 	_value = property(getValue, setValue)
 
 	def getText(self):
-		return self.text.encode('utf-8')
+		return self.text
+#		return self.text.encode('utf-8')
 
 	def getMulti(self, selected):
 		if self.visible_width:
@@ -174,15 +177,20 @@ class CSFDConfigText(ConfigElement, CSFDNumericalTextInput):
 			else:
 				mark = [
 				 self.marked_pos - self.offset]
-			return ('mtext'[1 - selected:], self.text[self.offset:self.offset + self.visible_width].encode('utf-8') + ' ', mark)
+			if is_py2:
+				return ('mtext'[1 - selected:], self.text[self.offset:self.offset + self.visible_width].encode('utf-8') + ' ', mark)
+			else:
+				return ('mtext'[1 - selected:], self.text[self.offset:self.offset + self.visible_width] + ' ', mark)
 		else:
 			if self.allmarked:
 				mark = list(range(0, len(self.text)))
 			else:
 				mark = [
 				 self.marked_pos]
-			return (
-			 'mtext'[1 - selected:], self.text.encode('utf-8') + ' ', mark)
+			if is_py2:
+				return ('mtext'[1 - selected:], self.text.encode('utf-8') + ' ', mark)
+			else:
+				return ('mtext'[1 - selected:], self.text + ' ', mark)
 
 	def onSelect(self, session):
 		self.allmarked = self.value != ''

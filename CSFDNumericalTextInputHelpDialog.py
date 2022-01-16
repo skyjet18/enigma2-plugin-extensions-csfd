@@ -4,6 +4,13 @@ from Screens.Screen import Screen
 from Components.Label import Label
 from .CSFDSettings1 import CSFDGlobalVar
 
+try:
+	unichr
+	is_py2=True
+except NameError:
+	unichr = chr
+	is_py2 = False
+
 class CSFDNumericalTextInputHelpDialog(Screen):
 	if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
 		from .CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogSD
@@ -43,7 +50,10 @@ class CSFDNumericalTextInputHelpDialog(Screen):
 			self['help1'] = Label(text='<')
 			self['help2'] = Label(text='>')
 			for x in (1, 2, 3, 4, 5, 6, 7, 8, 9, 0):
-				self['key%d' % x] = Label(text=textinput.mapping[x].encode('utf-8'))
+				if is_py2:
+					self['key%d' % x] = Label(text=textinput.mapping[x].encode('utf-8'))
+				else:
+					self['key%d' % x] = Label(text=textinput.mapping[x])
 
 		self.last_marked = 0
 
