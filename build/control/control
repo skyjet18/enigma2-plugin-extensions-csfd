@@ -4,7 +4,7 @@ Description: Filmova databaze CSFD.cz
 Architecture: all
 Section: base
 Priority: optional
-Depends: python-requests_oauthlib | python-requests-oauthlib, python-twisted, curl, python-urllib3
+Depends: python-requests | python3-requests, python-twisted | python3-twisted, python-urllib3 | python3-urllib3, curl
 Maintainer: petrkl12@tvplugins.cz
 License: unknown
 OE: enigma2-plugins
