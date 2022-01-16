@@ -6,7 +6,7 @@ import re
 import traceback
 import time
 
-from requests_oauthlib import OAuth1Session
+from .oauth.requests_oauthlib import OAuth1Session
 from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
