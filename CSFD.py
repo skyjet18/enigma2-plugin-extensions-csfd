@@ -158,7 +158,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self.GallerySlideShowTimer = eTimer()
 		self.TipsTimer = eTimer()
 		self.RatingTimer = eTimer()
-		self.PluginRepairTimer = eTimer()
 		self.DownloadTimer = eTimer()
 		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
 			self.PosterBasicSlideShowTimer.callback.append(self.CSFDPosterBasicSlideShowEvent)
@@ -171,7 +170,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self.GallerySlideShowTimer.callback.append(self.CSFDGallerySlideShowEvent)
 			self.TipsTimer.callback.append(self.CSFDTipsTimerEvent)
 			self.RatingTimer.callback.append(self.RatingTimerEvent)
-			self.PluginRepairTimer.callback.append(self.PluginRepair)
 			self.DownloadTimer.callback.append(self.DownloadParalel)
 			self.PosterBasicSlideShowTimerConn = None
 			self.NewVersionTimerConn = None
@@ -183,7 +181,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self.GallerySlideShowTimerConn = None
 			self.TipsTimerConn = None
 			self.RatingTimerConn = None
-			self.PluginRepairTimerConn = None
 			self.DownloadTimerConn = None
 		else:
 			self.PosterBasicSlideShowTimerConn = self.PosterBasicSlideShowTimer.timeout.connect(self.CSFDPosterBasicSlideShowEvent)
@@ -196,7 +193,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self.GallerySlideShowTimerConn = self.GallerySlideShowTimer.timeout.connect(self.CSFDGallerySlideShowEvent)
 			self.TipsTimerConn = self.TipsTimer.timeout.connect(self.CSFDTipsTimerEvent)
 			self.RatingTimerConn = self.RatingTimer.timeout.connect(self.RatingTimerEvent)
-			self.PluginRepairTimerConn = self.PluginRepairTimer.timeout.connect(self.PluginRepair)
 			self.DownloadTimerConn = self.DownloadTimer.timeout.connect(self.DownloadParalel)
 		self.PosterBasicCountPixAllP = -1
 		self.PosterBasicCountPixAllG = -1
@@ -400,7 +396,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		return
 
 	def layoutFinished(self):
-		sss = _('Filmová databáze CSFD') + '	-  ' + _('Verze: ') + str(self.versionCSFD) + '	 ' + 'www.TVplugins.cz'
+		sss = _('Filmová databáze CSFD') + '  -  ' + _('Verze: ') + str(self.versionCSFD)
 		self.setTitle(sss)
 		sc = AVSwitch().getFramebufferScale()
 		if self.tipsiconload is not None and self.tipsiconload_conn is not None:
@@ -618,9 +614,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			if self.AntiFreezeTimer is not None:
 				if self.AntiFreezeTimer.isActive():
 					self.AntiFreezeTimer.stop()
-			if self.PluginRepairTimer is not None:
-				if self.PluginRepairTimer.isActive():
-					self.PluginRepairTimer.stop()
 			if self.DownloadTimer is not None:
 				if self.DownloadTimer.isActive():
 					self.DownloadTimer.stop()
@@ -650,8 +643,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			del self.RatingTimerConn
 			self.AntiFreezeTimerConn = None
 			del self.AntiFreezeTimerConn
-			self.PluginRepairTimerConn = None
-			del self.PluginRepairTimerConn
 			self.DownloadTimerConn = None
 			del self.DownloadTimerConn
 		self.GalleryDownloadTimer = None
@@ -674,8 +665,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		del self.RatingTimer
 		self.AntiFreezeTimer = None
 		del self.AntiFreezeTimer
-		self.PluginRepairTimer = None
-		del self.PluginRepairTimer
 		self.DownloadTimer = None
 		del self.DownloadTimer
 		ParserCSFD.resetValues()
@@ -1207,7 +1196,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] ScreenSetupShow\n')
 		self.AntiFreezeTimerWorking = False
 		self.workingConfig = None
-		self.session.openWithCallback(self.onSetupScreenClose, CSFDSetup, self.TestLoginToCSFD, self.PluginRepair, self.ResetAllCSFDParams)
+		self.session.openWithCallback(self.onSetupScreenClose, CSFDSetup, self.TestLoginToCSFD, self.ResetAllCSFDParams)
 		return
 
 	def onSetupScreenClose(self):
@@ -1226,7 +1215,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 	def showLogout(self):
 		LogCSFD.WriteToFile('[CSFD] ScreenLogoutShow\n')
 		self.AntiFreezeTimerWorking = False
-		self.session.openWithCallback(self.closeLogout, MessageBox, (_('Opravdu se odhlásit z ČSFD?') + '\n' + _('Pro opětovné přihlášení to budete muset povolit v nastaveních.')+ '\n'), MessageBox.TYPE_YESNO)
+		self.session.openWithCallback(self.closeLogout, MessageBox, (_('Opravdu se odhlásit z ČSFD?') + '\n' + _('Opětovné přihlášení budete muset povolit v nastaveních.')+ '\n'), MessageBox.TYPE_YESNO)
 
 	def closeLogout(self, answer):
 		self.AntiFreezeTimerWorking = True
@@ -4580,7 +4569,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		ExtratextCol = ''
 		coltextUzivatel = _('Uživatel: ')
 		coltextspaceUzivatel = self['extralabel'].CalculateSizeInSpace(coltextUzivatel)[0]
-		coltextHodnoceni = _('	 Hodnocení: ')
+		coltextHodnoceni = '\t ' + _('Hodnocení:')
 		coltextspaceHodnoceni = self['extralabel'].CalculateSizeInSpace(coltextHodnoceni)[0]
 		extraresult = ParserCSFD.parserUserComments( data )
 		if extraresult is not None:
@@ -6536,69 +6525,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 	def consoleAppContainer_avail(self, string):
 		self.container_output += string.decode("utf-8")
-
-	def PluginRepair(self, workingConfig=None):
-		LogCSFD.WriteToFile('[CSFD] PluginRepair - zacatek\n')
-		self.workingConfig = workingConfig
-		if self.PluginRepairTimer is not None:
-			if self.PluginRepairTimer.isActive():
-				self.PluginRepairTimer.stop()
-		self.session.openWithCallback(self.answerPluginRepair, MessageBox, _('Chcete provést (re)instalaci potřebných knihoven (requests, pyopenssl, zlib, curl) pro CSFD?'), MessageBox.TYPE_YESNO)
-		LogCSFD.WriteToFile('[CSFD] PluginRepair - konec\n')
-		return
-
-	def answerPluginRepair(self, answer):
-		LogCSFD.WriteToFile('[CSFD] answerPluginRepair - zacatek\n')
-		if answer is True:
-			self.startPluginRepair()
-		elif self.workingConfig is not None:
-			self.workingConfig.showInputHelp()
-			self.workingConfig = None
-		LogCSFD.WriteToFile('[CSFD] answerPluginRepair - konec\n')
-		return
-
-	def startPluginRepair(self):
-		LogCSFD.WriteToFile('[CSFD] startPluginRepair - zacatek\n')
-		config.misc.CSFD.LastLoginError.setValue(int(0))
-		config.misc.CSFD.LastLoginError.save()
-		config.misc.CSFD.LastLanError.setValue(int(0))
-		config.misc.CSFD.LastLanError.save()
-		configfile.save()
-		cmd = []
-		if CSFDGlobalVar.getCSFDInstallCommand() == 'dpkg':
-			cmd.append('apt-get -y update')
-			cmd.append('apt-get -f -y install python-requests')
-			cmd.append('apt-get -f -y install python-pyopenssl')
-			cmd.append('apt-get -f -y install python-zlib')
-			cmd.append('apt-get -f -y install curl')
-			cmd.append('/usr/lib/enigma2/python/Plugins/Extensions/CSFD/addon/addon.sh')
-		else:
-			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' update')
-			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install python-requests --force-reinstall')
-			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install python-pyopenssl --force-reinstall')
-			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install python-zlib --force-reinstall')
-			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install curl --force-reinstall')
-			cmd.append('/usr/lib/enigma2/python/Plugins/Extensions/CSFD/addon/addon.sh')
-		self.session.openWithCallback(self.finishedPluginRepair, CSFDConsole, title=_('Oprava knihoven pluginu ...'), cmdlist=cmd, closeOnSuccess=False, startText=_('Oprava knihoven pluginu - ZAČÁTEK'), endText=_('Oprava knihoven pluginu - KONEC'))
-		LogCSFD.WriteToFile('[CSFD] startPluginRepair - konec\n')
-
-	def finishedPluginRepair(self, retval=None):
-		LogCSFD.WriteToFile('[CSFD] finishedPluginRepair - zacatek\n')
-		self.session.openWithCallback(self.restartRepGUI, MessageBox, _('(Re)Instalace byla provedena!') + '\n' + _('Chcete nyní provést restart GUI?'), MessageBox.TYPE_YESNO)
-		LogCSFD.WriteToFile('[CSFD] finishedPluginRepair - konec\n')
-
-	def restartRepGUI(self, answer):
-		LogCSFD.WriteToFile('[CSFD] restartRepGUI - zacatek\n')
-		if answer is True:
-			LogCSFD.WriteToFile('[CSFD] restartRepGUI - ano\n')
-			LogCSFD.WriteToFile('[CSFD] restartRepGUI - konec\n')
-			self.session.open(TryQuitMainloop, 3)
-		else:
-			if self.workingConfig is not None:
-				self.workingConfig.showInputHelp()
-				self.workingConfig = None
-			LogCSFD.WriteToFile('[CSFD] restartRepGUI - konec\n')
-		return
 
 	def ResetAllCSFDParams(self, workingConfig=None):
 		LogCSFD.WriteToFile('[CSFD] ResetAllCSFDParams - zacatek\n')

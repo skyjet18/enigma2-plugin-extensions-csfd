@@ -408,11 +408,13 @@ def RefreshPlugins():
 	from Components.PluginComponent import plugins
 	from .CSFDTools import InitCSFDTools
 	from .CSFDSettings2 import PathTMPInit, localeInit, InitParamsLangImpact
+	from .CSFDAndroidClient import CreateCSFDAndroidClient
 	LogCSFD.LoadDefaults()
 	PathTMPInit()
 	localeInit()
 	InitParamsLangImpact()
 	InitCSFDTools()
+	CreateCSFDAndroidClient()
 	plugins.clearPluginList()
 	plugins.readPluginList(resolveFilename(SCOPE_PLUGINS))
 	LogCSFD.WriteToFile('[CSFD] RefreshPlugins - konec\n')
@@ -426,7 +428,7 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 	else:
 		skin = Screen_CSFDSetupFullHD
 
-	def __init__(self, session, procTestLogin=None, procRepair=None, procResetParam=None):
+	def __init__(self, session, procTestLogin=None, procResetParam=None):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
 			self.skin = Screen_CSFDSetupSD
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
@@ -448,7 +450,6 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 			self.skinName = 'CSFDSetup__'
 		self.setup_title = _('CSFD Nastavení')
 		self.TestLogin = procTestLogin
-		self.Repair = procRepair
 		self.ResetParam = procResetParam
 		CSFDHelpableScreen1.__init__(self)
 		self['CSFDSetupActions'] = HelpableActionMap(self, 'CSFDSetupActions', {'keyMenu': (
@@ -481,11 +482,8 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self['key_blue'] = Button(_('Další'))
 		self['info_icon'] = Pixmap()
 		self['info_epg'] = Pixmap()
-		if self.Repair is not None:
-			self['key_info'] = Button(_('Opravit/Reinstalovat potřebné knihovny'))
-			self['info_icon'].show()
-			self['info_epg'].show()
-		else:
+		if True:
+			# hide info buttot - was used befor for PluginRepair
 			self['key_info'] = Button('')
 			self['info_icon'].hide()
 			self['info_epg'].hide()
@@ -815,9 +813,7 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.keyCancelCan()
 
 	def keyInfo(self):
-		if self.Repair:
-			self.delay_timerHide.start(0, 1)
-			self.Repair(self)
+		pass
 
 	def keyNext(self):
 		self.next()
@@ -845,8 +841,6 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		LogCSFD.WriteToFile('[CSFD] CSFDSetup - keyMenu - zacatek\n')
 		self.delay_timerHide.start(0, 1)
 		listP = ((_('Přejít na předchozí záložku'), 'tabPrev'), (_('Přejít na další záložku'), 'tabNext'))
-		if self.Repair is not None:
-			listP = listP + ((_('Opravit/Reinstalovat potřebné knihovny'), 'repair'),)
 		if self.TestLogin is not None:
 			listP = listP + ((_('Test přihlášení do CSFD'), 'testlogin'),)
 		if self.ResetParam is not None:
@@ -865,8 +859,6 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 			self.previous()
 		elif answer == 'tabNext':
 			self.next()
-		elif answer == 'repair':
-			self.Repair(self)
 		elif answer == 'testlogin':
 			self.TestLogin(self)
 		elif answer == 'reset':
