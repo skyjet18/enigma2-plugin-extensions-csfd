@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# -*- coding: UTF-8 -*-
 # emulation of IMDb plugin for calling CSFD plugin because not all plugins can call CSFD directly
 # CSFD is Czech and Slovak Movie Database
 

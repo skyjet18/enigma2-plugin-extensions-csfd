@@ -1,6 +1,15 @@
 #!/bin/sh
 
-rm -r /usr/lib/enigma2/python/Plugins/Extensions/CSFD > /dev/null 2>&1
+IMDBPATH=/usr/lib/enigma2/python/Plugins/Extensions/IMDb
+IMDB_TEST_FILE=$IMDBPATH/imdb.png
+if [ -d "$IMDBPATH" ]; then
+	if [ ! -f "$IMDB_TEST_FILE" ]; then
+		echo "IMDB emulace pro CSFD nalezena - provadim jeji odinstalaci"
+		rm -rf "$IMDBPATH" > /dev/null 2>&1
+	fi
+fi
+
+rm -rf /usr/lib/enigma2/python/Plugins/Extensions/CSFD > /dev/null 2>&1
 echo "Plugin CSFD byl uspesne odinstalovan"
 
 exit 0

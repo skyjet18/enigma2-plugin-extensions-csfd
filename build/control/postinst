@@ -1,14 +1,21 @@
 #!/bin/sh
 
 PLUGINPATH=/usr/lib/enigma2/python/Plugins/Extensions/CSFD
+EXTENSION_PATH=/usr/lib/enigma2/python/Plugins/Extensions
+IMDB_TEST_FILE=${EXTENSION_PATH}/IMDb/imdb.png
 
 end_inst () {
-   echo "******************************************"
-   echo "Instalace ukoncena"
-   echo "******************************************"
-   echo "Prosim restartujte GUI pro aktivaci zmen! "
-   echo "******************************************"
+	echo "****************************************************************"
+	echo "Instalace ukoncena! Prosim restartujte GUI pro aktivaci zmen ..."
+	echo "****************************************************************"
 }
+
+if [ -f "$IMDB_TEST_FILE" ]; then
+	echo "IMDB plugin nalezen - neprovadim instalaci emulace"
+else
+	echo "IMDB plugin nenalezen - instaluji emulaci pro CSFD"
+	cp -r ${PLUGINPATH}/IMDb $EXTENSION_PATH
+fi
 
 $PLUGINPATH/addon/addon.sh
 end_inst

@@ -14,13 +14,12 @@ if [ -z `echo $VER | grep '^[[:digit:]][[:digit:]]\.[[:digit:]][[:digit:]]$'` ] 
 fi
 
 VER_WITH_DATE=${1}-`date +%Y%m%d`
-VER_WITH_DATE2=$(echo $VER_WITH_DATE | tr '.' '-')
 
 E_VER=$(printf '%s\n' "$VER" | sed -e 's/[\/&]/\\&/g')
-E_VER_WITH_DATE=$(printf '%s\n' "$VER_WITH_DATE2" | sed -e 's/[\/&]/\\&/g')
+E_VER_WITH_DATE=$(printf '%s\n' "$VER_WITH_DATE" | sed -e 's/[\/&]/\\&/g')
 E_DATE=$(printf '%s\n' "$DATE" | sed -e 's/[\/&]/\\&/g')
 
-PKG_NAME=enigma2-plugin-extensions-csfd_${VER_WITH_DATE2}_all.ipk
+PKG_NAME=enigma2-plugin-extensions-csfd_${VER_WITH_DATE}_all.ipk
 E_PKG_NAME=$(printf '%s\n' "$PKG_NAME" | sed -e 's/[\/&]/\\&/g')
 
 sed -i "s/Version:\ .*/Version:\ $E_VER_WITH_DATE/" control/control
@@ -44,9 +43,9 @@ mkdir deb
 pushd deb
 tar -xf ../data.tar
 mkdir DEBIAN
-cp ../control/control DEBIAN/
+cp ../control/* DEBIAN/
 popd
-dpkg-deb -Zgzip -b deb `basename -s .ipk $PKG_NAME`.deb
+dpkg-deb --root-owner-group -Zgzip -b deb `basename -s .ipk $PKG_NAME`.deb
 
 rm $CUR_DIR/data.tar
 rm -rf deb
