@@ -767,6 +767,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				mainServiceMenu.append((ar + _('Uložit video'), 'ulozvideo'))
 				mainServiceMenu.append((ar + _('Spustit video ukázku'), 'spustitvideo'))
 		mainServiceMenu.append((ar + _('Nastavení'), 'nastaveni'))
+		if csfdAndroidClient.is_logged():
+			mainServiceMenu.append((ar + _('Odhlásit se z ČSFD'), 'logout'))
 		mainServiceMenu.append((ar + _('Stáhnout novou verzi pluginu'), 'novaverze'))
 		mainServiceMenu.append((ar + _('Změna skinu'), 'skin'))
 		mainServiceMenu.append((ar + _('Historie změn v pluginu'), 'historie'))
@@ -1031,6 +1033,10 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] RunKey - Zmeny v pluginu - zacatek\n')
 			self.showScreenHistory()
 			LogCSFD.WriteToFile('[CSFD] RunKey - Zmeny v pluginu - konec\n')
+		elif akce == 'logout':
+			LogCSFD.WriteToFile('[CSFD] RunKey - Odhlasit se - zacatek\n')
+			self.showLogout()
+			LogCSFD.WriteToFile('[CSFD] RunKey - Odhlasit se - konec\n')
 		elif akce == 'novaverze':
 			LogCSFD.WriteToFile('[CSFD] RunKey - Nova verze - zacatek\n')
 			self.showNewVersion()
@@ -1078,7 +1084,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self.exitServiceMenu()
 				LogCSFD.WriteToFile('[CSFD] KeyOK - konec - akce konec\n')
 				return
-			if not (akce == 'aktEPG' or akce == 'vyberEPG' or akce == 'zadejporad' or akce == 'nastaveni' or akce == 'about' or akce == 'help' or akce == 'historie' or akce == 'skin' or akce == 'novaverze'):
+			if akce not in ['aktEPG', 'vyberEPG', 'zadejporad', 'nastaveni', 'about', 'help', 'historie', 'skin', 'novaverze']:
+#			if not (akce == 'aktEPG' or akce == 'vyberEPG' or akce == 'zadejporad' or akce == 'nastaveni' or akce == 'about' or akce == 'help' or akce == 'historie' or akce == 'skin' or akce == 'novaverze'):
 				self.exitServiceMenu()
 			self.RunKey(akce, extraAkceParams)
 			LogCSFD.WriteToFile('[CSFD] KeyOK - konec\n')
@@ -1215,6 +1222,24 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 	def closeScreenAbout(self):
 		self.AntiFreezeTimerWorking = True
 		LogCSFD.WriteToFile('[CSFD] ScreenAboutClose\n')
+
+	def showLogout(self):
+		LogCSFD.WriteToFile('[CSFD] ScreenLogoutShow\n')
+		self.AntiFreezeTimerWorking = False
+		self.session.openWithCallback(self.closeLogout, MessageBox, (_('Opravdu se odhlásit z ČSFD?') + '\n' + _('Pro opětovné přihlášení to budete muset povolit v nastaveních.')+ '\n'), MessageBox.TYPE_YESNO)
+
+	def closeLogout(self, answer):
+		self.AntiFreezeTimerWorking = True
+		LogCSFD.WriteToFile('[CSFD] ScreenLogoutClose - zacatek\n')
+		if answer == True:
+			csfdAndroidClient.logout()
+			config.misc.CSFD.TokenCSFD.setValue('')
+			config.misc.CSFD.TokenCSFD.save()
+			config.misc.CSFD.LoginToCSFD.setValue(False)
+			config.misc.CSFD.LoginToCSFD.save()
+
+		LogCSFD.WriteToFile('[CSFD] ScreenLogoutClose - konec\n')
+		
 
 	def showScreenHelp(self):
 		LogCSFD.WriteToFile('[CSFD] ScreenHelpShow\n')

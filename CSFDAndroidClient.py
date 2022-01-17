@@ -152,6 +152,8 @@ class CSFDAndroidClient:
 			self.do_request( '/oauth/logout' )
 			self.oauth_token=None
 			self.oauth_token_secret=None
+			self.logged_user = None
+			self.logged_user_id = None
 			self.init_oauth_session()
 
 	# ######################################################################################
