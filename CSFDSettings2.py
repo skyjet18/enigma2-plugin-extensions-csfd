@@ -38,7 +38,6 @@ const_quick_page = 'komentare/strana-300/'
 
 std_media_header = {'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'}
 
-# MainUpdateUrl = 'http://downloads.tvplugins.cz/csfd/'
 MainUpdateUrl = 'https://raw.githubusercontent.com/skyjet18/enigma2-plugin-extensions-csfd/master/'
 MainUpdateUrlIpk = 'https://github.com/skyjet18/enigma2-plugin-extensions-csfd/releases/download/'
 

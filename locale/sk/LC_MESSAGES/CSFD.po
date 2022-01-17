@@ -1,23 +1,20 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: CSFD.cz - verze 12.50\n"
+"Project-Id-Version: enigma2-plugin-extension-csfd \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-05 17:30+0200\n"
-"PO-Revision-Date: 2018-05-05 17:31+0200\n"
-"Last-Translator: petrkl12 <petrkl12@tvplugins.cz>\n"
-"Language-Team: petrkl12@tvplugins.cz <petrkl12@tvplugins.cz>\n"
-"Language: sk_SK\n"
+"POT-Creation-Date: 2022-01-17 14:17+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
-"X-Poedit-Basepath: ../../..\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 2.0.6\n"
-"X-Poedit-SearchPath-0: .\n"
-
-msgid "   Hodnocení: "
-msgstr "   Hodnotenie: "
 
 msgid " - def.0 ms (0 až +60000=60s)"
 msgstr " - def.0 ms (0 až +60000=60s)"
@@ -40,26 +37,15 @@ msgstr " - def.30s (20 až 60s)"
 msgid " def.2 (0 až 4)"
 msgstr " def.2 (0 až 4)"
 
-msgid " do "
-msgstr " do "
-
 msgid " of "
 msgstr " z "
 
+#, python-format
 msgid "(Aktuální hodnocení: %s)"
 msgstr "(Aktuálne hodnotenie: %s)"
 
-msgid "(Re)Instalace byla provedena!"
-msgstr "(Re)Inštalácia bola vykonaná!"
-
 msgid "(prohlížeč stránek CSFD.cz na platformě Enigma2)"
 msgstr "(zobrazovač stránok CSFD.cz na platforme Enigma2)"
-
-msgid "(změnit typ zajímavostí můžete pomocí klávesy 2)"
-msgstr "(zmeniť typ zaujímavostí môžete pomocou klávesy 2)"
-
-msgid "(změnit třídění komentářů můžete pomocí klávesy 2)"
-msgstr "(zmeniť triedenie komentárov môžete pomocou klávesy 2)"
 
 msgid "-def.10 (02 až 50)*0,5s"
 msgstr "-def.10 (02 až 50)*0,5s"
@@ -79,6 +65,7 @@ msgstr "1920"
 msgid "720"
 msgstr "720"
 
+#, python-format
 msgid "Adresář pro stažení videa není dostupný: %s"
 msgstr "Adresár pre stiahnutie videa nie je dostupný: %s"
 
@@ -144,13 +131,11 @@ msgstr "Bez akcie"
 
 msgid ""
 "Byla aktivována ochrana proti \"zamrznutí\"!\n"
-"Tento stav mohl nastat z důvodu dlouhého stahování nebo došlo k nějaké chybě "
-"v programu\n"
+"Tento stav mohl nastat z důvodu dlouhého stahování nebo došlo k nějaké chybě v programu\n"
 "Zkuste zadat nebo vybrat z EPG pořad znovu"
 msgstr ""
 "Bola aktivovaná OCHRANA voči \"zamrznutie\"! \n"
-"Tento stav mohol nastať z dôvodu dlhého sťahovania alebo došlo k nejakej "
-"chybe v programe\n"
+"Tento stav mohol nastať z dôvodu dlhého sťahovania alebo došlo k nejakej chybe v programe\n"
 "Skúste zadať alebo vybrať z EPG reláciu znova"
 
 msgid "CSFD"
@@ -198,9 +183,6 @@ msgstr "CSFD.cz :"
 msgid "CSFD:"
 msgstr "CSFD:"
 
-msgid "CZ titulky"
-msgstr "CZ titulky"
-
 msgid "Cancel"
 msgstr "Zrušiť"
 
@@ -234,13 +216,6 @@ msgstr "Chcete teraz uskutočniť reštart GUI?"
 msgid "Chcete plugin přesto znovu stáhnout a nainstalovat?"
 msgstr "Chcete plugin napriek tomu znova stiahnuť a nainštalovať?"
 
-msgid ""
-"Chcete provést (re)instalaci potřebných knihoven (twisted-web, pyopenssl, "
-"zlib, curl) pro CSFD?"
-msgstr ""
-"Chcete spustiť (re)inštaláciu potrebných knižníc (twisted-web, pyopenssl, "
-"zlib, curl) pre CSFD?"
-
 msgid "Chcete přesto stáhnout a nainstalovat tuto starší verzi?"
 msgstr "Chcete napriek tomu stiahnuť a nainštalovať túto staršiu verziu?"
 
@@ -256,15 +231,18 @@ msgstr "Chyba - zamrznutie pluginu"
 msgid "Chyba při mazání hodnocení"
 msgstr "Chyba pri mazaní hodnotenia"
 
+#, python-format
 msgid "Chyba při stahování titulků: %s"
 msgstr "Chyba pri sťahovaní titulkov: %s"
 
+#, python-format
 msgid "Chyba při stahování videa: %s"
 msgstr "Chyba pri sťahovaní videa: %s"
 
 msgid "Chyba při ukládání hodnocení"
 msgstr "Chyba pri ukladaní hodnotenia"
 
+#, python-format
 msgid "Chyba streamování: %s"
 msgstr "Chyba streamovanie: %s"
 
@@ -346,6 +324,7 @@ msgstr "Galéria"
 msgid "Galerie pořadu"
 msgstr "Galéria relácie"
 
+#, python-format
 msgid "Galerie č.%s"
 msgstr "Galéria č.%s"
 
@@ -400,12 +379,8 @@ msgstr "IMDb:"
 msgid "Info z EPG: "
 msgstr "Info z EPG: "
 
-msgid ""
-"Informace o nové verzi není momentálně dostupná nebo došlo k síťové chybě "
-"(curl)"
-msgstr ""
-"Informácia o novej verzii nie je momentálne dostupná alebo došlo k sieťovej "
-"chybe (curl)"
+msgid "Informace o nové verzi není momentálně dostupná nebo došlo k síťové chybě (curl)"
+msgstr "Informácia o novej verzii nie je momentálne dostupná alebo došlo k sieťovej chybe (curl)"
 
 msgid "Informace o pluginu CSFD"
 msgstr "Informácie o pluginu CSFD"
@@ -413,14 +388,12 @@ msgstr "Informácie o pluginu CSFD"
 msgid "Informace o přehrávaném videu:"
 msgstr "Informácie o prehrávanom videu:"
 
+#, python-format
 msgid "Instalace skončila s kódem (%s)!"
 msgstr "Inštalácia skončila s kódom (%s)!"
 
 msgid "Instalaci nové verze provádět pomocí příkazu?"
 msgstr "Inštaláciu novej verzie vykonávať pomocou príkazu?"
-
-msgid "Jak dlouho nenačítat cache po net chybě"
-msgstr "Ako dlho nenačítať cache po net chybe"
 
 msgid "Jak dlouho se nepřihlašovat po chybě"
 msgstr "Ako dlho sa nepřihlašovat po chybe"
@@ -428,20 +401,8 @@ msgstr "Ako dlho sa nepřihlašovat po chybe"
 msgid "Jazyk pro menu"
 msgstr "Jazyk pre menu"
 
-msgid "Je dostupná nová verze CSFD pluginu %s na www.TVplugins.cz"
-msgstr "Je dostupná nová verzia CSFD pluginu %s na www.TVplugins.cz"
-
-msgid "Je funkční dekódování www stránek (zlib)"
-msgstr "Je funkčné dekódovanie www stránok (zlib)"
-
 msgid "Je funkční internet"
 msgstr "Je funkčný internet"
-
-msgid "Je funkční čtení stránek HTTPS"
-msgstr "Je funkčné čítanie stránok HTTPS"
-
-msgid "Je nainstalovaná knihovna OpenSSL"
-msgstr "Je nainštalovaná knižnica OpenSSL"
 
 msgid "Je povoleno přihlašování do CSFD v Nastaveních"
 msgstr "Je povolené prihlasovanie do CSFD v Nastaveniach"
@@ -455,14 +416,8 @@ msgstr "Je vyplnené užívateľské meno v Nastaveniach"
 msgid "Kamera: "
 msgstr "Kamera: "
 
-msgid "Kategorie:"
-msgstr "Kategórie:"
-
 msgid "Komentáře"
 msgstr "Komentáre"
-
-msgid "Komentáře uživatelů "
-msgstr "Komentáre užívateľov "
 
 msgid "Komentáře uživatelů třídit:"
 msgstr "Komentáre užívateľov triediť:"
@@ -475,9 +430,6 @@ msgstr "Kostýmy: "
 
 msgid "List of Storage Devices"
 msgstr "Zoznam zariadení pre ukladanie"
-
-msgid "Logovat TwistedWeb do <adr.>CSFDtwistedlog.txt ?"
-msgstr "Logovať TwistedWeb do <adr.>CSFDtwistedlog.txt ?"
 
 msgid "Logovat do <adr.>CSFDlog.txt ?"
 msgstr "Logovať do <adr.>CSFDlog.txt ?"
@@ -515,19 +467,14 @@ msgstr "Menu relácií"
 msgid "Metacritic:"
 msgstr "Metacritic:"
 
-msgid "Metoda stahování informací z CSFD?"
-msgstr "Metóda sťahovania informácií z CSFD?"
-
 msgid "Multi EPG"
 msgstr "Multi EPG"
 
 msgid "Máte nainstalovanou aktuální verzi pluginu!"
 msgstr "Máte nainštalovanú aktuálnu verziu pluginu!"
 
-msgid ""
-"Máte nainstalovanou novější verzi pluginu než je aktuálně online dostupná!"
-msgstr ""
-"Máte nainštalovanú novšiu verziu pluginu než je aktuálne online dostupná!"
+msgid "Máte nainstalovanou novější verzi pluginu než je aktuálně online dostupná!"
+msgstr "Máte nainštalovanú novšiu verziu pluginu než je aktuálne online dostupná!"
 
 msgid "Můžete hodnotit filmy na CSFD"
 msgstr "Môžete hodnotiť filmy na CSFD"
@@ -543,9 +490,6 @@ msgstr "Načítať ďalšie názvy z detailu koľkých filmov?"
 
 msgid "Načíst detail na základě skóre podobnosti?"
 msgstr "Načítať detail na základe skóre podobnosti?"
-
-msgid "Načíst seznam pořadů z CSFD pro daný kanál do cache?"
-msgstr "Načítať zoznam relácií z CSFD pre daný kanál do cache?"
 
 msgid "Načítat poster?"
 msgstr "Načítať poster?"
@@ -568,9 +512,6 @@ msgstr "Nie, ale prehrať video znovu"
 msgid "Nemůžu načíst název pořadu"
 msgstr "Nemôžem načítať názov relácie"
 
-msgid "Nenalezen token pro uložení hodnocení"
-msgstr "Nenájdený token pre uloženie hodnotenia"
-
 msgid "Nenalezena možnost pro smazaní"
 msgstr "Nenájdená možnosť pre zmazanie"
 
@@ -580,9 +521,6 @@ msgstr "Nenájdené video! Zastaviť prehrávanie?"
 msgid "Není funkční internet!"
 msgstr "Nie je funkčný internet!"
 
-msgid "Není nainstalován Twisted-Web plugin!"
-msgstr "Nie je nainštalovaný Twisted-Web plugin!"
-
 msgid "Nominován:"
 msgstr "Nominovaný:"
 
@@ -591,9 +529,6 @@ msgstr "Žiadne"
 
 msgid "Nová verze byla úspěšně nainstalována!"
 msgstr "Nová verzia bola úspešne nainštalovaná!"
-
-msgid "Nápady na zlepšení, připomínky a chyby"
-msgstr "Nápady na zlepšenie, pripomienky a chyby"
 
 msgid "Nápověda"
 msgstr "Nápoveda"
@@ -625,18 +560,6 @@ msgstr "Oddeľovač tisícov"
 msgid "Online update pluginu ..."
 msgstr "Online update pluginu ..."
 
-msgid "Oprava knihoven pluginu - KONEC"
-msgstr "Oprava knižníc pluginu - KONIEC"
-
-msgid "Oprava knihoven pluginu - ZAČÁTEK"
-msgstr "Oprava knižníc pluginu - ZAČIATOK"
-
-msgid "Oprava knihoven pluginu ..."
-msgstr "Oprava knižníc pluginu ..."
-
-msgid "Opravit/Reinstalovat potřebné knihovny"
-msgstr "Opraviť/Reinštalovať potrebné knižnice"
-
 msgid "Otestuje přihlášení do CSFD"
 msgstr "Otestuje prihlásenie do CSFD"
 
@@ -655,10 +578,8 @@ msgstr "Vyberte adresár"
 msgid "Parsing XML Feeds ..."
 msgstr "Analýza XML Feeds ..."
 
-msgid ""
-"Po některých změnách je nutné znovu spustit plugin nebo restartartovat GUI!"
-msgstr ""
-"Po niektorých zmenách je nutné znovu spustiť plugin alebo restartartovat GUI!"
+msgid "Po některých změnách je nutné znovu spustit plugin nebo restartartovat GUI!"
+msgstr "Po niektorých zmenách je nutné znovu spustiť plugin alebo restartartovat GUI!"
 
 msgid "Podobné pořady"
 msgstr "Podobné relácie"
@@ -708,6 +629,7 @@ msgstr "Poster"
 msgid "Poster slideshow včetně fotek z galerie v základu?"
 msgstr "Poster slideshow vrátane fotiek z galérie v základe?"
 
+#, python-format
 msgid "Poster č.%s"
 msgstr "Poster č.%s"
 
@@ -783,9 +705,6 @@ msgstr "Pri dlhom stlačení tlačidla INFO(EPG)"
 msgid "Při plné shodě ihned načíst detail?"
 msgstr "Pri plnej zhode ihneď načítať detail?"
 
-msgid "Při stahování nové verze pluginu došlo k chybě (TwistedWeb)"
-msgstr "Pri sťahovaní novej verzie pluginu došlo k chybe (TwistedWeb)"
-
 msgid "Při volání IMDB odstranit diakritiku?"
 msgstr "Pri volaní IMDB odstrániť diakritiku?"
 
@@ -827,9 +746,6 @@ msgstr "Rôzne"
 
 msgid "SD"
 msgstr "SD"
-
-msgid "SK titulky"
-msgstr "SK titulky"
 
 msgid "Save"
 msgstr "Uložiť"
@@ -885,17 +801,8 @@ msgstr "Spustiť video ukážku"
 msgid "Stahovaná verze:"
 msgstr "Sťahovaná verzia:"
 
-msgid "Stahování proběhlo úspěšně (TwistedWeb)"
-msgstr "Sťahovanie prebehlo úspešne (TwistedWeb)"
-
 msgid "Stahuji obal k filmu: "
 msgstr "Sťahujem obal k filmu: "
-
-msgid "Stahuji plugin "
-msgstr "Sťahujem plugin "
-
-msgid "Stahuji plugin přes Curl "
-msgstr "Sťahujem plugin cez Curl "
 
 msgid "Stažení a instalace nové verze pluginu - KONEC"
 msgstr "Stiahnutie a inštalácia novej verzie pluginu - KONIEC"
@@ -903,6 +810,7 @@ msgstr "Stiahnutie a inštalácia novej verzie pluginu - KONIEC"
 msgid "Stažení a instalace nové verze pluginu - ZAČÁTEK"
 msgstr "Stiahnutie a inštalácia novej verzie pluginu - ZAČIATOK"
 
+#, python-format
 msgid "Strana č.%s"
 msgstr "Strana č.%s"
 
@@ -942,9 +850,11 @@ msgstr "TV seriál"
 msgid "Tagy: "
 msgstr "Tagy: "
 
+#, python-format
 msgid "Tento box nemmůže dekódovat videostream: %s"
 msgstr "Tento box nemmůže dekódovať Videostream: %s"
 
+#, python-format
 msgid "Tento box nemůže dekódovat audiostream: %s"
 msgstr "Tento box nemôže dekódovať audiostream: %s"
 
@@ -978,9 +888,6 @@ msgstr "Tipy:"
 msgid "Titulky: "
 msgstr "Titulky: "
 
-msgid "TwistedWeb"
-msgstr "TwistedWeb"
-
 msgid "Třídit EPG podle CZ&SK abecedy?"
 msgstr "Triediť EPG podľa CZ & SK abecedy?"
 
@@ -998,9 +905,6 @@ msgstr "Uložiť video"
 
 msgid "Uloží nastavení"
 msgstr "Uloží nastavenie"
-
-msgid "Urllib2"
-msgstr "Urllib2"
 
 msgid "Uživatel: "
 msgstr "Užívateľ: "
@@ -1029,6 +933,7 @@ msgstr "Videá v relácii"
 msgid "Video - CSFD"
 msgstr "Video - CSFD"
 
+#, python-format
 msgid "Video bude staženo do : %s"
 msgstr "Video bude stiahnuté do: %s"
 
@@ -1041,6 +946,7 @@ msgstr "Video film"
 msgid "Video není bohužel dostupné!"
 msgstr "Video nie je bohužiaľ dostupné!"
 
+#, python-format
 msgid "Video č.%s"
 msgstr "Video č.%s"
 
@@ -1146,9 +1052,6 @@ msgstr "Zastaviť prehrávanie tohto videa?"
 
 msgid "Zjišťuji zalogovaného uživatele na CSFD"
 msgstr "Zisťujem zalogovaného užívateľa na CSFD"
-
-msgid "Zkouším funkčnost načítání www stránek"
-msgstr "Skúšam funkčnosť načítanie www stránok"
 
 msgid "Zkouším se zalogovat na stránky CSFD"
 msgstr "Skúšam sa zalogovať na stránky CSFD"
@@ -1390,9 +1293,6 @@ msgstr "posun na nasledujúcu stránku alebo položku"
 msgid "posun na předchozí stránku nebo položku"
 msgstr "posun na predchádzajúcu stránku alebo položku"
 
-msgid "posílejte na můj email. Díky."
-msgstr "posielajte na môj email. Vďaka."
-
 msgid "počet diskuzních příspěvků:"
 msgstr "počet diskusných príspevkov:"
 
@@ -1404,9 +1304,6 @@ msgstr "počet fanúšikov:"
 
 msgid "počet hodnocení:"
 msgstr "počet hodnotení:"
-
-msgid "počet komentářů:"
-msgstr "počet komentárov:"
 
 msgid "purple"
 msgstr "fialová"
@@ -1428,15 +1325,6 @@ msgstr "zoradiť podľa hodnotenia"
 
 msgid "seřadit podle počtu bodů uživatele"
 msgstr "zoradiť podľa počtu bodov užívateľa"
-
-msgid "seřazené od nejnovějších po nejstarší"
-msgstr "zoradené od najnovších po najstaršie"
-
-msgid "seřazené podle hodnocení"
-msgstr "zoradené podľa hodnotenia"
-
-msgid "seřazené podle počtu bodů uživatele"
-msgstr "zoradené podľa počtu bodov užívateľa"
 
 msgid "show subtitles menu"
 msgstr "zobraziť titulky"
@@ -1472,8 +1360,7 @@ msgid "v menu můžete provést manuální zadání hledaného pořadu"
 msgstr "v menu môžete uskutočniť manuálne zadanie hľadanej relácie"
 
 msgid "v menu můžete provést výběr hledaného pořadu z EPG aktuálního kanálu"
-msgstr ""
-"v menu môžete uskutočniť výber hľadanej relácie z EPG aktuálneho kanála"
+msgstr "v menu môžete uskutočniť výber hľadanej relácie z EPG aktuálneho kanála"
 
 msgid "v menu můžete provést výběr hledaného pořadu ze všech kanálů"
 msgstr "v menu môžete uskutočniť výber hľadanej relácii zo všetkých kanálov"
@@ -1493,11 +1380,8 @@ msgstr "v menu môžete spustiť aktuálnu video ukážku"
 msgid "v menu můžete uložit video ukázku do definovaného adresáře"
 msgstr "v menu môžete uložiť video ukážku do definovaného adresára"
 
-msgid ""
-"v menu můžete vyhledat aktuální pořad v mezinárodní filmové databázi IMDB"
-msgstr ""
-"v menu môžete vyhľadať aktuálnu reláciu v medzinárodnej filmovej databázi "
-"IMDB"
+msgid "v menu můžete vyhledat aktuální pořad v mezinárodní filmové databázi IMDB"
+msgstr "v menu môžete vyhľadať aktuálnu reláciu v medzinárodnej filmovej databázi IMDB"
 
 msgid "v menu můžete vyhledat všechny podobné názvy k danému pořadu"
 msgstr "v menu môžete vyhľadať všetky podobné názvy k danej relácii"
@@ -1691,9 +1575,6 @@ msgstr "Žiadne ďalšie externej recenzie v databáze."
 msgid "Žádné další hodnocení v databázi."
 msgstr "Žiadne ďalšie hodnotenie v databáze."
 
-msgid "Žádné další komentáře v databázi."
-msgstr "Žiadne ďalšie komentáre v databáze."
-
 msgid "Žádné další ocenění v databázi."
 msgstr "Žiadne ďalšie ocenenie v databáze."
 
@@ -1712,9 +1593,6 @@ msgstr "Žiadne externé recenzie v databáze."
 msgid "Žádné hodnocení v databázi."
 msgstr "Žiadne hodnotenie v databáze."
 
-msgid "Žádné komentáře v databázi."
-msgstr "Žiadne komentáre v databáze."
-
 msgid "Žádné premiéry v databázi."
 msgstr "Žiadne premiéry v databáze."
 
@@ -1732,3 +1610,46 @@ msgstr "žiadne hodnotenie"
 
 msgid "žádný"
 msgstr "žiaden"
+
+msgid "V kinech:"
+msgstr "V kinách"
+
+msgid "Na DVD:"
+msgstr "Na DVD"
+
+msgid "Na blu-ray:"
+msgstr "Na blu-ray"
+
+msgid "V televizi:"
+msgstr "V televízii"
+
+msgid "Odhlásit se z ČSFD"
+msgstr "Odhlásiť sa z ČSFD"
+
+msgid "Opravdu se odhlásit z ČSFD?"
+msgstr "Naozaj sa chcete odhlásiť z ČSFD?"
+
+msgid "Přihlášen jako:"
+msgstr "Prihlásený ako:"
+
+msgid "Hodnocení:"
+msgstr "Hodnotenie"
+
+msgid "Celkový počet komentářů:"
+msgstr "Celkový počet komentárov:"
+
+msgid "Zkouším funkčnost přihlášení"
+msgstr "Skúšam funkčnosť prihlásenia"
+
+msgid "Resetuju přihlašovací token - zkuste spustit tenhle test ješte jednou"
+msgstr "Resetujem prihlasovací token - skúste spustiť tento test ešte raz"
+
+msgid "Opětovné přihlášení budete muset povolit v nastaveních."
+msgstr "Opätovné prihlásenie budete musieť povoliť v nastaveniach."
+
+msgid "Pokračování ve vývoji od 12/2021 jako komunitní projekt"
+msgstr "Pokračovanie ve vývoji od 12/2021 ako komunitný projekt"
+
+#, python-format
+msgid "Je dostupná nová verze CSFD pluginu %s na githubu"
+msgstr "Je dostupná nová verzia CSFD pluginu %s na githube"

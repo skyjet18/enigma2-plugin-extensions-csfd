@@ -6240,7 +6240,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			txt += ' ..... OK\n'
 		else:
 			txt += ' ..... ERR\n'
-			txt += _('Resetuju přihlašovací token - zkuste spustit tento test ješte jednou') + '\n'
+			txt += _('Resetuju přihlašovací token - zkuste spustit tenhle test ješte jednou') + '\n'
 			csfdAndroidClient.logout()
 			config.misc.CSFD.TokenCSFD.setValue('')
 			config.misc.CSFD.TokenCSFD.save()
@@ -6476,7 +6476,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				LogCSFD.WriteToFile('[CSFD] ReadUpdateInformation - UpdateUrl %s\n' % Uni8(self.UpdateUrl), 10)
 				LogCSFD.WriteToFile('[CSFD] ReadUpdateInformation - UpdateFile %s\n' % Uni8(self.UpdateFile), 10)
 				if old_V < new_V:
-					self.session.openWithCallback(self.startPluginUpdateCallback, MessageBox, (_('Je dostupná nová verze CSFD pluginu %s na www.TVplugins.cz') + '\n(' + strUni(config.misc.CSFD.Version.getValue()) + ' --> ' + strUni(remoteversion) + ')\n' + strUni(popis) + '\n' + _('Chcete ji stáhnout a nainstalovat?')) % strUni(remoteversion), MessageBox.TYPE_YESNO)
+					self.session.openWithCallback(self.startPluginUpdateCallback, MessageBox, (_('Je dostupná nová verze CSFD pluginu %s na githubu') + '\n(' + strUni(config.misc.CSFD.Version.getValue()) + ' --> ' + strUni(remoteversion) + ')\n' + strUni(popis) + '\n' + _('Chcete ji stáhnout a nainstalovat?')) % strUni(remoteversion), MessageBox.TYPE_YESNO)
 				elif not self.automaticUpdate:
 					if old_V == new_V:
 						self.session.openWithCallback(self.startPluginUpdateCallback, MessageBox, _('Máte nainstalovanou aktuální verzi pluginu!') + '\n' + _('Chcete plugin přesto znovu stáhnout a nainstalovat?') + '\n(' + _('verze:') + ' ' + strUni(remoteversion) + ')', MessageBox.TYPE_YESNO, default=False)

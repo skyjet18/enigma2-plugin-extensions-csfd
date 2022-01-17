@@ -1,10 +1,12 @@
-#################################
-#        Plugin CSFD            #
-#        for Enigma2            #
-#   by petrkl12 (c) 2010-2018   #
-#       www.TVplugins.cz        #
-#       Version: 15.20          #
-#################################
+##############################################################
+#                        Plugin CSFD                         #
+#                        for Enigma2                         #
+#                 by petrkl12 (c) 2010-2018                  #
+#                      www.TVplugins.cz                      #
+#             from 12/2021 developed by community            #
+# https://github.com/skyjet18/enigma2-plugin-extensions-csfd #
+#                       Version: 15.20                       #
+##############################################################
 
-petrkl12@tvplugins.cz
-Plugin CSFD
+Original author: petrkl12@tvplugins.cz
+Current maintainer: 57456827+skyjet18@users.noreply.github.com
