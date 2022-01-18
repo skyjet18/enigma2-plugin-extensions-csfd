@@ -1,6 +1,17 @@
 HISTORIE  ZMĚN  V  PLUGINU  CSFD (autor: skyjet)
 $$$A¯
 $$$B_
+Verze xx.xx  -  xx.xx.2022
+$$$A¯
+- pridaná podpora behu pod python 3.x
+- knižnice pre oauth autorizáciu sú teraz priamo súčasťou pluginu
+- prechod na sťahovanie dát pomocou requests knižnice
+- pridaná možnosť prihlásenia a hodnotenia relácie
+- oprava zobrazovania obrázkov pre qviart prijímače (thx baron.bb)
+- oprava pádu ak film neobsahuje videá
+- obnovenie inštalácie IMDb emulácie ako vo verziách <=12.50
+- oprava chýb v ipk/deb balíkoch, textoch, prekladoch, prečistenie kódu, ...
+$$$B_
 Verze 15.20  -  11.01.2022
 $$$A¯
 - opravená zobrazovanie obrázkov ak film neobsahuje poster
