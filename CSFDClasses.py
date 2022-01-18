@@ -29,7 +29,8 @@ from .CSFDSettings2 import config
 from .CSFDMovieCache import TVMovieCache
 from .CSFDParser import GetCSFDNumberFromChannel, ParserTVCSFD, ParserOstCSFD
 from .CSFDSkinLoader import *
-import time, traceback
+import datetime, time, traceback
+from CSFDAndroidClient import csfdAndroidClient
 
 try:
 	from urllib.parse import urlencode
@@ -63,7 +64,6 @@ def GetMoviesForTVChannels(t_channName, t_typechannName=0, t_downlTimeout=3, t_i
 	def GetMovies(s_channName, s_typechannName=0, s_downlTimeout=3, s_ignoreNetErr=False):
 		channName = s_channName
 		typechannName = s_typechannName
-		downlTimeout = s_downlTimeout
 		ignoreNetErr = s_ignoreNetErr
 		LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies - zacatek\n', 20)
 		stations = ''
@@ -84,35 +84,37 @@ def GetMoviesForTVChannels(t_channName, t_typechannName=0, t_downlTimeout=3, t_i
 				page = ''
 				page_tomm = ''
 				page_yest = ''
-				cookies1 = CSFDGlobalVar.getCSFDCookies()
-				cookies_addvalues = {'tv_types': 'films%2Cseries%2Cothers', 'tv_stations': t_stations}
-				LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies - cookies_addvalues: ' + str(cookies_addvalues) + '\n', 20)
-				cookies1.update(cookies_addvalues)
-				cookies1 = cookies_addvalues
-				LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies - cookies: ' + str(cookies1) + '\n', 20)
-				chyba = False
+				LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies set station list\n', 20)
+				if csfdAndroidClient.is_logged():
+					ret = csfdAndroidClient.set_tv_stations(t_stations)
+					if 'http_error' in ret or 'internal_error' in ret:
+						LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies set station list - chyba - konec\n', 20)
+						chyba = True
+					else:
+						chyba = False
+				else:
+					LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies set station list - chyba - not logged in\n', 20)					
+					chyba = True
+				
+				today = datetime.date.today()
+				
 				general_chyba = chyba
 				if not chyba:
-					try:
-						raise NameError('#1 Ziskavanie TV tipov pre stanicu nie je podporovane')
-#						page = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=0', headers=std_tv_post_header_UL2, timeout=downlTimeout)
-					except:
-						page = ''
+					LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies today\n', 20)
+					page = csfdAndroidClient.get_tv_schedule( str(today) )
+					if 'http_error' in ret or 'internal_error' in ret:
+						page = {}
 						chyba = True
 						general_chyba = True
 						config.misc.CSFD.LastLanError.setValue(int(time.time()))
 						config.misc.CSFD.LastLanError.save()
-						err = traceback.format_exc()
 						LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies today - chyba - konec\n', 20)
-						LogCSFD.WriteToFile(err)
 
 				if not chyba:
-					try:
-						raise NameError('#2 Ziskavanie TV tipov pre stanicu nie je podporovane')
-					
-#						page_tomm = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=1', headers=std_tv_post_header_UL2, timeout=downlTimeout)
-					except:
-						page_tomm = ''
+					LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies tommorow\n', 20)
+					page_tomm = csfdAndroidClient.get_tv_schedule( str(today + datetime.timedelta(days=1)) )
+					if 'http_error' in ret or 'internal_error' in ret:
+						page_tomm = {}
 						chyba = True
 						general_chyba = True
 						config.misc.CSFD.LastLanError.setValue(int(time.time()))
@@ -122,11 +124,10 @@ def GetMoviesForTVChannels(t_channName, t_typechannName=0, t_downlTimeout=3, t_i
 						LogCSFD.WriteToFile(err)
 
 				if not chyba:
-					try:
-						raise NameError('#3 Ziskavanie TV tipov pre stanicu nie je podporovane')
-#						page_yest = requestCSFD(CSFDGlobalVar.getHTTP() + const_www_csfd + '/televize/?day=-1', headers=std_tv_post_header_UL2, timeout=downlTimeout)
-					except:
-						page_yest = ''
+					LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies yesterday\n', 20)
+					page_yest = csfdAndroidClient.get_tv_schedule( str(today + datetime.timedelta(days=-1)) )
+					if 'http_error' in ret or 'internal_error' in ret:
+						page_yest = {}
 						chyba = True
 						general_chyba = True
 						config.misc.CSFD.LastLanError.setValue(int(time.time()))
@@ -136,10 +137,14 @@ def GetMoviesForTVChannels(t_channName, t_typechannName=0, t_downlTimeout=3, t_i
 						LogCSFD.WriteToFile(err)
 
 				if not chyba:
-					page = page + page_tomm + page_yest
-					ParserTVCSFD.setHTML2utf8(page)
-					searchresults = ParserTVCSFD.parserListOfTVMovies(True)
-					ParserTVCSFD.setParserHTML('')
+					searchresults = []
+					ParserTVCSFD.setJson(page)
+					searchresults += ParserTVCSFD.parserListOfTVMovies(True)
+					ParserTVCSFD.setJson(page_tomm)
+					searchresults += ParserTVCSFD.parserListOfTVMovies(True)
+					ParserTVCSFD.setJson(page_yest)
+					searchresults += ParserTVCSFD.parserListOfTVMovies(True)
+
 					if len(searchresults) > 0:
 						TVMovieCache.addMovieToCache(t_stations, searchresults)
 					else:
@@ -659,7 +664,7 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list2.append(getConfigListEntry(_('Vyhledávat včetně diakritiky pro pořady z EPG?'), config.misc.CSFD.FindInclDiacrEPG))
 		self.list2.append(getConfigListEntry(_('Vyhledávat včetně diakritiky pro pořady z ostatních zdrojů?'), config.misc.CSFD.FindInclDiacrOth))
 		self.list2.append(getConfigListEntry(_('Načíst další názvy z detailu kolika filmů?') + _(' def.2 (0 až 4)'), config.misc.CSFD.NumberOfReadMovieNameFromDetail))
-#		self.list2.append(getConfigListEntry(_('Načíst seznam pořadů z CSFD pro daný kanál do cache?'), config.misc.CSFD.TVCache))
+		self.list2.append(getConfigListEntry(_('Načíst seznam pořadů z CSFD pro daný kanál do cache?'), config.misc.CSFD.TVCache))
 #		self.list2.append(getConfigListEntry(_('Jak dlouho nenačítat cache po net chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LanErrorWaiting))
 		self.list2.append(getConfigListEntry(_('Třídící algoritmus pro vyhledané položky?'), config.misc.CSFD.SortFindItems))
 		self.list2.append(getConfigListEntry(_('Zadávání znaků'), config.misc.CSFD.Input_Type))

@@ -351,6 +351,26 @@ class CSFDAndroidClient:
 	
 	def get_creator_movies( self, creator_id, offset=0, limit=10 ):
 		return self.creator_info_additional( creator_id, "films", offset, limit )
+
+	# ######################################################################################
+
+	def get_tv_stations( self ):
+		return self.do_request( 'tv/stations' )
+			
+	# ######################################################################################
+
+	def set_tv_stations( self, stations ):
+		if type(stations) == list:
+			data = ','.join(str(sid) for sid in stations)
+			data = quote_plus(data)
+		else:
+			data = stations
+		return self.do_request( 'tv/stations', data='stations=' + data )
+			
+	# ######################################################################################
+
+	def get_tv_schedule( self, day, offset=0, limit=20 ):
+		return self.do_request( 'tv/schedule/?limit=%d&offset=%d&date=%s' % (limit, offset, day) )
 	
 	# ######################################################################################
 	

@@ -35,39 +35,6 @@ correction_const03 = [('Letné kino na Dvojke: ', ''), ('FILM NA PŘÁNÍ: ', ''
 correction_const04 = ['The', 'Der', 'Die', 'Das', 'Le', 'La']
 correction_const05 = ['A', 'The', 'Der', 'Die', 'Das', 'Le', 'La']
 correction_const10 = [(',', ' '), (';', ' '), (':', ' '), ('-', ' '), ('"', ' '), ("'", ' '), ('(', ' '), (')', ' '), ('\\[', ' '), ('\\]', ' '), ('.', ' '), ('?', ' '), ('!', ' '), ('&', ' '), ('	  ', ' '), ('  ', ' ')]
-TV_stations_delete_const = [
-	' (Preladte)',
-	' Preladte',
-	' (Czech/Slovak)',
-	' Czech/Slovak',
-	' CZECH-SLOVAK',
-	' (Hungary/Czech)',
-	' Hungary/Czech',
-	' (International)',
-	' International',
-	' (Czechia)',
-	' Czechia',
-	' (Central Europe)',
-	' Central Europe',
-	' (Eastern Europe)',
-	' Eastern Europe',
-	' (Europe)',
-	' Europe',
-	' (Czech)',
-	' Czech',
-	' - Czech',
-	' CEE',
-	' INT',
-	' (CE)',
-	' CE',
-	' JM',
-	' SM',
-	' CZE',
-	' CZ',
-	' BG',
-	' | T2',
-	' +1'
-]
 
 typeOfMovie = [
 	('(video film)', _('Video film')),
@@ -83,150 +50,79 @@ typeOfMovie = [
 	('(epizoda)', _('Seriál - epizoda'))
 ]
 
-TV_stations_menu_const = [
-	('1', 'HBO'), ('1', 'HBO HD'),
-	('2', 'Nova'), ('2', 'Nova HD'), ('2', 'TV Nova'), ('2', 'TV Nova HD'), ('2', 'Nova TV'), ('2', 'Nova TV HD'),
-	('3', 'Prima'), ('3', 'Prima TV'), ('3', 'Prima TV HD'), ('3', 'Prima HD'), ('3', 'TV Prima'), ('3', 'TV Prima HD'), ('3', 'FTV Prima'), ('3', 'FTV Prima HD'),
-	('3', 'Prima Family'), ('3', 'Prima Family HD'),
-	('4', 'ČT1'), ('4', 'ČT 1'),
-	('4', 'ČT1 HD'), ('4', 'ČT 1 HD'), ('4', 'CT 1 HD new'), ('4', 'ČT HD'),
-	('5', 'ČT2'), ('5', 'ČT 2'),
-	('5', 'ČT2 HD'), ('5', 'ČT 2 HD'), ('5', 'CT 2 HD new'),
-	('6', 'Markíza'), ('6', 'Markíza HD'), ('6', 'TV Markíza'), ('6', 'TV Markíza HD'), ('6', 'Markíza TV'), ('6', 'Markíza TV HD'),
-	('6', 'Markíza'), ('6', 'Markíza HD'), ('6', 'TV Markíza'), ('6', 'TV Markíza HD'), ('6', 'Markíza TV'), ('6', 'Markíza TV HD'),
-	('7', 'JOJ'), ('7', 'JOJ HD'), ('7', 'TV JOJ'), ('7', 'TV JOJ HD'), ('7', 'JOJ TV'), ('7', 'JOJ TV HD'),
-	('8', 'HBO2'), ('8', 'HBO 2'), ('8', 'HBO2 HD'), ('8', 'HBO 2 HD'),
-	('9', 'Jednotka'), ('9', 'STV1'), ('9', 'STV 1'),
-	('9', 'JEDNOTKA HD'), ('9', 'STV1 HD'), ('9', 'STV 1 HD'), ('9', 'STV HD'),
-	('10', 'Dvojka'), ('10', 'STV2'), ('10', 'STV 2'),
-	('10', 'Dvojka HD'), ('10', 'STV2 HD'), ('10', 'STV 2 HD'),
-	('12', 'AXN'), ('12', 'AXN HD'), ('12', 'AXN CS'),
-	('13', 'Cinemax'), ('13', 'Cinemax 1'), ('13', 'Cinemax HD'), ('13', 'Cinemax 1 HD'),
-	('14', 'FilmBox'),
-	('15', 'Film+'), ('15', 'Film +'), ('15', 'FilmPlus'), ('15', 'Film Plus'), ('15', 'Minimax/FilmPlus'),
-	('16', 'CSfilm'), ('16', 'CS Film'), ('16', 'CS Mini/CS Film/Horor Film'), ('16', 'CS Film/CS Mini'), ('16', 'CSFilm/CSMini'),
-	('17', 'MGM'), ('17', 'MGM HD'),
-	('18', 'HBO Comedy'), ('18', 'HBO Comedy HD'),
-	('19', 'Nova Cinema'), ('19', 'Nova Cinema HD'),
-	('20', 'FilmBox Plus'), ('20', 'FilmBox+'),
-	('22', 'Cinemax2'), ('22', 'Cinemax 2'), ('22', 'Cinemax2 HD'), ('22', 'Cinemax 2 HD'),
-	('24', 'Barrandov'), ('24', 'TV Barrandov'), ('24', 'Barrandov HD'), ('24', 'TV Barrandov HD'),
-	('25', 'Plus'), ('25', 'Plus HD'), ('25', 'JOJ Plus'), ('25', 'JOJ Plus HD'),
-	('26', 'Prima Cool'), ('26', 'Prima Cool HD'),
-	('27', 'Doma'), ('27', 'Doma HD'), ('27', 'TV Doma'), ('27', 'TV Doma HD'), ('27', 'Doma TV'), ('27', 'Doma TV HD'),
-	('28', 'Universal Channel'), ('28', 'Universal'), ('28', 'UNI CZSK'),
-	('30', 'Disney Channel'),
-	('31', 'Kino CS'), ('31', 'KinoCS'),
-	('32', 'Doku CS'),
-	('33', 'Prima Love'), ('33', 'Prima Love HD'),
-	('34', 'Minimax'), ('34', 'Minimax/Animax'), ('34', 'Minimax / Animax'), ('34', 'Minimax/FilmPlus'),
-	('37', 'Discovery Channel'), ('37', 'Discovery Channel HD'), ('37', 'Discovery'), ('37', 'Discovery HD'),
-	('38', 'History Channel'), ('38', 'History Chnl'), ('38', 'History channel'), ('38', 'History'), ('38', 'History Channel HD'), ('38', 'History Chnl HD'), ('38', 'History channel HD'), ('38', 'History HD'),
-	('39', 'Spektrum'), ('39', 'Spektrum HD'),
-	('40', 'Animal Planet'), ('40', 'Animal Planet HD'),
-	('41', 'Filmbox Family'), ('41', 'FilmBox Family'),
-	('42', 'Viasat Nature'),
-	('43', 'Viasat Explorer'), ('43', 'Viasat Explorer / Spice'), ('43', 'Viasat Explorer/Spice'),
-	('44', 'Viasat History'),
-	('45', 'Viasat HD'),
-	('46', 'Film Europe Channel'),
-	('48', 'Fanda'), ('48', 'Fanda HD'), ('48', 'Fanda TV'), ('48', 'Fanda TV HD'),
-	('49', 'Animax'), ('49', 'Minimax/Animax'), ('49', 'Minimax / Animax'),
-	('50', 'Discovery Science'), ('50', 'Discovery Science Channel'),
-	('51', 'Discovery World'), ('51', 'Discovery World Channel'),
-	('52', 'JimJam'), ('52', 'Jim Jam'),
-	('53', 'Spektrum Home'),
-	('54', 'Dajto'), ('54', 'Dajto HD'), ('54', 'TV Dajto'), ('54', 'TV Dajto HD'),
-	('55', 'National Geographic'), ('55', 'Nat Geo'), ('55', 'NatGeo'),
-	('56', 'National Geographic Wild'), ('56', 'Nat Geo Wild'), ('56', 'NatGeo Wild'), ('56', 'National Geographic Wild HD'), ('56', 'Nat Geo Wild HD'), ('56', 'NatGeo Wild HD'),
-	('57', 'CBS Drama'),
-	('58', 'Smíchov'), ('58', 'Smíchov HD'),
-	('60', 'Prima Zoom'), ('60', 'Prima Zoom HD'),
-	('61', 'Telka'),
-	('63', 'Wau'), ('63', 'Wau HD'),
-	('64', 'ČT :D'), ('64', 'ČT:D'), ('64', 'CT:D / CT art'), ('64', 'CT:D/CT art'),
-	('65', 'ČT art'), ('65', 'ČTart'), ('65', 'CT:D / CT art'), ('65', 'CT:D/CT art'),
-	('66', 'AXN Black'),
-	('67', 'AXN White'),
-	('68', 'Megamax'),
-	('69', 'CBS Reality'),
-	('70', 'Horor Film'), ('70', 'CS Mini/CS Film/Horor Film'),
-	('71', 'National Geographic HD'), ('71', 'Nat Geo HD'), ('71', 'NatGeo HD'),
-	('72', 'Travel Channel'), ('72', 'Travel Channel HD'),
-	('73', 'Nickelodeon'), ('73', 'Nickelodeon HD'),
-	('74', 'MTV CZ'), ('74', 'MTV'),
-	('75', 'Filmbox Extra'), ('75', 'FilmBox Extra'),
-	('76', 'Kino Svět'),
-	('77', 'ID Xtra'),
-	('78', 'AMC'),
-	('79', 'Filmbox Premium'),
-	('80', 'RiK'), ('80', 'TV RiK'), ('80', 'RiK TV'),
-	('81', 'Relax-Pohoda'), ('81', 'RELAX Pohoda'), ('81', 'RELAX - Pohoda'),
-	('82', 'Rebel'),
-	('83', 'Kino Barrandov'), ('83', 'KinoBarrandov'),
-	('84', 'Barrandov Plus'), ('84', 'TV Barrandov Plus'), ('84', 'Barrandov Plus HD'), ('84', 'TV Barrandov Plus HD'), ('84', 'BARRANDOV PLUS TV'),
-	('85', 'Discovery HD Showcase'), ('85', 'Discovery Showcase HD'),
-	('86', 'JOJ Cinema'), ('86', 'JOJ Cinema HD'),
-	('87', 'FilmBox Extra HD'),
-	('88', 'Prima Max'),
-	('89', 'Comedy Central Extra'),
-	('90', 'Prima Comedy Central'), ('90', 'Prima Comedy'),
-	('91', 'Nova International'),
-	('92', 'Markíza International'),
-	('93', 'HBO3'),
-	('94', 'RTL'),
-	('95', 'Sat.1'),
-	('96', 'PRO7'),
-	('97', 'Kabel1'),
-	('98', 'RTL 2'),
-	('99', 'VOX'),
-	('100', 'RTL Nitro'),
-	('101', 'Super RTL'),
-	('102', 'TELE 5'),
-	('103', 'Sixx'),
-	('104', 'ProSieben MAXX'),
-	('105', 'ORF 1'),
-	('106', 'ORF 2'),
-	('107', 'Das Erste'),
-	('108', 'Discovery Turbo Xtra'),
-	('109', 'ZDF'),
-	('110', 'ZDF Neo'),
-	('111', 'TLC'),
-	('112', 'KiKa'),
-	('113', '3Sat'),
-	('114', 'E! Entertainment'),
-	('115', 'arte'),
-	('116', 'RTL plus'),
-	('117', 'JOJ Family'),
-	('118', 'Sat.1 Gold'), ('118', 'Sat1 Gold'), ('118', 'Sat 1 Gold'),
-	('119', 'Kabel Eins Doku'),
-	('120', 'Československo HD'), ('120', 'Ceskoslovensko HD'), ('120', 'Československo'), ('120', 'Ceskoslovensko'),
-	('121', 'Festival HD'),
-	('122', 'Barrandov Family'),
-	('123', 'Nova Action'),
-	('124', 'Nova Gold'),
-	('125', 'Nova 2'), ('125', 'Nova2'),
-	('126', 'Prima Plus')
-]
+try:
+	import unidecode
+	
+	def strip_accents(s):
+		return unidecode.unidecode(s)
+except:
+	import unicodedata
+	
+	def strip_accents(s):
+		return ''.join(c for c in unicodedata.normalize('NFD', s.decode('utf-8')) if unicodedata.category(c) != 'Mn')
 
+def channel_name_normalise( name ):
+	name = strip_accents( name ).lower()
+
+	name = name.replace("television", "tv")
+	name = name.replace("(bonus)", "").strip()
+	name = name.replace("eins", "1")
+	
+	if name.endswith(" hd"):
+		name = name[:name.rfind(" hd")]
+
+	if name.endswith(" tv"):
+		name = name[:name.rfind(" tv")]
+	
+	if name.startswith("tv "):
+		name = name[3:]
+
+	if name.endswith(" channel"):
+		name = name[:name.rfind(" channel")]
+
+	name = name.replace("&", " and ").replace("'", "").replace(".", "").replace(" ", "")
+	return name
+
+tv_stations = {}
+
+def load_tv_stations():
+	LogCSFD.WriteToFile('[CSFD] load_tv_stations - zacatek\n')
+	
+	if csfdAndroidClient.is_logged():
+		global tv_stations
+		
+		tv_stations = {}
+		stations = csfdAndroidClient.get_tv_stations()
+		if 'http_error' in stations or 'internal_error' in stations:
+			LogCSFD.WriteToFile('[CSFD] load_tv_stations - chyba\n')
+		else:
+			LogCSFD.WriteToFile('[CSFD] load_tv_stations - nacteno %d stanic\n' % len( stations['stations']))
+			
+			for station in stations['stations']:
+				tv_stations[ channel_name_normalise( station['name']) ] = str(station['id'])
+			
+	LogCSFD.WriteToFile('[CSFD] load_tv_stations - konec\n')
+	
 def GetCSFDNumberFromChannel(nameChannel=''):
+	LogCSFD.WriteToFile('[CSFD] GetCSFDNumberFromChannel - zacatek\n')
 	results = []
-	if isinstance(nameChannel, str):
-		nameChannel = unicode(nameChannel, 'utf-8')
-	nameChannel = nameChannel.strip()
-	for dodat in TV_stations_delete_const:
-		vv = -1 * len(dodat)
-		if nameChannel[vv:] == dodat:
-			nameChannel = nameChannel[:vv].strip()
+	global tv_stations
+	
+	if len(tv_stations) == 0:
+		load_tv_stations()
+	
+	name = channel_name_normalise( nameChannel )
+	LogCSFD.WriteToFile('[CSFD] GetCSFDNumberFromChannel - normalised name: %s\n' % name)
 
-	nameChannelP = char2Diacritic(nameChannel).upper()
-	for ch, name in TV_stations_menu_const:
-		if char2Diacritic(name).upper() == nameChannelP:
-			if ch not in results:
-				results.append(ch)
+	try:
+		results.append( tv_stations[name] )
+		LogCSFD.WriteToFile('[CSFD] GetCSFDNumberFromChannel - found\n')
+	except:
+		pass
 
+	LogCSFD.WriteToFile('[CSFD] GetCSFDNumberFromChannel - konec\n')
+	
 	return results
-
 
 def GetItemColourRateN(rate=-1):
 	if rate >= 70:
@@ -1575,8 +1471,19 @@ class CSFDParser():
 	
 	def parserListOfTVMovies(self, deleteDuplicity=False):
 		LogCSFD.WriteToFile('[CSFD] parserListOfTVMovies - zacatek\n')
-		# searchresults.append( (movie_id, movie_name, year, color_class) )
 		searchresults = []
+
+		for station in self.json_data["stations"]:
+			LogCSFD.WriteToFile('[CSFD] parserListOfTVMovies - parsing %s\n' % station['name'])
+			
+			for schedule in station['schedule']:
+				movie = schedule['film']
+				if movie['id'] != None:
+					c = movie['rating_category'] if movie['rating_category'] != None else "0"
+					year = movie['year'] if movie['year'] != None else ''
+					searchresults.append( ( '#movie#' + str(movie['id']), movie['name'], str(year), "c" + str(c) ) )
+
+		# searchresults.append( (movie_id, movie_name, year, color_class) )
 		LogCSFD.WriteToFile('[CSFD] parserListOfTVMovies - konec\n')
 		return searchresults
 

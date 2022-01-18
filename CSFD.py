@@ -3262,23 +3262,23 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					if pos >= 0:
 						self.eventMovieYears.append(yr)
 
-				if self.DVBchannel != '':
-					self.ChannelsCSFD = GetCSFDNumberFromChannel(self.DVBchannel)
-				else:
-					self.ChannelsCSFD = []
-				LogCSFD.WriteToFile('[CSFD] getCSFD - DVBchannel - ' + self.DVBchannel + '\n')
-				LogCSFD.WriteToFile('[CSFD] getCSFD - ChannelsCSFD - ' + (' ').join(x for x in self.ChannelsCSFD) + '\n')
-				self.eventNameSecond = ''
-				for channel in self.ChannelsCSFD:
-					if channel == '4' or channel == '5' or channel == '64' or channel == '65':
-						LogCSFD.WriteToFile('[CSFD] getCSFD - CT puvodni nazev - ' + self.eventName + '\n')
-						self.eventName, self.eventNameSecond = NameMovieCorrectionsForCTChannels(self.eventName)
-						sss = char2Allowchar(self.eventNameSecond).strip()
-						sss = NameMovieCorrections(sss)
-						self.eventNameSecond = sss
-						LogCSFD.WriteToFile('[CSFD] getCSFD - CT korekce nazvu - eventName: ' + self.eventName + '\n')
-						LogCSFD.WriteToFile('[CSFD] getCSFD - CT korekce nazvu - eventNameSecond: ' + self.eventNameSecond + '\n')
-						break
+			if self.DVBchannel != '':
+				self.ChannelsCSFD = GetCSFDNumberFromChannel(self.DVBchannel)
+			else:
+				self.ChannelsCSFD = []
+			LogCSFD.WriteToFile('[CSFD] getCSFD - DVBchannel - ' + self.DVBchannel + '\n')
+			LogCSFD.WriteToFile('[CSFD] getCSFD - ChannelsCSFD - ' + (' ').join(x for x in self.ChannelsCSFD) + '\n')
+			self.eventNameSecond = ''
+			for channel in self.ChannelsCSFD:
+				if channel == '4' or channel == '5' or channel == '64' or channel == '65':
+					LogCSFD.WriteToFile('[CSFD] getCSFD - CT puvodni nazev - ' + self.eventName + '\n')
+					self.eventName, self.eventNameSecond = NameMovieCorrectionsForCTChannels(self.eventName)
+					sss = char2Allowchar(self.eventNameSecond).strip()
+					sss = NameMovieCorrections(sss)
+					self.eventNameSecond = sss
+					LogCSFD.WriteToFile('[CSFD] getCSFD - CT korekce nazvu - eventName: ' + self.eventName + '\n')
+					LogCSFD.WriteToFile('[CSFD] getCSFD - CT korekce nazvu - eventNameSecond: ' + self.eventNameSecond + '\n')
+					break
 
 			sss = char2Allowchar(self.eventName).strip()
 			sss = NameMovieCorrections(sss)
@@ -3516,20 +3516,38 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					porovnejTexty = TextCompare
 					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TextCompare\n')
 					
-			if True:
-				zohlednitDiacr = False
-				if self.eventMovieSourceOfDataEPG == True and config.misc.CSFD.FindInclDiacrEPG.getValue():
-					zohlednitDiacr = True
-				if self.eventMovieSourceOfDataEPG == False and config.misc.CSFD.FindInclDiacrOth.getValue():
-					zohlednitDiacr = True
-				pp = ParserCSFD.parserGetRomanNumbers(vst_eventName_Corrected_Diacr)
+			zohlednitDiacr = False
+			if self.eventMovieSourceOfDataEPG == True and config.misc.CSFD.FindInclDiacrEPG.getValue():
+				zohlednitDiacr = True
+			if self.eventMovieSourceOfDataEPG == False and config.misc.CSFD.FindInclDiacrOth.getValue():
+				zohlednitDiacr = True
+			pp = ParserCSFD.parserGetRomanNumbers(vst_eventName_Corrected_Diacr)
+			pocet_pp = len(pp)
+			if pocet_pp > 0:
+				dodat = pp[(pocet_pp - 1)]
+				dodat1 = ' ' + dodat
+				vv = -1 * len(dodat1)
+				if vst_eventName_Corrected_WO_Diacr[vv:].upper() == dodat1:
+					if dodat == 'I':
+						vst_eventName_Corrected_Diacr = vst_eventName_Corrected_Diacr[:vv].strip()
+						vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr_WO_Roman[:vv].strip()
+						vst_eventName_Corrected_WO_Diacr = char2Diacritic(vst_eventName_Corrected_Diacr).upper()
+						vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr
+					else:
+						vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr[:vv].strip()
+						vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr[:vv].strip()
+					vst_eventName_Corrected_WO_Diacr_CorrNumber = vst_eventName_Corrected_WO_Diacr_WO_Roman + ' ' + fromRomanStr(dodat)
+					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - korekce1 ' + vst_eventName_Corrected_WO_Diacr_CorrNumber + '\n')
+					lastRoman = True
+			if not lastRoman:
+				pp = ParserCSFD.parserGetNumbers(vst_eventName_Corrected_Diacr)
 				pocet_pp = len(pp)
 				if pocet_pp > 0:
 					dodat = pp[(pocet_pp - 1)]
 					dodat1 = ' ' + dodat
 					vv = -1 * len(dodat1)
 					if vst_eventName_Corrected_WO_Diacr[vv:].upper() == dodat1:
-						if dodat == 'I':
+						if dodat == '1':
 							vst_eventName_Corrected_Diacr = vst_eventName_Corrected_Diacr[:vv].strip()
 							vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr_WO_Roman[:vv].strip()
 							vst_eventName_Corrected_WO_Diacr = char2Diacritic(vst_eventName_Corrected_Diacr).upper()
@@ -3537,42 +3555,33 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						else:
 							vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr[:vv].strip()
 							vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr[:vv].strip()
-						vst_eventName_Corrected_WO_Diacr_CorrNumber = vst_eventName_Corrected_WO_Diacr_WO_Roman + ' ' + fromRomanStr(dodat)
-						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - korekce1 ' + vst_eventName_Corrected_WO_Diacr_CorrNumber + '\n')
-						lastRoman = True
-				if not lastRoman:
-					pp = ParserCSFD.parserGetNumbers(vst_eventName_Corrected_Diacr)
+						vst_eventName_Corrected_WO_Diacr_CorrNumber = vst_eventName_Corrected_WO_Diacr_WO_Roman + ' ' + StrtoRoman(dodat)
+						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - korekce2 ' + vst_eventName_Corrected_WO_Diacr_CorrNumber + '\n')
+						lastNumber = True
+			LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - hledany film: ' + vst_eventName + '\n')
+			for x in searchresults:
+				res_Name_Orig = char2Allowchar(ParserCSFD.delHTMLtags(x[1]))
+				nameMovies = res_Name_Orig + '#$' + vst_eventName + '#$' + str(simpleSearch)
+				res_Name = NameMovieCorrections(res_Name_Orig)
+				res_Name_Corrected_Diacr = NameMovieCorrectionsForCompare(res_Name)
+				res_Name_Corrected_WO_Diacr = char2Diacritic(res_Name_Corrected_Diacr).upper()
+				res_Name_Corrected_Diacr_WO_Roman = res_Name_Corrected_Diacr
+				res_Name_Corrected_WO_Diacr_WO_Roman = res_Name_Corrected_WO_Diacr
+				if movieCSFDCache.AreMovieNamesInScoreCache(nameMovies):
+					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - nacteno z cache\n')
+					celkem_bodu, shoda100 = movieCSFDCache.getScoreForMovieNamesFromCache(nameMovies)
+				else:
+					pp = ParserCSFD.parserGetRomanNumbers(res_Name_Corrected_WO_Diacr)
 					pocet_pp = len(pp)
 					if pocet_pp > 0:
 						dodat = pp[(pocet_pp - 1)]
 						dodat1 = ' ' + dodat
 						vv = -1 * len(dodat1)
-						if vst_eventName_Corrected_WO_Diacr[vv:].upper() == dodat1:
-							if dodat == '1':
-								vst_eventName_Corrected_Diacr = vst_eventName_Corrected_Diacr[:vv].strip()
-								vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr_WO_Roman[:vv].strip()
-								vst_eventName_Corrected_WO_Diacr = char2Diacritic(vst_eventName_Corrected_Diacr).upper()
-								vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr
-							else:
-								vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr[:vv].strip()
-								vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr[:vv].strip()
-							vst_eventName_Corrected_WO_Diacr_CorrNumber = vst_eventName_Corrected_WO_Diacr_WO_Roman + ' ' + StrtoRoman(dodat)
-							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - korekce2 ' + vst_eventName_Corrected_WO_Diacr_CorrNumber + '\n')
-							lastNumber = True
-				LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - hledany film: ' + vst_eventName + '\n')
-				for x in searchresults:
-					res_Name_Orig = char2Allowchar(ParserCSFD.delHTMLtags(x[1]))
-					nameMovies = res_Name_Orig + '#$' + vst_eventName + '#$' + str(simpleSearch)
-					res_Name = NameMovieCorrections(res_Name_Orig)
-					res_Name_Corrected_Diacr = NameMovieCorrectionsForCompare(res_Name)
-					res_Name_Corrected_WO_Diacr = char2Diacritic(res_Name_Corrected_Diacr).upper()
-					res_Name_Corrected_Diacr_WO_Roman = res_Name_Corrected_Diacr
-					res_Name_Corrected_WO_Diacr_WO_Roman = res_Name_Corrected_WO_Diacr
-					if movieCSFDCache.AreMovieNamesInScoreCache(nameMovies):
-						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - nacteno z cache\n')
-						celkem_bodu, shoda100 = movieCSFDCache.getScoreForMovieNamesFromCache(nameMovies)
+						if res_Name_Corrected_WO_Diacr[vv:].upper() == dodat1:
+							res_Name_Corrected_WO_Diacr_WO_Roman = res_Name_Corrected_WO_Diacr[:vv].strip()
+							res_Name_Corrected_Diacr_WO_Roman = res_Name_Corrected_Diacr[:vv].strip()
 					else:
-						pp = ParserCSFD.parserGetRomanNumbers(res_Name_Corrected_WO_Diacr)
+						pp = ParserCSFD.parserGetNumbers(res_Name_Corrected_WO_Diacr)
 						pocet_pp = len(pp)
 						if pocet_pp > 0:
 							dodat = pp[(pocet_pp - 1)]
@@ -3581,81 +3590,71 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 							if res_Name_Corrected_WO_Diacr[vv:].upper() == dodat1:
 								res_Name_Corrected_WO_Diacr_WO_Roman = res_Name_Corrected_WO_Diacr[:vv].strip()
 								res_Name_Corrected_Diacr_WO_Roman = res_Name_Corrected_Diacr[:vv].strip()
-						else:
-							pp = ParserCSFD.parserGetNumbers(res_Name_Corrected_WO_Diacr)
-							pocet_pp = len(pp)
-							if pocet_pp > 0:
-								dodat = pp[(pocet_pp - 1)]
-								dodat1 = ' ' + dodat
-								vv = -1 * len(dodat1)
-								if res_Name_Corrected_WO_Diacr[vv:].upper() == dodat1:
-									res_Name_Corrected_WO_Diacr_WO_Roman = res_Name_Corrected_WO_Diacr[:vv].strip()
-									res_Name_Corrected_Diacr_WO_Roman = res_Name_Corrected_Diacr[:vv].strip()
-						podobnost_Name_Corrected_WO_Diacr_WO_Roman = porovnejTexty(res_Name_Corrected_WO_Diacr_WO_Roman, vst_eventName_Corrected_WO_Diacr_WO_Roman)
-						celkem_bodu = podobnost_Name_Corrected_WO_Diacr_WO_Roman
-						shoda100 = '0'
-						if podobnost_Name_Corrected_WO_Diacr_WO_Roman > const_shoda_100:
-							shoda100 = '1'
-							podobnost_Name_Corrected_WO_Diacr = porovnejTexty(res_Name_Corrected_WO_Diacr, vst_eventName_Corrected_WO_Diacr)
-							celkem_bodu += podobnost_Name_Corrected_WO_Diacr
-							if podobnost_Name_Corrected_WO_Diacr > const_shoda_100:
+					podobnost_Name_Corrected_WO_Diacr_WO_Roman = porovnejTexty(res_Name_Corrected_WO_Diacr_WO_Roman, vst_eventName_Corrected_WO_Diacr_WO_Roman)
+					celkem_bodu = podobnost_Name_Corrected_WO_Diacr_WO_Roman
+					shoda100 = '0'
+					if podobnost_Name_Corrected_WO_Diacr_WO_Roman > const_shoda_100:
+						shoda100 = '1'
+						podobnost_Name_Corrected_WO_Diacr = porovnejTexty(res_Name_Corrected_WO_Diacr, vst_eventName_Corrected_WO_Diacr)
+						celkem_bodu += podobnost_Name_Corrected_WO_Diacr
+						if podobnost_Name_Corrected_WO_Diacr > const_shoda_100:
+							shoda100 = '2'
+							if zohlednitDiacr:
+								podobnost_Name_Corrected_Diacr = porovnejTexty(res_Name_Corrected_Diacr, vst_eventName_Corrected_Diacr)
+								celkem_bodu += podobnost_Name_Corrected_Diacr
+								if podobnost_Name_Corrected_Diacr > const_shoda_100:
+									shoda100 = '3'
+									podobnost_Name = porovnejTexty(res_Name, vst_eventName)
+									celkem_bodu += podobnost_Name
+									if podobnost_Name > const_shoda_100:
+										shoda100 = '4'
+						elif lastNumber or lastRoman:
+							podobnost_Name_Corrected_WO_DiacrCorrNumber = porovnejTexty(res_Name_Corrected_WO_Diacr, vst_eventName_Corrected_WO_Diacr_CorrNumber)
+							if podobnost_Name_Corrected_WO_DiacrCorrNumber > const_shoda_100:
+								celkem_bodu += podobnost_Name_Corrected_WO_DiacrCorrNumber
 								shoda100 = '2'
-								if zohlednitDiacr:
-									podobnost_Name_Corrected_Diacr = porovnejTexty(res_Name_Corrected_Diacr, vst_eventName_Corrected_Diacr)
-									celkem_bodu += podobnost_Name_Corrected_Diacr
-									if podobnost_Name_Corrected_Diacr > const_shoda_100:
-										shoda100 = '3'
-										podobnost_Name = porovnejTexty(res_Name, vst_eventName)
-										celkem_bodu += podobnost_Name
-										if podobnost_Name > const_shoda_100:
-											shoda100 = '4'
-							elif lastNumber or lastRoman:
-								podobnost_Name_Corrected_WO_DiacrCorrNumber = porovnejTexty(res_Name_Corrected_WO_Diacr, vst_eventName_Corrected_WO_Diacr_CorrNumber)
-								if podobnost_Name_Corrected_WO_DiacrCorrNumber > const_shoda_100:
-									celkem_bodu += podobnost_Name_Corrected_WO_DiacrCorrNumber
-									shoda100 = '2'
-						if shoda100 == '1':
-							podobnost_Name_Corrected_Diacr_WO_Roman = porovnejTexty(res_Name_Corrected_Diacr_WO_Roman, vst_eventName_Corrected_Diacr_WO_Roman)
-							celkem_bodu += podobnost_Name_Corrected_Diacr_WO_Roman
-							if podobnost_Name_Corrected_Diacr_WO_Roman > const_shoda_100:
-								shoda100 = '2'
-						movieCSFDCache.addMovieNamesToScoreCache(nameMovies, celkem_bodu, shoda100)
-					if addTVscore and TVMovies is not None:
-						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - ano\n')
-						for movie in TVMovies:
-							if movie[0] == x[0]:
-								LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - x[0]: ' + x[0] + '\n')
-								LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - movie[0]: ' + movie[0] + '\n')
-								LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - shoda\n')
-								celkem_bodu += 1000
-								TV_shoda = True
-								if shoda100 == '0':
-									shoda100 = '1'
+					if shoda100 == '1':
+						podobnost_Name_Corrected_Diacr_WO_Roman = porovnejTexty(res_Name_Corrected_Diacr_WO_Roman, vst_eventName_Corrected_Diacr_WO_Roman)
+						celkem_bodu += podobnost_Name_Corrected_Diacr_WO_Roman
+						if podobnost_Name_Corrected_Diacr_WO_Roman > const_shoda_100:
+							shoda100 = '2'
+					movieCSFDCache.addMovieNamesToScoreCache(nameMovies, celkem_bodu, shoda100)
+				if addTVscore and TVMovies is not None:
+					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - ano\n')
+					for movie in TVMovies:
+						if movie[0] == x[0]:
+							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - x[0]: ' + x[0] + '\n')
+							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - movie[0]: ' + movie[0] + '\n')
+							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - shoda\n')
+							celkem_bodu += 1000
+							TV_shoda = True
+							if shoda100 == '0':
+								shoda100 = '1'
 
-					if addTVscore and TVMovies is not None and x[2] is not None:
-						y_body, y_shoda = self.CompareMovieYears(x[2])
-						if y_shoda:
-							shoda100 += '1'
-						else:
-							shoda100 += '0'
-						celkem_bodu += y_body
+				if addTVscore and TVMovies is not None and x[2] is not None:
+					y_body, y_shoda = self.CompareMovieYears(x[2])
+					if y_shoda:
+						shoda100 += '1'
 					else:
 						shoda100 += '0'
-					if celkem_bodu >= acceptance:
-						if not res_shoda and shoda100 > '01':
-							res_shoda = True
-						if x[2] is not None:
-							spoj = strUni(res_Name_Orig + ' ' + char2Allowchar(x[2]))
-						else:
-							spoj = strUni(res_Name_Orig)
-						if not self.SearchDuplicity(resultlist, spoj, x[0]):
-							if len(res_Name_Corrected_WO_Diacr) > 0:
-								res_Name_Corrected_WO_DiacrSort = char2DiacriticSort(res_Name)
-								if x[2] is not None:
-									resultlist.append((spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, celkem_bodu, y, shoda100, res_Name_Orig, x[3], x[2]))
-								else:
-									resultlist.append((spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, celkem_bodu, y, shoda100, res_Name_Orig, x[3], ''))
-								y += 1
+					celkem_bodu += y_body
+				else:
+					shoda100 += '0'
+				if celkem_bodu >= acceptance:
+					if not res_shoda and shoda100 > '01':
+						res_shoda = True
+					if x[2] is not None:
+						spoj = strUni(res_Name_Orig + ' ' + char2Allowchar(x[2]))
+					else:
+						spoj = strUni(res_Name_Orig)
+					if not self.SearchDuplicity(resultlist, spoj, x[0]):
+						if len(res_Name_Corrected_WO_Diacr) > 0:
+							res_Name_Corrected_WO_DiacrSort = char2DiacriticSort(res_Name)
+							if x[2] is not None:
+								resultlist.append((spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, celkem_bodu, y, shoda100, res_Name_Orig, x[3], x[2]))
+							else:
+								resultlist.append((spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, celkem_bodu, y, shoda100, res_Name_Orig, x[3], ''))
+							y += 1
 
 			LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - konec\n')
 			return (resultlist, res_shoda, TV_shoda)
