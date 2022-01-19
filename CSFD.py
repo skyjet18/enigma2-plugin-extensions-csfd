@@ -3407,6 +3407,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		shoda = False
 		if not config.misc.CSFD.CompareInclYear.getValue() or len(self.eventMovieYears) == 0:
 			return (percent, shoda)
+		
 		if len(year) == 6:
 			year = year[1:-1]
 			v_year = int(year)
@@ -3414,16 +3415,16 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			if len(year) == 4:
 				v_year = int(year)
 			else:
-				return (
-				 percent, shoda)
-			for yr in self.eventMovieYears:
-				m_year = int(yr)
-				if m_year == v_year:
-					shoda = True
-				if abs(m_year - v_year) < 6:
-					per = (200 - float(abs(m_year - v_year))) / 200 * 100
-					if per > percent:
-						percent = per
+				return (percent, shoda)
+				
+		for yr in self.eventMovieYears:
+			m_year = int(yr)
+			if m_year == v_year:
+				shoda = True
+			if abs(m_year - v_year) < 6:
+				per = (200 - float(abs(m_year - v_year))) / 200 * 100
+				if per > percent:
+					percent = per
 
 		percent = percent / len(self.eventMovieYears)
 		return (percent, shoda)
