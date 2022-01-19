@@ -133,7 +133,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self.selectedMenuRow = None
 		self.linkSpec = ''
 		self.LastDownloadedMovieUrl = ''
-		self.linkComment = config.misc.CSFD.Comment_Sort.getValue()
 		self.linkExtra = ''
 		self.PageSpec = 1
 		self.FunctionExists = []
@@ -817,54 +816,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		mainServiceMenu = mainServiceMenuNew
 		return mainServiceMenu
 
-	def getSortCommentMenuList(self):
-		ar = ' '
-		velx = self['servicemenu'].instance.size().width()
-		mainServiceMenu = []
-		mainServiceMenu.append((ar + _('podle počtu bodů uživatele'), 'sortCommentPoints'))
-		mainServiceMenu.append((ar + _('od nejnovějších po nejstarší'), 'sortCommentDate'))
-		mainServiceMenu.append((ar + _('podle hodnocení'), 'sortCommentRating'))
-		mainServiceMenu.append((ar + _('zpět'), 'zpet'))
-		mainServiceMenuNew = []
-		if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
-			h = int(config.misc.CSFD.FontHeight.getValue()) + 2
-		else:
-			h = int(config.misc.CSFD.FontHeightFullHD.getValue()) + 3
-		for x in mainServiceMenu:
-			pol0 = x[0]
-			pol1 = x[1]
-			res = [(pol0, pol1)]
-			res.append(MultiContentEntryText(pos=(0, 0), size=(velx, h), font=0, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER, backcolor=0, text=pol0))
-			mainServiceMenuNew.append(res)
-
-		mainServiceMenu = mainServiceMenuNew
-		return mainServiceMenu
-
-	def getInterestTypesMenuList(self):
-		ar = ' '
-		velx = self['servicemenu'].instance.size().width()
-		mainServiceMenu = []
-		results = ParserCSFD.parserInterestTypesAndNumbers()
-		if results is not None:
-			for x in results:
-				mainServiceMenu.append((ar + x[1] + ' ' + x[2], 'typeInterest', x[0], x[1], x[2]))
-
-		mainServiceMenu.append((ar + _('Zpět'), 'zpet', None, None, None))
-		mainServiceMenuNew = []
-		if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
-			h = int(config.misc.CSFD.FontHeight.getValue()) + 2
-		else:
-			h = int(config.misc.CSFD.FontHeightFullHD.getValue()) + 3
-		for x in mainServiceMenu:
-			res = [
-			 (
-			  x[0], x[1], x[2], x[3], x[4])]
-			res.append(MultiContentEntryText(pos=(0, 0), size=(velx, h), font=0, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER, backcolor=0, text=x[0]))
-			mainServiceMenuNew.append(res)
-
-		mainServiceMenu = mainServiceMenuNew
-		return mainServiceMenu
-
 	def RunKey(self, akce, extraParams=None):
 		LogCSFD.WriteToFile('[CSFD] RunKey - zacatek\n')
 		if self.PosterSlideShowTimer.isActive():
@@ -1030,31 +981,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] RunKey - Nova verze - zacatek\n')
 			self.showNewVersion()
 			LogCSFD.WriteToFile('[CSFD] RunKey - Nova verze - konec\n')
-		elif akce == 'sortCommentPoints':
-			LogCSFD.WriteToFile('[CSFD] RunKey - Komentare - Trideni podle bodu - zacatek\n')
-			self.linkComment = ''
-			self.KeyKomentare()
-			LogCSFD.WriteToFile('[CSFD] RunKey - Komentare - Trideni podle bodu - konec\n')
-		elif akce == 'sortCommentDate':
-			LogCSFD.WriteToFile('[CSFD] RunKey - Komentare - Trideni podle data - zacatek\n')
-			self.linkComment = 'podle-datetime/'
-			self.KeyKomentare()
-			LogCSFD.WriteToFile('[CSFD] RunKey - Komentare - Trideni podle data - konec\n')
-		elif akce == 'sortCommentRating':
-			LogCSFD.WriteToFile('[CSFD] RunKey - Komentare - Trideni podle hodnoceni - zacatek\n')
-			self.linkComment = 'podle-rating/'
-			self.KeyKomentare()
-			LogCSFD.WriteToFile('[CSFD] RunKey - Komentare - Trideni podle hodnoceni - konec\n')
-		elif akce == 'typeInterest':
-			LogCSFD.WriteToFile('[CSFD] RunKey - Zajimavosti - Vyber typu zajimavosti - zacatek\n')
-			if self.Page > 0 and self.stahnutoCSFD2 != '' and extraParams is not None:
-				sss = extraParams[2].split('?')
-				if len(sss) > 1:
-					self.linkExtra = '?' + str(sss[1])
-				else:
-					self.linkExtra = ''
-				self.KeyZajimavosti()
-			LogCSFD.WriteToFile('[CSFD] RunKey - Zajimavosti - Vyber typu zajimavosti - konec\n')
 		LogCSFD.WriteToFile('[CSFD] RunKey - konec\n')
 		return
 
@@ -1143,10 +1069,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self['servicemenuTop'].show()
 				if typ == '0':
 					self['servicemenu'].setList(self.getServiceMenuList())
-				elif typ == '1':
-					self['servicemenu'].setList(self.getSortCommentMenuList())
-				elif typ == '2':
-					self['servicemenu'].setList(self.getInterestTypesMenuList())
 				else:
 					self['servicemenu'].setList(self.getServiceMenuList())
 				self['servicemenu'].moveToIndex(0)
@@ -3116,7 +3038,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self.Detail100Exit = False
 		self.PageSpec = 1
 		self.FunctionExists = []
-		self.linkComment = config.misc.CSFD.Comment_Sort.getValue()
+		self.linkComment = ''
 		self.linkExtra = ''
 		self.querySpecAkce = 'UserComments'
 		self.AntiFreezeTimerWorking = True
@@ -4699,27 +4621,16 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 		if Extratext == '':
 			if self.PageSpec > 1:
-				Extratext = '\n' + _('Žádné další zajímavosti pro tento typ.')
+				Extratext = '\n' + _('Žádné další zajímavosti v databázi.')
 			else:
 				Extratext = '\n' + _('Žádné zajímavosti v databázi.')
-		urlInt, nameInt, pocInt_s = ParserCSFD.parserInterestSelectedTypeAndNumber()
-		try:
-			pocInt = int(pocInt_s)
-		except ValueError:
-			pocInt = 0
-			LogCSFD.WriteToFile('[CSFD] CSFDParseUserInteresting - chyba - int\n')
 
 		Extradopln = _('Zajímavosti ')
 		pocet = ParserCSFD.parserInterestNumber()
 		if pocet is not None:
 			Extradopln += '(' + _('celkový počet zajímavostí:') + ' ' + intWithSeparator(pocet) + ')'
-			if urlInt is not None:
-				Extradopln += '	 -	' + _('typ') + ' ' + nameInt + ' (' + intWithSeparator(pocInt) + ')'
-			Extradopln += '\n'
-		else:
-			Extradopln += ':\n'
-#		Extradopln += _('(změnit typ zajímavostí můžete pomocí klávesy 2)') + '\n\n'
-		Extradopln += '\n'
+
+		Extradopln += '\n\n'
 		textFree = self['extralabel'].AddRowIntoText(Extradopln, '')
 		self['extralabel'].setTextHead(Extradopln)
 		Extratext = textFree + Extratext

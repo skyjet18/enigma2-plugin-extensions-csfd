@@ -134,7 +134,7 @@ config.misc.CSFD.ShowInEPGList = ConfigYesNo(default=True)
 config.misc.CSFD.ShowInEPGListBlueButton = ConfigYesNo(default=False)
 config.misc.CSFD.ShowInEPGDetail = ConfigYesNo(default=True)
 config.misc.CSFD.ShowInMovieSelection = ConfigYesNo(default=True)
-config.misc.CSFD.ShowSimpleInfo = ConfigYesNo(default=True)
+config.misc.CSFD.ShowSimpleInfo = ConfigYesNo(default=False)
 config.misc.CSFD.CSFDreplaceIMDB = ConfigYesNo(default=True)
 config.misc.CSFD.SortEPG_CZ_SK = ConfigYesNo(default=True)
 config.misc.CSFD.PriorityInMenu = ConfigInteger(default=50, limits=(0, 200))
@@ -263,7 +263,6 @@ def ResetParams():
 	config.misc.CSFD.Default_Sort.saved_value = None
 	config.misc.CSFD.Input_Type.saved_value = None
 	config.misc.CSFD.Design.saved_value = None
-	config.misc.CSFD.Comment_Sort.saved_value = None
 	config.misc.CSFD.FontHeight.saved_value = None
 	config.misc.CSFD.FontHeightFullHD.saved_value = None
 	config.misc.CSFD.ThousandsSeparator.saved_value = None
@@ -368,7 +367,6 @@ def ResetParams():
 	config.misc.CSFD.Default_Sort.load()
 	config.misc.CSFD.Input_Type.load()
 	config.misc.CSFD.Design.load()
-	config.misc.CSFD.Comment_Sort.load()
 	config.misc.CSFD.FontHeight.load()
 	config.misc.CSFD.FontHeightFullHD.load()
 	config.misc.CSFD.ThousandsSeparator.load()
@@ -412,7 +410,6 @@ def InitParamsLangImpact():
 	config.misc.CSFD.Default_Sort = ConfigSelection(choices=[('0', _('vhodnosti názvu')), ('1', _('CSFD.cz')), ('2', _('data vydání')), ('3', _('abecedy'))], default='0')
 	config.misc.CSFD.Input_Type = ConfigSelection(choices=[('0', _('pomocí virtuální klávesnice')), ('1', _('výběrem znaků opakovaným stiskem klávesy'))], default='0')
 	config.misc.CSFD.Design = ConfigSelection(choices=[('0', _('barva textu dle hodnocení')), ('1', _('barvy stejné bez ohledu na hodnocení')), ('2', _('barvy stejné + zvýraznění kategorií'))], default='0')
-	config.misc.CSFD.Comment_Sort = ConfigSelection(choices=[('', _('seřadit podle počtu bodů uživatele')), ('podle-datetime/', _('seřadit od nejnovějších po nejstarší')), ('podle-rating/', _('seřadit podle hodnocení'))], default='')
 	config.misc.CSFD.FontHeight = ConfigSelection(choices=[('16', '16'), ('17', '17'), ('18', '18'), ('19', '19'), ('20', '20'), ('21', '21'), ('22', '22'), ('23', '23'), ('24', '24'), ('25', '25'), ('26', '26'), ('27', '27'), ('28', '28'), ('29', '29'), ('30', '30'), ('31', '31'), ('32', '32'), ('33', '33'), ('34', '34'), ('35', '35'), ('36', '36'), ('37', '37')], default='22')
 	config.misc.CSFD.FontHeightFullHD = ConfigSelection(choices=[('24', '24'), ('25', '25'), ('26', '26'), ('27', '27'), ('28', '28'), ('29', '29'), ('30', '30'), ('31', '31'), ('32', '32'), ('33', '33'), ('34', '34'), ('35', '35'), ('36', '36'), ('37', '37'), ('38', '38'), ('39', '39'), ('40', '40'), ('41', '41'), ('42', '42'), ('43', '43'), ('44', '44'), ('45', '45'), ('46', '46'), ('47', '47'), ('48', '48'), ('49', '49'), ('50', '50'), ('51', '51'), ('52', '52'), ('53', '53'), ('54', '54'), ('55', '55'), ('56', '56')], default='28')
 	config.misc.CSFD.ThousandsSeparator = ConfigSelection(choices=[('', _('žádný')), (' ', _('mezera')), ('.', _('tečka')), (',', _('čárka'))], default=' ')

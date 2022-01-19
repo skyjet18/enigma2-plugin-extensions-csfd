@@ -425,7 +425,7 @@ class CSFDAndroidClient:
 
 csfdAndroidClient = None
 
-def CreateCSFDAndroidClient( ignore_checks=False ):
+def CreateCSFDAndroidClient( ignore_checks=False, try_new_login=True ):
 	LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - zacatek\n', 1)
 
 	global csfdAndroidClient
@@ -478,6 +478,24 @@ def CreateCSFDAndroidClient( ignore_checks=False ):
 	else:
 		# create authorized session using login_token
 		csfdAndroidClient = CSFDAndroidClient(login_token)
+		
+		try:
+			# check if login token is ok
+			csfdAndroidClient.get_user_identity()
+		except:
+			# clean old login token
+			config.misc.CSFD.TokenCSFD.setValue('')
+			config.misc.CSFD.TokenCSFD.save()
+			
+			# create anonymous session
+			csfdAndroidClient = CSFDAndroidClient()
+
+			# try new login
+			if try_new_login:
+				CreateCSFDAndroidClient(True, False)
+			else:
+				LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - login failed\n', 1)
+		
 		LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - mam prihlasovaci token\n', 1)
 
 	LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - konec\n', 1)

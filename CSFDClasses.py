@@ -30,7 +30,7 @@ from .CSFDMovieCache import TVMovieCache
 from .CSFDParser import GetCSFDNumberFromChannel, ParserTVCSFD, ParserOstCSFD
 from .CSFDSkinLoader import *
 import datetime, time, traceback
-from CSFDAndroidClient import csfdAndroidClient
+from .CSFDAndroidClient import csfdAndroidClient
 
 try:
 	from urllib.parse import urlencode
@@ -473,8 +473,8 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 					 self.keyNext, _('Přepne na další záložku')), 
 		   'keyYellow': (
 					   self.keyYellow, _('Otestuje přihlášení do CSFD')), 
-		   'keyInfo': (
-					 self.keyInfo, _('Pokusí se opravit/doinstalovat potřebné moduly')), 
+#		   'keyInfo': (
+#					 self.keyInfo, _('Pokusí se opravit/doinstalovat potřebné moduly')), 
 		   'tabPrev': (
 					 self.keyPrevious, _('Přepne na předchozí záložku')), 
 		   'tabNext': (
@@ -488,7 +488,7 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self['info_icon'] = Pixmap()
 		self['info_epg'] = Pixmap()
 		if True:
-			# hide info buttot - was used befor for PluginRepair
+			# hide info button - was used befor for PluginRepair
 			self['key_info'] = Button('')
 			self['info_icon'].hide()
 			self['info_epg'].hide()
@@ -603,7 +603,6 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list0.append(getConfigListEntry(_('Zobrazit CSFD v EPG detailu?'), config.misc.CSFD.ShowInEPGDetail))
 		self.list0.append(getConfigListEntry(_('Zobrazit CSFD v openATV/VIX imagích?'), config.misc.CSFD.ShowInATV))
 		self.list0.append(getConfigListEntry(_('Zobrazit CSFD ve výběru nahraných pořadů?'), config.misc.CSFD.ShowInMovieSelection))
-		self.list0.append(getConfigListEntry(_('Zobrazit CSFD informace při změně pořadu?'), config.misc.CSFD.ShowSimpleInfo))
 		self.list0.append(getConfigListEntry(_('Akce pro klávesu 4'), config.misc.CSFD.HotKey4))
 		self.list0.append(getConfigListEntry(_('Akce pro klávesu 5'), config.misc.CSFD.HotKey5))
 		self.list0.append(getConfigListEntry(_('Akce pro klávesu 6'), config.misc.CSFD.HotKey6))
@@ -665,7 +664,8 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list2.append(getConfigListEntry(_('Vyhledávat včetně diakritiky pro pořady z ostatních zdrojů?'), config.misc.CSFD.FindInclDiacrOth))
 		self.list2.append(getConfigListEntry(_('Načíst další názvy z detailu kolika filmů?') + _(' def.2 (0 až 4)'), config.misc.CSFD.NumberOfReadMovieNameFromDetail))
 		self.list2.append(getConfigListEntry(_('Načíst seznam pořadů z CSFD pro daný kanál do cache?'), config.misc.CSFD.TVCache))
-#		self.list2.append(getConfigListEntry(_('Jak dlouho nenačítat cache po net chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LanErrorWaiting))
+		self.list2.append(getConfigListEntry(_('Automaticky načíst seznam pořadů z CSFD při přepínání?'), config.misc.CSFD.ShowSimpleInfo))
+		self.list2.append(getConfigListEntry(_('Jak dlouho nenačítat cache po net chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LanErrorWaiting))
 		self.list2.append(getConfigListEntry(_('Třídící algoritmus pro vyhledané položky?'), config.misc.CSFD.SortFindItems))
 		self.list2.append(getConfigListEntry(_('Zadávání znaků'), config.misc.CSFD.Input_Type))
 		self.list2.append(getConfigListEntry(_('Při zadávání předvyplnit poslední hledaný pořad?'), config.misc.CSFD.SaveSearch))
@@ -676,7 +676,6 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list2.append(getConfigListEntry(_('Instalaci nové verze provádět pomocí příkazu?'), config.misc.CSFD.InstallCommand))
 		self.list2.append(getConfigListEntry(_('Zachovat zpětnou kompatibilitu volání CSFD?'), config.misc.CSFD.BackCSFDCompatibility))
 		self.list2.append(getConfigListEntry(_('Jazyk pro menu'), config.misc.CSFD.Language))
-		self.list2.append(getConfigListEntry(_('Komentáře'), config.misc.CSFD.Comment_Sort))
 		self.list2.append(getConfigListEntry(_('Priorita pluginu v menu') + _(' - def.100 (000 až 200)'), config.misc.CSFD.PriorityInMenu))
 		self.list2.append(getConfigListEntry(_('Posun u titulků + v ms') + _(' - def.0 ms (0 až +60000=60s)'), config.misc.CSFD.PlayerSubtDelayPlus))
 		self.list2.append(getConfigListEntry(_('Posun u titulků - v ms') + _(' - def.0 ms (0 až -60000=60s)'), config.misc.CSFD.PlayerSubtDelayMinus))

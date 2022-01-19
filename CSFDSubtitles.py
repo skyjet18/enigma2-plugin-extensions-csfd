@@ -542,7 +542,7 @@ class SubsScreen(Screen):
 		else:
 			self.skinName = 'CSFDSubtitleDisplay__'
 		self.stand_alone = True
-		LogCSFD.WriteToFile('initializing subtitle display')
+		LogCSFD.WriteToFile('initializing subtitle display\n')
 		self['subtitles'] = Label('')
 		self['delay'] = Label('')
 

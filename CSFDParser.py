@@ -36,19 +36,19 @@ correction_const04 = ['The', 'Der', 'Die', 'Das', 'Le', 'La']
 correction_const05 = ['A', 'The', 'Der', 'Die', 'Das', 'Le', 'La']
 correction_const10 = [(',', ' '), (';', ' '), (':', ' '), ('-', ' '), ('"', ' '), ("'", ' '), ('(', ' '), (')', ' '), ('\\[', ' '), ('\\]', ' '), ('.', ' '), ('?', ' '), ('!', ' '), ('&', ' '), ('	  ', ' '), ('  ', ' ')]
 
-typeOfMovie = [
-	('(video film)', _('Video film')),
-	('(TV film)', _('TV film')),
-	('(TV seriál)', _('TV seriál')),
-	('(TV pořad)', _('TV pořad')),
-	('(divadelní záznam)', _('Divadelní záznam')),
-	('(koncert)', _('Koncert')),
-	('(studentský film)', _('Studentský film')),
-	('(amatérský film)', _('Amatérský film')),
-	('(hudební videoklip)', _('Hudební videoklip')),
-	('(série)', _('Seriál - série')),
-	('(epizoda)', _('Seriál - epizoda'))
-]
+typeOfMovie = {
+	'video film': _('Video film'),
+	'film': _('TV film'),
+	'seriál': _('TV seriál'),
+	'pořad': _('TV pořad'),
+	'divadelní záznam': _('Divadelní záznam'),
+	'koncert': _('Koncert'),
+	'studentský film': _('Studentský film'),
+	'amatérský film': _('Amatérský film'),
+	'hudební videoklip': _('Hudební videoklip'),
+	'série': _('Seriál - série'),
+	'epizoda': _('Seriál - epizoda')
+}
 
 try:
 	import unidecode
@@ -59,7 +59,12 @@ except:
 	import unicodedata
 	
 	def strip_accents(s):
-		return ''.join(c for c in unicodedata.normalize('NFD', s.decode('utf-8')) if unicodedata.category(c) != 'Mn')
+		try:
+			# py2
+			s = s.decode('utf-8')
+		except:
+			pass
+		return ''.join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
 
 def channel_name_normalise( name ):
 	name = strip_accents( name ).lower()
@@ -641,7 +646,14 @@ class CSFDParser():
 		movie_info = self.json_data["info"]
 		
 		try:	
-			typeMovie = movie_info["type"] + ' '
+			typeMovie = movie_info["type"]
+			
+			try:
+				typeMovie = typeOfMovie[typeMovie]
+			except:
+				pass
+			
+			typeMovie += ' '
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserTypeOfMovie - Failed\n')
 			typeMovie = ''
@@ -1203,24 +1215,6 @@ class CSFDParser():
 
 		LogCSFD.WriteToFile('[CSFD] parserInterest - konec\n')
 		return searchresults
-
-		LogCSFD.WriteToFile('[CSFD] parserInterestTypesAndNumbers - konec\n')
-		return searchresults
-
-	def parserInterestTypesAndNumbers(self):
-		LogCSFD.WriteToFile('[CSFD] parserInterestTypesAndNumbers - zacatek\n')
-		# searchresults.append( (url, name, count) )
-		searchresults = None
-		LogCSFD.WriteToFile('[CSFD] parserInterestTypesAndNumbers - konec\n')
-		return searchresults
-
-	def parserInterestSelectedTypeAndNumber(self):
-		LogCSFD.WriteToFile('[CSFD] parserInterestSelectedTypeAndNumber - zacatek\n')
-		url = None
-		name = ''
-		number = ''
-		LogCSFD.WriteToFile('[CSFD] parserInterestSelectedTypeAndNumber - konec\n')
-		return (url, name, number)
 
 	def parserInterestNumber(self):
 		LogCSFD.WriteToFile('[CSFD] parserInterestNumber - zacatek\n')
