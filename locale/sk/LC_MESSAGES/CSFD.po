@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enigma2-plugin-extension-csfd \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-17 14:17+0100\n"
+"POT-Creation-Date: 2022-01-20 13:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -584,9 +584,6 @@ msgstr "Po niektorých zmenách je nutné znovu spustiť plugin alebo restartart
 msgid "Podobné pořady"
 msgstr "Podobné relácie"
 
-msgid "Pokusí se opravit/doinstalovat potřebné moduly"
-msgstr "Pokúsi sa opraviť/doinštalovať potrebné moduly"
-
 msgid "Položka 01 pro rotaci v BOUQUETech"
 msgstr "Položka 01 pre rotáciu v BOUQUETech"
 
@@ -1092,9 +1089,6 @@ msgstr "Zobrazené súvisiace relácie"
 msgid "Zobrazeny řady seriálu"
 msgstr "Zobrazené série seriálu"
 
-msgid "Zobrazit CSFD informace při změně pořadu?"
-msgstr "Zobraziť CSFD informácie pri zmene programu?"
-
 msgid "Zobrazit CSFD v EPG SubMenu v PLI?"
 msgstr "Zobraziť CSFD v EPG SubMenu v PLI?"
 
@@ -1269,17 +1263,8 @@ msgstr "môžete zotrieďiť komentáre podľa hodnotenia užívateľov"
 msgid "můžete setřídit komentáře podle počtu bodů uživatele"
 msgstr "môžete zotrieďiť podľa počtu bodov užívateľa"
 
-msgid "od nejnovějších po nejstarší"
-msgstr "od najnovších po najstaršie"
-
 msgid "opravte nalezené chyby !!!"
 msgstr "odstráňte nájdené chyby !!!"
-
-msgid "podle hodnocení"
-msgstr "podľa hodnotenia"
-
-msgid "podle počtu bodů uživatele"
-msgstr "podľa počtu bodov užívateľa"
 
 msgid "pokud to povolíte v Nastaveních"
 msgstr "pokiaľ toto povolíte v Nastaveniach"
@@ -1317,15 +1302,6 @@ msgstr "rotácia po jednotlivých informáciách o relácii"
 msgid "rovnou vyhledat aktuální pořad"
 msgstr "ihneď vyhľadať aktuálnu reláciu"
 
-msgid "seřadit od nejnovějších po nejstarší"
-msgstr "zoradiť od najnovších po najstaršie"
-
-msgid "seřadit podle hodnocení"
-msgstr "zoradiť podľa hodnotenia"
-
-msgid "seřadit podle počtu bodů uživatele"
-msgstr "zoradiť podľa počtu bodov užívateľa"
-
 msgid "show subtitles menu"
 msgstr "zobraziť titulky"
 
@@ -1343,9 +1319,6 @@ msgstr "spustí slideshow"
 
 msgid "tečka"
 msgstr "bodka"
-
-msgid "typ"
-msgstr "typ"
 
 msgid "ukončit"
 msgstr "ukončiť"
@@ -1533,9 +1506,6 @@ msgstr "zobrazí získaná ocenenia"
 msgid "zobrazí řady seriálu"
 msgstr "zobrazí série seriálu"
 
-msgid "zpět"
-msgstr "späť"
-
 msgid "zpět v jednotlivých položkách nebo ukončení pluginu"
 msgstr "späť v jednotlivých položkách alebo ukončenie pluginu"
 
@@ -1580,9 +1550,6 @@ msgstr "Žiadne ďalšie ocenenie v databáze."
 
 msgid "Žádné další premiéry v databázi."
 msgstr "Žiadne ďalšie premiéry v databáze."
-
-msgid "Žádné další zajímavosti pro tento typ."
-msgstr "Žiadne ďalšie zaujímavosti pre tento typ."
 
 msgid "Žádné diskuzní příspěvky v databázi."
 msgstr "Žiadne diskusné príspevky v databáze."
@@ -1653,3 +1620,15 @@ msgstr "Pokračovanie ve vývoji od 12/2021 ako komunitný projekt"
 #, python-format
 msgid "Je dostupná nová verze CSFD pluginu %s na githubu"
 msgstr "Je dostupná nová verzia CSFD pluginu %s na githube"
+
+msgid "Načíst seznam pořadů z CSFD pro daný kanál do cache?"
+msgstr "Načítať zoznam programov z CSFD pre daný kanál do cache?"
+
+msgid "Automaticky načíst seznam pořadů z CSFD při přepínání?"
+msgstr "Automaticky načítať zoznam programov z CSFD pri prepínaní?"
+
+msgid "Jak dlouho nenačítat cache po net chybě"
+msgstr "Ako dlho nenačítavať cache po net chybe"
+
+msgid "Žádné další zajímavosti v databázi."
+msgstr "Žiadne ďalšie zaujímavosti v databáze"
