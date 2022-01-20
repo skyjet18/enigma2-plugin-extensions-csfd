@@ -1,7 +1,12 @@
-15.20
-enigma2-plugin-extensions-csfd_15-20-20220111_all.ipk
+16.00
+enigma2-plugin-extensions-csfd_16.00-20220120_all.ipk
 Hlavné zmeny:
-- opravená zobrazovanie obrázkov ak film neobsahuje poster
-- opravený pád pri nevalídnom UTF znaku v EPG
-- opravený pád pri stlačení kláves bouquet up/down
-- úpravy v súvislosti s python 3.x
+- pridaná podpora behu pod python 3.x
+- knižnice pre oauth autorizáciu sú teraz priamo súčasťou pluginu
+- prechod na sťahovanie dát pomocou requests knižnice
+- pridaná možnosť prihlásenia a hodnotenia relácie
+- možnosť automatického načítavania zoznamu filmov do cache
+- oprava zobrazovania obrázkov pre qviart prijímače (thx baron.bb)
+- oprava pádu ak film neobsahuje videá
+- obnovenie inštalácie IMDb emulácie ako vo verziách <=12.50
+- oprava chýb v ipk/deb balíkoch, textoch, prekladoch, prečistenie kódu, ...
