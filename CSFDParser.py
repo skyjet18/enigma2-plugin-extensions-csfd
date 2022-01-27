@@ -307,41 +307,59 @@ def NameMovieCorrectionExtensions(name1=''):
 	return name1
 
 
-def NameMovieCorrectionExtensionsTwoNames(name1=''):
-	sss = name1[-7:]
-	res_rok = re.findall(' \\(19\\d{2}\\)| \\(20\\d{2}\\)| \\(21\\d{2}\\)', sss)
-	if res_rok is not None and len(res_rok) == 1:
-		rok = res_rok[0]
-		name1 = name1[:-7]
-	else:
-		rok = ''
-	seznam = name1.split(' / ', 1)
-	if len(seznam) > 1:
-		newname = seznam[0].strip() + ' / ' + NameMovieCorrectionExtensions(seznam[1])
-	else:
-		newname = NameMovieCorrectionExtensions(seznam[0].strip())
-	newname += rok
-	return newname
-
-
 class CSFDConstParser():
 
 	def __init__(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDConstParser - init - zacatek\n')
 		self.ccFindCond = re.DOTALL | re.IGNORECASE
 		self.parserhtmltags = re.compile('<.*?>')
-		self.parserHTML2utf8_1 = re.compile('&([^#][A-Za-z]{1,5}?);')
-		self.parserHTML2utf8_2 = re.compile('&#x([0-9A-Fa-f]{2,2}?);')
-		self.parserHTML2utf8_3 = re.compile('&#(\\d{1,5}?);')
 		self.parserYear = re.compile('19\\d{2}|20\\d{2}|21\\d{2}', re.DOTALL)
 		self.parserYear2 = re.compile('\(19\\d{2}\)|\(20\\d{2}\)', re.DOTALL)
 		self.parserDate = re.compile('\\d{2}\\.\\d{2}\\.\\d{4}', re.DOTALL)
 		self.parserNumbers = re.compile(' \\d+', re.DOTALL)
 		self.parserRomanNumerals = re.compile('\\b(?!LLC)(?=[MDCLXVI]+\\b)M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\\b', re.DOTALL)
-		self.parserTestHTMLSearchMask = re.compile('html', self.ccFindCond)
-		self.parserTestCSFDFindingSearchMask = re.compile('SFD.cz', self.ccFindCond)
 
 		LogCSFD.WriteToFile('[CSFD] CSFDConstParser - init - konec\n')
+
+	def parserGetRomanNumbers(self, name):
+		searchresults = []
+		results = self.parserRomanNumerals.findall(name)
+		if results is not None:
+			for value in results:
+				vysl = value[0] + value[1] + value[2]
+				searchresults.append(vysl)
+
+		return searchresults
+
+	def parserGetNumbers(self, name):
+		searchresults = []
+		results = self.parserNumbers.findall(name)
+		if results is not None:
+			for value in results:
+				searchresults.append(value.strip())
+
+		return searchresults
+
+	def parserGetYears(self, name):
+		LogCSFD.WriteToFile('[CSFD] parserGetYears - zacatek\n')
+		searchresults = []
+		results = self.parserYear2.findall(name)
+		if results is not None:
+			for value in results:
+				LogCSFD.WriteToFile('[CSFD] parserGetYears - have year2 %s\n' % value[1:-1])
+				searchresults.append(value[1:-1])
+		else:
+			results = self.parserYear.findall(name)
+			if results is not None:
+				for value in results:
+					LogCSFD.WriteToFile('[CSFD] parserGetYears - have year %s\n' % value)
+					searchresults.append(value)
+
+		LogCSFD.WriteToFile('[CSFD] parserGetYears - konec\n')
+		return list(set(searchresults))
+
+	def delHTMLtags(self, string):
+		return self.parserhtmltags.sub('', string)
 
 
 ParserConstCSFD = CSFDConstParser()
@@ -354,134 +372,6 @@ class CSFDParser():
 		self.inhtml_script = ''
 		LogCSFD.WriteToFile('[CSFD] CSFDParser - init - konec\n')
 
-	def parserTestHTML(self, test_code):
-		LogCSFD.WriteToFile('[CSFD] parserTestHTML - zacatek\n')
-		if test_code is None or test_code == '':
-			return True
-		if ParserConstCSFD.parserTestHTMLSearchMask.search(test_code) is not None:
-			LogCSFD.WriteToFile('[CSFD] parserTestHTML - True\n')
-			LogCSFD.WriteToFile('[CSFD] parserTestHTML - konec\n')
-			return True
-		else:
-			LogCSFD.WriteToFile('[CSFD] parserTestHTML - False\n')
-			LogCSFD.WriteToFile('[CSFD] parserTestHTML - konec\n')
-			return False
-			return
-
-	def setParserHTML(self, inhtml):
-		LogCSFD.WriteToFile('[CSFD] setParserHTML - zacatek\n')
-		if inhtml is None or inhtml == '':
-			self.inhtml = ''
-		elif self.parserTestHTML(inhtml):
-			self.inhtml = inhtml
-		elif zlib_exist:
-			LogCSFD.WriteToFile('[CSFD] setParserHTML - dekomprese dat do html\n')
-			try:
-				html = zlib.decompress(inhtml, 16 + zlib.MAX_WBITS)
-				if self.parserTestHTML(html):
-					LogCSFD.WriteToFile('[CSFD] setParserHTML - dekomprese dat do html - OK\n')
-					self.inhtml = html
-				else:
-					LogCSFD.WriteToFile('[CSFD] setParserHTML - dekomprese dat do html - ERR - chyba\n')
-					LogCSFD.WriteToFileWithoutTime(inhtml)
-					self.inhtml = ''
-			except:
-				err = traceback.format_exc()
-				LogCSFD.WriteToFile('[CSFD] setParserHTML - dekomprese dat do html - ERR 1 - chyba\n')
-				LogCSFD.WriteToFile(err)
-				LogCSFD.WriteToFileWithoutTime(inhtml)
-				self.inhtml = ''
-
-		else:
-			LogCSFD.WriteToFile('[CSFD] setParserHTML - nelze provest dekompresi dat do html - neni knihovna zlib - ERR 2 - chyba\n')
-		LogCSFD.WriteToFile('[CSFD] setParserHTML - konec\n')
-		return
-
-	def getParserHTML(self):
-		return self.inhtml
-
-	def HTML2utf8(self, inhtml):
-		if inhtml == '':
-			inhtml_script = ''
-		else:
-			entitydict = {}
-			entities1 = ParserConstCSFD.parserHTML2utf8_1.finditer(inhtml)
-			if entities1 is not None:
-				for x1 in entities1:
-					key1 = x1.group(0)
-					if key1 not in entitydict:
-						try:
-							entitydict[key1] = name2codepoint[x1.group(1)]
-						except KeyError:
-							pass
-
-			entities2 = ParserConstCSFD.parserHTML2utf8_2.finditer(inhtml)
-			if entities2 is not None:
-				for x2 in entities2:
-					key2 = x2.group(0)
-					if key2 not in entitydict:
-						entitydict[key2] = '%d' % int(key2[3:5], 16)
-
-			entities3 = ParserConstCSFD.parserHTML2utf8_3.finditer(inhtml)
-			if entities3 is not None:
-				for x3 in entities3:
-					key3 = x3.group(0)
-					if key3 not in entitydict:
-						entitydict[key3] = x3.group(1)
-
-			for key, codepoint in list(entitydict.items()):
-				inhtml = inhtml.replace(key, unichr(int(codepoint)).encode('utf8'))
-
-			inhtml_script = inhtml
-			inhtml = re.subn('<(script).*?</\\1>(?s)', '', inhtml)[0]
-		return (
-		 inhtml, inhtml_script)
-
-	def setHTML2utf8(self, inhtml):
-		self.setParserHTML(inhtml)
-		self.inhtml, self.inhtml_script = self.HTML2utf8(self.inhtml)
-		return (
-		 self.inhtml, self.inhtml_script)
-
-	def delHTMLtags(self, string):
-		return ParserConstCSFD.parserhtmltags.sub('', string)
-
-	def parserGetRomanNumbers(self, name):
-		searchresults = []
-		results = ParserConstCSFD.parserRomanNumerals.findall(name)
-		if results is not None:
-			for value in results:
-				vysl = value[0] + value[1] + value[2]
-				searchresults.append(vysl)
-
-		return searchresults
-
-	def parserGetNumbers(self, name):
-		searchresults = []
-		results = ParserConstCSFD.parserNumbers.findall(name)
-		if results is not None:
-			for value in results:
-				searchresults.append(value.strip())
-
-		return searchresults
-
-	def parserGetYears(self, name):
-		LogCSFD.WriteToFile('[CSFD] parserGetYears - zacatek\n')
-		searchresults = []
-		results = ParserConstCSFD.parserYear2.findall(name)
-		if results is not None:
-			for value in results:
-				LogCSFD.WriteToFile('[CSFD] parserGetYears - have year2 %s\n' % value[1:-1])
-				searchresults.append(value[1:-1])
-		else:
-			results = ParserConstCSFD.parserYear.findall(name)
-			if results is not None:
-				for value in results:
-					LogCSFD.WriteToFile('[CSFD] parserGetYears - have year %s\n' % value)
-					searchresults.append(value)
-
-		LogCSFD.WriteToFile('[CSFD] parserGetYears - konec\n')
-		return list(set(searchresults))
 
 	def parserMoviesFound(self):
 		LogCSFD.WriteToFile('[CSFD] parserMoviesFound - zacatek\n')
@@ -1105,7 +995,7 @@ class CSFDParser():
 
 		try:
 			movie_info = self.json_data["info"]
-			Obsahtext = self.delHTMLtags(movie_info["plot"]["text"] + '\n(' + movie_info["plot"]["source_name"] + ')' )
+			Obsahtext = ParserConstCSFD.delHTMLtags(movie_info["plot"]["text"] + '\n(' + movie_info["plot"]["source_name"] + ')' )
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserContent - failed\n')
 			Obsahtext = ''
@@ -1119,19 +1009,6 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserIMDBlink - konec\n')
 		return result
 
-	def parserNumber(self, typParser):
-		pocet = None
-		result = typParser.search(self.inhtml)
-		if result is not None:
-			result = result.group(1).replace('(', '').replace(')', '').replace('\xa0', '').replace(' ', '').strip()
-			try:
-				pocet = int(result)
-			except ValueError:
-				LogCSFD.WriteToFile('[CSFD] parserNumber - chyba\n')
-				pocet = None
-
-		return pocet
-
 	def parserRatingNumber(self):
 		LogCSFD.WriteToFile('[CSFD] parserRatingNumber - zacatek\n')
 		pocet_hodnoceni = None
@@ -1143,7 +1020,7 @@ class CSFDParser():
 		searchresults = []
 		
 		for comment in data["comments"]:
-			comment_text = self.delHTMLtags( comment["text"] )
+			comment_text = ParserConstCSFD.delHTMLtags( comment["text"] )
 			if comment["rating"] == None:
 				rating_stars = ""
 			elif int(comment["rating"]) == 0:
@@ -1209,7 +1086,7 @@ class CSFDParser():
 				
 			for trivia in movie_info:
 				try:
-					searchresults.append( ( self.delHTMLtags( trivia["text"] ), trivia["source_user"]["nick"]) )
+					searchresults.append( ( ParserConstCSFD.delHTMLtags( trivia["text"] ), trivia["source_user"]["nick"]) )
 				except:
 					pass
 
@@ -1487,15 +1364,9 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserPrivateComment - konec\n')
 		return comment
 
-	def printHTML(self):
-		LogCSFD.WriteToFile('[CSFD] printHTML - zacatek\n')
-		LogCSFD.WriteToFileWithoutTime(self.inhtml)
-		LogCSFD.WriteToFile('[CSFD] printHTML - konec\n')
-
 	def resetValues(self):
 		LogCSFD.WriteToFile('[CSFD] resetValues - zacatek\n')
-		self.inhtml = ''
-		self.inhtml_script = ''
+		self.json_data = {}
 		LogCSFD.WriteToFile('[CSFD] resetValues - konec\n')
 		
 	def setJson(self, data):

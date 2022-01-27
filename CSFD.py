@@ -5,7 +5,7 @@ from .CSFDLog import LogCSFD
 from .CSFDTools import ItemList, ItemListServiceMenu, TextSimilarityBigram, TextSimilarityLD, TextCompare, max_positions, request, requestFileCSFD, internet_on, fromRomanStr, StrtoRoman
 from .CSFDTools import intWithSeparator, char2Diacritic, char2DiacriticSort, char2Allowchar, char2AllowcharNumbers, strUni, Uni8, deletetmpfiles, OdstranitDuplicityRadku, loadPixmapCSFD, picStartDecodeCSFD
 from .CSFDMenu import CSFDIconMenu
-from .CSFDParser import ParserCSFD, ParserOstCSFD, ParserVideoCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions
+from .CSFDParser import ParserCSFD, ParserConstCSFD, ParserOstCSFD, ParserVideoCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions
 from .CSFDClasses import GetMoviesForTVChannels, CSFDChannelSelection, CSFDEPGSelection, CSFDLCDSummary, CSFDSetup, CSFDInputText, CSFDAbout, CSFDHistory, CSFDVideoInfoScreen, CSFDPlayer, RefreshPlugins
 from .CSFDMovieCache import TVMovieCache
 from .CSFDSettings1 import CSFDGlobalVar
@@ -2613,9 +2613,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		data = csfdAndroidClient.get_json_by_uri( fetchurl )
 		ParserCSFD.setJson( data )
 		
-#		page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-#		ParserCSFD.setHTML2utf8(page)
-
 		if ParserCSFD.testJson():
 
 			try:
@@ -2666,7 +2663,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 		else:
 			LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie -  chyba dotazu!\n')
-			ParserCSFD.printHTML()
 			SetNotFind(_('CSFD - chyba dotazu!!! - film: '), '')
 		LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - konec\n', 2)
 		return
@@ -2675,9 +2671,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] ReDownloadMovieAndParseMainPart - zacatek\n', 3)
 		LogCSFD.WriteToFile('[CSFD] ReDownloadMovieAndParseMainPart - stahuji z url ' + self.LastDownloadedMovieUrl + '\n', 3)
 		
-#		page = requestCSFD(self.LastDownloadedMovieUrl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-#		ParserCSFD.setHTML2utf8(page)
-
 		data = csfdAndroidClient.get_json_by_uri( self.LastDownloadedMovieUrl )
 		ParserCSFD.setJson( data )
 
@@ -3173,10 +3166,10 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self.DVBchannel = Uni8(self.DVBchannel)
 			self.eventMovieNameYears = self.eventName
 			if self.EPG != '':
-				self.eventMovieYears = ParserCSFD.parserGetYears(self.EPG)
+				self.eventMovieYears = ParserConstCSFD.parserGetYears(self.EPG)
 				self.eventMovieSourceOfDataEPG = True
 			else:
-				for yr in ParserCSFD.parserGetYears(self.eventName):
+				for yr in ParserConstCSFD.parserGetYears(self.eventName):
 					pos = self.eventName.find(' (' + yr + ')')
 					if pos >= 0:
 						self.eventMovieYears.append(yr)
@@ -3444,7 +3437,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				zohlednitDiacr = True
 			if self.eventMovieSourceOfDataEPG == False and config.misc.CSFD.FindInclDiacrOth.getValue():
 				zohlednitDiacr = True
-			pp = ParserCSFD.parserGetRomanNumbers(vst_eventName_Corrected_Diacr)
+			pp = ParserConstCSFD.parserGetRomanNumbers(vst_eventName_Corrected_Diacr)
 			pocet_pp = len(pp)
 			if pocet_pp > 0:
 				dodat = pp[(pocet_pp - 1)]
@@ -3463,7 +3456,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - korekce1 ' + vst_eventName_Corrected_WO_Diacr_CorrNumber + '\n')
 					lastRoman = True
 			if not lastRoman:
-				pp = ParserCSFD.parserGetNumbers(vst_eventName_Corrected_Diacr)
+				pp = ParserConstCSFD.parserGetNumbers(vst_eventName_Corrected_Diacr)
 				pocet_pp = len(pp)
 				if pocet_pp > 0:
 					dodat = pp[(pocet_pp - 1)]
@@ -3483,7 +3476,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						lastNumber = True
 			LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - hledany film: ' + vst_eventName + '\n')
 			for x in searchresults:
-				res_Name_Orig = char2Allowchar(ParserCSFD.delHTMLtags(x[1]))
+				res_Name_Orig = char2Allowchar(ParserConstCSFD.delHTMLtags(x[1]))
 				nameMovies = res_Name_Orig + '#$' + vst_eventName + '#$' + str(simpleSearch)
 				res_Name = NameMovieCorrections(res_Name_Orig)
 				res_Name_Corrected_Diacr = NameMovieCorrectionsForCompare(res_Name)
@@ -3494,7 +3487,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - nacteno z cache\n')
 					celkem_bodu, shoda100 = movieCSFDCache.getScoreForMovieNamesFromCache(nameMovies)
 				else:
-					pp = ParserCSFD.parserGetRomanNumbers(res_Name_Corrected_WO_Diacr)
+					pp = ParserConstCSFD.parserGetRomanNumbers(res_Name_Corrected_WO_Diacr)
 					pocet_pp = len(pp)
 					if pocet_pp > 0:
 						dodat = pp[(pocet_pp - 1)]
@@ -3504,7 +3497,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 							res_Name_Corrected_WO_Diacr_WO_Roman = res_Name_Corrected_WO_Diacr[:vv].strip()
 							res_Name_Corrected_Diacr_WO_Roman = res_Name_Corrected_Diacr[:vv].strip()
 					else:
-						pp = ParserCSFD.parserGetNumbers(res_Name_Corrected_WO_Diacr)
+						pp = ParserConstCSFD.parserGetNumbers(res_Name_Corrected_WO_Diacr)
 						pocet_pp = len(pp)
 						if pocet_pp > 0:
 							dodat = pp[(pocet_pp - 1)]
@@ -3658,7 +3651,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self['page'].hide()
 
 		LogCSFD.WriteToFile('[CSFD] CSFDquery - hledany film3 ' + self.eventNameLocal + '\n')
-#		ParserCSFD.setHTML2utf8(string)
 		ParserCSFD.setJson(string)
 		self.CSFDparseUser()
 		self.resultlist = []
@@ -3808,7 +3800,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					self.resultlist = []
 					searchresults = []
 					filmdate = ''
-					res = ParserCSFD.parserGetYears(Titeltext[-6:])
+					res = ParserConstCSFD.parserGetYears(Titeltext[-6:])
 					if res is not None and len(res) > 0:
 						LogCSFD.WriteToFile('[CSFD] ParseName - filmdate - ')
 						filmdate = '(' + res[0] + ')'
@@ -4456,8 +4448,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self['photolabel'].hide()
 			if not self['statusbar'].instance.isVisible():
 				self['statusbar'].show()
-			LogCSFD.WriteToFile('[CSFD] CSFDquerySpec - html2utf8\n')
-#			ParserCSFD.setHTML2utf8(string)
 			self.CSFDparseUser()
 			LogCSFD.WriteToFile('[CSFD] CSFDquerySpec - pred parse' + '\n')
 			if CSFDGlobalVar.getCSFDDesktopWidth() > 1250:
@@ -5296,17 +5286,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 		def DeleteRatingOnWeb():
 			LogCSFD.WriteToFile('[CSFD] DeleteRatingOnWeb - zacatek\n', 8)
-			try:
-#				url = CSFDGlobalVar.getHTTP() + const_csfd_http_film + linkG
-#				page = requestCSFD(url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
-#				ParserOstCSFD.setHTML2utf8(page)
-#				del_url = ParserOstCSFD.parserDeleteRatingUrl()
-				del_url = None
-			except:
-				LogCSFD.WriteToFile('[CSFD] DeleteRatingOnWeb - reload url - chyba\n', 8)
-				err = traceback.format_exc()
-				LogCSFD.WriteToFile(err, 8)
-				self.session.open(MessageBox, _('Chyba při mazání hodnocení'), type=MessageBox.TYPE_ERROR, timeout=10)
+			
+			del_url = None # not supported by api
 
 			if del_url is not None and del_url != '':
 				try:
