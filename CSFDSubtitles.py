@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 
-try:
-	# py2
-	from urllib2 import Request as urllib_Request
-	from urllib2 import urlopen as urllib_urlopen
-except:
+if sys.version_info[0] == 3:
 	# py3
-	from urllib.request import Request as urllib_Request
-	from urllib.request import urlopen as urllib_urlopen
 	unicode = str
 	long = int
 	
@@ -35,6 +30,8 @@ from .CSFDLog import LogCSFD
 from .CSFDSettings1 import CSFDGlobalVar
 from .CSFDSettings2 import config
 from .CSFDSkinLoader import *
+from .CSFDTools import request
+import traceback
 
 def debug(data):
 	if DEBUG:
@@ -1394,7 +1391,7 @@ class SubProcessPath(object):
 		if subfile[0:4] == 'http':
 			try:
 				LogCSFD.WriteToFile('[Subtitles] downloading from %s\n' % subfile)
-				text = self.request(subfile)
+				text = request(subfile)
 			except Exception:
 				LogCSFD.WriteToFile('[Subtitles] cannot download subtitles %s\n' % subfile)
 				traceback.print_exc()
@@ -1450,14 +1447,6 @@ class SubProcessPath(object):
 
 		return (
 		 text.decode(self.current_encoding), self.current_encoding)
-
-	def request(self, url):
-		req = urllib_Request(url)
-		response = urllib_urlopen(req)
-		data = response.read()
-		response.close()
-		return data
-
 
 class SubStyler(object):
 

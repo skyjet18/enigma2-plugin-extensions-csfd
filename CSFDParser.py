@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from .CSFDLog import LogCSFD
-from .CSFDTools import char2Allowchar, strUni, ExtractNumbers, isBigCharInFirst, char2Diacritic
+from .CSFDTools import char2Allowchar, strUni, ExtractNumbers, isBigCharInFirst, char2Diacritic, CheckValidValue, CreateNameSurname, CreateNameSurnameList
 from .CSFDSettings1 import CSFDGlobalVar
 from datetime import datetime
 import re, traceback
+from itertools import islice
 
 from .CSFDAndroidClient import csfdAndroidClient
 
@@ -17,15 +18,6 @@ except:
 	unichr = chr
 	unicode = str
 	
-zlib_exist = True
-try:
-	import zlib
-except:
-	zlib_exist = False
-	err = traceback.format_exc()
-	LogCSFD.WriteToFile('[CSFD] CSFDParser - ERR - neexistuje zlib knihovna nutna pro dekompresi dat do html - chyba\n')
-	LogCSFD.WriteToFile(err)
-
 correction_const02a = [
  ' pt1', ' part 1', ' part1', ' pt2', ' part 2', ' part2', ' pt3', ' part 3', ' part3']
 correction_const02b = [', Pro pamětníky...', ', Pro pamětníky', ' Pro pamětníky', ' 1 část', ' 1. část', ' 1.část', ' 2 část', ' 2. část', ' 2.část', ' 3 část', ' 3. část', ' 3.část', ' část', ' díl']
@@ -38,7 +30,7 @@ correction_const10 = [(',', ' '), (';', ' '), (':', ' '), ('-', ' '), ('"', ' ')
 
 typeOfMovie = {
 	'video film': _('Video film'),
-	'film': _('TV film'),
+	'TV film': _('TV film'),
 	'seriál': _('TV seriál'),
 	'pořad': _('TV pořad'),
 	'divadelní záznam': _('Divadelní záznam'),
@@ -48,6 +40,24 @@ typeOfMovie = {
 	'hudební videoklip': _('Hudební videoklip'),
 	'série': _('Seriál - série'),
 	'epizoda': _('Seriál - epizoda')
+}
+
+movie_type_map = {
+	0: "", # used also for type 1 - to not show type in text form
+	1: "video film",
+	2: "TV film",
+	3: "seriál",
+	4: "pořad",
+	5: "divadelní záznam",
+	6: "koncert",
+	7: "studentský film",
+	8: "amatérský film",
+	9: "hudební videoklip",
+	10: "série",
+	11: "epizoda",
+	12: "seriál", # inclusive seasons? example: Simpsons
+	13: "pořad", # inclusive seasons? example: MythBusters
+	14: "video kompilace"
 }
 
 try:
@@ -315,6 +325,7 @@ class CSFDConstParser():
 		self.parserhtmltags = re.compile('<.*?>')
 		self.parserYear = re.compile('19\\d{2}|20\\d{2}|21\\d{2}', re.DOTALL)
 		self.parserYear2 = re.compile('\(19\\d{2}\)|\(20\\d{2}\)', re.DOTALL)
+		self.parserYear3 = re.compile('\[19\\d{2}\]|\[20\\d{2}\]', re.DOTALL)
 		self.parserDate = re.compile('\\d{2}\\.\\d{2}\\.\\d{4}', re.DOTALL)
 		self.parserNumbers = re.compile(' \\d+', re.DOTALL)
 		self.parserRomanNumerals = re.compile('\\b(?!LLC)(?=[MDCLXVI]+\\b)M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\\b', re.DOTALL)
@@ -340,20 +351,27 @@ class CSFDConstParser():
 
 		return searchresults
 
-	def parserGetYears(self, name):
+	def parserGetYears(self, name, delim=''):
 		LogCSFD.WriteToFile('[CSFD] parserGetYears - zacatek\n')
 		searchresults = []
-		results = self.parserYear2.findall(name)
-		if results is not None:
-			for value in results:
-				LogCSFD.WriteToFile('[CSFD] parserGetYears - have year2 %s\n' % value[1:-1])
-				searchresults.append(value[1:-1])
-		else:
+		if delim == '':
 			results = self.parserYear.findall(name)
-			if results is not None:
+		elif delim == '(':
+			results = self.parserYear2.findall(name)
+		elif delim == '[':
+			results = self.parserYear3.findall(name)
+		else:
+			return searchresults
+		
+		if results is not None:
+			if delim == '':
+				for value in results:
+					LogCSFD.WriteToFile('[CSFD] parserGetYears - have year %s\n' % value[1:-1])
+					searchresults.append(value)
+			else:
 				for value in results:
 					LogCSFD.WriteToFile('[CSFD] parserGetYears - have year %s\n' % value)
-					searchresults.append(value)
+					searchresults.append(value[1:-1])
 
 		LogCSFD.WriteToFile('[CSFD] parserGetYears - konec\n')
 		return list(set(searchresults))
@@ -368,10 +386,7 @@ class CSFDParser():
 
 	def __init__(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDParser - init - zacatek\n')
-		self.inhtml = ''
-		self.inhtml_script = ''
 		LogCSFD.WriteToFile('[CSFD] CSFDParser - init - konec\n')
-
 
 	def parserMoviesFound(self):
 		LogCSFD.WriteToFile('[CSFD] parserMoviesFound - zacatek\n')
@@ -389,14 +404,11 @@ class CSFDParser():
 		searchresults = []
 		
 		for movie in self.json_data["films"]:
-			if movie["year"] != None:
-				year = '(%d)' % movie["year"]
-			else:
-				year = ""
-			searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], year, 'c' + movie["rating_category"] ) )
+			year = CheckValidValue(movie["year"], None)
+			searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], year, 'c' + movie["rating_category"], CheckValidValue(movie["type"]) ) )
 			
 			if movie["search_name"] != movie["name"]:
-				searchresults.append( ( '#movie#%d' % movie["id" ], movie["search_name"], year, 'c' + movie["rating_category"] ) )
+				searchresults.append( ( '#movie#%d' % movie["id" ], movie["search_name"], year, 'c' + movie["rating_category"], CheckValidValue(movie["type"]) ) )
 
 		LogCSFD.WriteToFile('[CSFD] parserListOfMovies - konec\n')
 		return searchresults
@@ -412,7 +424,7 @@ class CSFDParser():
 			movie_info = self.json_data["related"]
 			
 			for movie in movie_info:
-				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], '(%d)' % movie["year"], 'c' + movie["rating_category"] ) )
+				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], CheckValidValue(movie["type"] ) ) )
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserListOfRelatedMovies - failed\n')
 
@@ -430,7 +442,7 @@ class CSFDParser():
 			movie_info = self.json_data["similar"]
 			
 			for movie in movie_info:
-				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], '(%d)' % movie["year"], 'c' + movie["rating_category"] ) )
+				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], CheckValidValue(movie["type"] ) ) )
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserListOfRelatedMovies - failed\n')
 
@@ -448,7 +460,7 @@ class CSFDParser():
 				self.json_data["seasons"] = csfdAndroidClient.get_movie_episodes( self.json_data["info"]["id"], 0, 0 )["seasons"]
 				
 			for movie in self.json_data["seasons"]:
-				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], '(%d)' % movie["year"], 'c' + movie["rating_category"] ) )
+				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], '' ) )
 
 		LogCSFD.WriteToFile('[CSFD] parserListOfSeries - konec\n')
 		return searchresults
@@ -465,11 +477,7 @@ class CSFDParser():
 
 			for season in self.json_data["seasons"]:
 				for movie in season["episodes"]:
-					if type_id == 12:
-						name_prefix = movie["position_code"] + " - "
-					else:
-						name_prefix = ""
-					searchresults.append( ( '#movie#%d' % movie["id" ], name_prefix + movie["name"], '(%d)' % movie["year"], 'c' + movie["rating_category"] ) )
+					searchresults.append( ( '#movie#%d' % movie["id" ], movie.get("position_code", "") + movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], '' ) )
 
 		LogCSFD.WriteToFile('[CSFD] parserListOfEpisodes - konec\n')
 		return searchresults
@@ -492,7 +500,12 @@ class CSFDParser():
 		
 		try:
 			movie_info = self.json_data["info"]
-			titelblock = '%s (%d)' % (movie_info["name"], movie_info["year"])
+			
+			titelblock = movie_info["name"]
+			year = movie_info.get("year")
+			
+			if year != None:
+				titelblock += ' (%d)' % year
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserMovieTitleInclYear - failed\n')
 			titelblock = '' 
@@ -521,11 +534,7 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserSeriesNameInEpisode - zacatek\n')
 		
 		movie_info = self.json_data["info"]
-		
-		if "root_name" in movie_info:
-			name = movie_info["root_name"]
-		else:
-			name = None
+		name = movie_info.get("root_name", "")
 
 		LogCSFD.WriteToFile('[CSFD] parserSeriesNameInEpisode - konec\n')
 		return name
@@ -574,18 +583,19 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserOtherMovieTitleWOCountry - konec\n')
 		return searchresults
 
-	def parserOrigMovieTitle(self):
+	def parserOrigMovieTitle(self, json_data = None):
 		LogCSFD.WriteToFile('[CSFD] parserOrigMovieTitle - zacatek\n')
 		origname = None
 		
-		try:
-			movie_info = self.json_data["info"]
+		if json_data == None:
+			json_data = self.json_data
 			
-			if "name_orig" in movie_info:
-				origname = movie_info["name_orig"]
+		try:
+			movie_info = json_data["info"]
+			origname = movie_info.get("name_orig", "")
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserOrigMovieTitle - Failed\n')
-			origname = None
+			origname = ''
 		
 		LogCSFD.WriteToFile('[CSFD] parserOrigMovieTitle - konec\n')
 		return origname
@@ -614,7 +624,7 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserAllPostersUrl - zacatek\n')
 		posterresult1 = None
 		ret = self.parserMainPosterUrl( full_image )
-		if ret != None and ret != '':
+		if ret != None:
 			posterresult1 = [ ret ]
 		LogCSFD.WriteToFile('[CSFD] parserAllPostersUrl - konec\n')
 		return posterresult1
@@ -622,10 +632,10 @@ class CSFDParser():
 	def parserPostersNumber(self):
 		LogCSFD.WriteToFile('[CSFD] parserPostersNumber - zacatek\n')
 		
-		pocet = None
-		
-		if self.json_data["info"]["poster_url"] != None or ("root_info" in self.json_data and self.json_data["info"]["poster_url"] != None):
+		if self.parserMainPosterUrl() != None:
 			pocet = 1
+		else:
+			pocet = None
 
 		LogCSFD.WriteToFile('[CSFD] parserPostersNumber - konec\n')
 		return pocet
@@ -635,12 +645,7 @@ class CSFDParser():
 
 		try:
 			movie_info = self.json_data["info"]
-			genre = ''
-			for x in movie_info["genre"]:
-				if genre == '':
-					genre += x
-				else:
-					genre += ", " + x
+			genre = ', '.join( x for x in movie_info["genre"] )
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserGenre - failed\n')
 			genre = ''
@@ -653,12 +658,7 @@ class CSFDParser():
 		
 		try:
 			movie_info = self.json_data["info"]
-			origin = ''
-			for x in movie_info["origin"]:
-				if origin != '':
-					origin += ", "
-				
-				origin += x
+			origin = ', '.join( x for x in movie_info["origin"] )
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserOrigin - failed\n')
 			origin = ''
@@ -688,19 +688,9 @@ class CSFDParser():
 			delka = movie_info["length"] + ' min.'
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserMovieDuration - failed\n')
-			delka = None
+			delka = ''
 
 		LogCSFD.WriteToFile('[CSFD] parserMovieDuration - konec\n')
-		return delka
-
-	def parserMovieDurationMin(self):
-		LogCSFD.WriteToFile('[CSFD] parserMovieDurationMin - zacatek\n')
-		delka = self.parserMovieDuration()
-		if delka is not None:
-			delka = delka.replace('min.', '').strip()
-			if delka == '':
-				delka = None
-		LogCSFD.WriteToFile('[CSFD] parserMovieDurationMin - konec\n')
 		return delka
 
 	def parserMovieCountry(self):
@@ -735,7 +725,7 @@ class CSFDParser():
 		try:
 			movie_info = self.json_data["info"]
 			text = ''
-			for x in movie_info["tv_schedule"]:
+			for x in islice( movie_info["tv_schedule"], 6 ):
 				if text != '':
 					text += ", "
 
@@ -750,244 +740,20 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserWherePlaying - konec\n')
 		return text
 
-	def parserDirector(self):
-		LogCSFD.WriteToFile('[CSFD] parserDirector - zacatek\n')
-
-		try:
-			movie_info = self.json_data["info"]
-			text = ''
-			for x in movie_info["directors"]:
-				if text != '':
-					text += ", "
-				
-				text += x["firstname"] + " " + x["surname"]
-		except:
-			LogCSFD.WriteToFile('[CSFD] parserDirector - failed\n')
-			text = ''
-
-		LogCSFD.WriteToFile('[CSFD] parserDirector - konec\n')
-		return text
-
-	def parserMusic(self):
-		LogCSFD.WriteToFile('[CSFD] parserMusic - zacatek\n')
-
-		try:
-			movie_info = self.json_data["creators"]
-			text = ''
-			for x in movie_info["composers"]:
-				if text != '':
-					text += ', '
-				
-				text += x["firstname"] + " " + x["surname"]
-		except:
-			LogCSFD.WriteToFile('[CSFD] parserMusic - failed\n')
-			text = ''
-
-		LogCSFD.WriteToFile('[CSFD] parserMusic - konec\n')
-		return text
-
-	def parserDraft(self):
-		LogCSFD.WriteToFile('[CSFD] parserDraft - zacatek\n')
+	# available creator_type:
+	# 'directors', 'authors', 'screenwriters', 'cinematographers', 'composers', 'production', 'edit', 'sound',
+	# 'scenographies', 'masks', 'costumes', 'actors', 'performer'
+	def parserGetCreatorList(self, creator_type):
+		LogCSFD.WriteToFile('[CSFD] parserGetCreatorList[%s] - zacatek\n' % creator_type )
 		
 		try:
 			movie_info = self.json_data["creators"]
-			text = ''
-			for x in movie_info["authors"]:
-				if text != '':
-					text += ', '
-				
-				text += x["firstname"] + " " + x["surname"]
+			text = CreateNameSurnameList( movie_info[creator_type] )
 		except:
-			LogCSFD.WriteToFile('[CSFD] parserDraft - failed\n')
+			LogCSFD.WriteToFile('[CSFD] parserGetCreatorList[%s] - failed\n' % creator_type )
 			text = ''
-
-		LogCSFD.WriteToFile('[CSFD] parserDraft - konec\n')
-		return text
-
-	def parserWriters(self):
-		LogCSFD.WriteToFile('[CSFD] parserWriters - zacatek\n')
 		
-		try:
-			movie_info = self.json_data["creators"]
-			text = ''
-			for x in movie_info["authors"]:
-				if text != '':
-					text += ', '
-				
-				text += x["firstname"] + " " + x["surname"]
-		except:
-			LogCSFD.WriteToFile('[CSFD] parserWriters - failed\n')
-			text = ''
-
-		LogCSFD.WriteToFile('[CSFD] parserWriters - konec\n')
-		return text
-
-	def parserScenario(self):
-		LogCSFD.WriteToFile('[CSFD] parserScenario - zacatek\n')
-		
-		try:
-			movie_info = self.json_data["creators"]
-			text = ''
-			for x in movie_info["screenwriters"]:
-				if text != '':
-					text += ', '
-				
-				text += x["firstname"] + " " + x["surname"]
-		except:
-			LogCSFD.WriteToFile('[CSFD] parserScenario - failed\n')
-			text = ''
-
-		LogCSFD.WriteToFile('[CSFD] parserScenario - konec\n')
-		return text
-
-	def parserCamera(self):
-		LogCSFD.WriteToFile('[CSFD] parserCamera - zacatek\n')
-		
-		try:
-			movie_info = self.json_data["creators"]
-			text = ''
-			for x in movie_info["cinematographers"]:
-				if text != '':
-					text += ', '
-				
-				text += x["firstname"] + " " + x["surname"]
-		except:
-			LogCSFD.WriteToFile('[CSFD] parserScenario - failed\n')
-			text = ''
-
-		LogCSFD.WriteToFile('[CSFD] parserCamera - konec\n')
-		return text
-
-	def parserProduction(self):
-		LogCSFD.WriteToFile('[CSFD] parserProduction - zacatek\n')
-
-		try:
-			movie_info = self.json_data["creators"]
-			text = ''
-			for x in movie_info["production"]:
-				if text != '':
-					text += ', '
-				
-				text += x["firstname"] + " " + x["surname"]
-		except:
-			LogCSFD.WriteToFile('[CSFD] parserProduction - failed\n')
-			text = ''
-
-		LogCSFD.WriteToFile('[CSFD] parserProduction - konec\n')
-		return text
-
-	def parserCutting(self):
-		LogCSFD.WriteToFile('[CSFD] parserCutting - zacatek\n')
-
-		try:
-			movie_info = self.json_data["creators"]
-			text = ''
-			for x in movie_info["edit"]:
-				if text != '':
-					text += ', '
-				
-				text += x["firstname"] + " " + x["surname"]
-		except:
-			LogCSFD.WriteToFile('[CSFD] parserCutting - failed\n')
-			text = ''
-
-		LogCSFD.WriteToFile('[CSFD] parserCutting - konec\n')
-		return text
-
-	def parserSound(self):
-		LogCSFD.WriteToFile('[CSFD] parserSound - zacatek\n')
-
-		try:
-			movie_info = self.json_data["creators"]
-			text = ''
-			for x in movie_info["sound"]:
-				if text != '':
-					text += ', '
-				
-				text += x["firstname"] + " " + x["surname"]
-		except:
-			LogCSFD.WriteToFile('[CSFD] parserSound - failed\n')
-			text = ''
-
-		LogCSFD.WriteToFile('[CSFD] parserSound - konec\n')
-		return text
-
-	def parserScenography(self):
-		LogCSFD.WriteToFile('[CSFD] parserScenography - zacatek\n')
-
-		try:
-			movie_info = self.json_data["creators"]
-			text = ''
-			for x in movie_info["scenographies"]:
-				if text != '':
-					text += ', '
-				
-				text += x["firstname"] + " " + x["surname"]
-		except:
-			LogCSFD.WriteToFile('[CSFD] parserScenography - failed\n')
-			text = ''
-
-		LogCSFD.WriteToFile('[CSFD] parserScenography - konec\n')
-		return text
-
-	def parserMakeUp(self):
-		LogCSFD.WriteToFile('[CSFD] parserMakeUp - zacatek\n')
-
-		try:
-			movie_info = self.json_data["creators"]
-			text = ''
-			for x in movie_info["masks"]:
-				if text != '':
-					text += ', '
-				
-				text += x["firstname"] + " " + x["surname"]
-		except:
-			LogCSFD.WriteToFile('[CSFD] parserMakeUp - failed\n')
-			text = ''
-
-		LogCSFD.WriteToFile('[CSFD] parserMakeUp - konec\n')
-		return text
-
-	def parserCostumes(self):
-		LogCSFD.WriteToFile('[CSFD] parserCostumes - zacatek\n')
-
-		try:
-			movie_info = self.json_data["creators"]
-			text = ''
-			for x in movie_info["costumes"]:
-				if text != '':
-					text += ', '
-				
-				text += x["firstname"] + " " + x["surname"]
-		except:
-			LogCSFD.WriteToFile('[CSFD] parserCostumes - failed\n')
-			text = ''
-
-		LogCSFD.WriteToFile('[CSFD] parserCostumes - konec\n')
-		return text
-
-	def parserCasting(self):
-		LogCSFD.WriteToFile('[CSFD] parserCasting - zacatek\n')
-
-		try:
-			movie_info = self.json_data["creators"]
-			text = ''
-			for x in movie_info["actors"]:
-				if text != '':
-					text += ', '
-				
-				text += x["firstname"] + " " + x["surname"]
-		except:
-			LogCSFD.WriteToFile('[CSFD] parserCasting - failed\n')
-			text = ''
-
-		LogCSFD.WriteToFile('[CSFD] parserCasting - konec\n')
-		return text
-
-	def parserTags(self):
-		LogCSFD.WriteToFile('[CSFD] parserTags - zacatek\n')
-		text = None
-		LogCSFD.WriteToFile('[CSFD] parserTags - konec\n')
+		LogCSFD.WriteToFile('[CSFD] parserGetCreatorList[%s] - konec\n' % creator_type )
 		return text
 
 	def parserContent(self):
@@ -1109,49 +875,30 @@ class CSFDParser():
 	def parserPremiere(self):
 		LogCSFD.WriteToFile('[CSFD] parserPremiere - zacatek\n')
 		text = ''
-		pristupnost = ''
 		
 		movie_info = self.json_data["info"]
 		
 		if "releases" in movie_info:
-			if "cinema" in movie_info["releases"]:
-				text += _("V kinech:") + "\n"
-				for release in movie_info["releases"]["cinema"]:
-					release_date = release["release_date"]
-					release_date = release_date[8:10] + '.' + release_date[5:7] + '.' + release_date[0:4]
-					distributor = release["distributor"] if release["distributor"] != None else ""
-					text += release["country"] + '\t' + release_date + "  " + distributor + '\n'
-				
-				text += '\n'
-				
-			if "dvd" in movie_info["releases"]:
-				text += _("Na DVD:") + "\n"
-				for release in movie_info["releases"]["dvd"]:
-					release_date = release["release_date"]
-					release_date = release_date[8:10] + '.' + release_date[5:7] + '.' + release_date[0:4]
-					distributor = release["distributor"] if release["distributor"] != None else ""
-					text += release["country"] + '\t' + release_date + "  " + distributor + '\n'
-				text += '\n'
-				
-			if "bluray" in movie_info["releases"]:
-				text += _("Na blu-ray:") + "\n"
-				for release in movie_info["releases"]["bluray"]:
-					release_date = release["release_date"]
-					release_date = release_date[8:10] + '.' + release_date[5:7] + '.' + release_date[0:4]
-					distributor = release["distributor"] if release["distributor"] != None else ""
-					text += release["country"] + '\t' + release_date + "  " + distributor + '\n'
-				text += '\n'
-
-			if "tv" in movie_info["releases"]:
-				text += _("V televizi:") + "\n"
-				for release in movie_info["releases"]["tv"]:
-					release_date = release["release_date"]
-					release_date = release_date[8:10] + '.' + release_date[5:7] + '.' + release_date[0:4]
-					distributor = release["distributor"] if release["distributor"] != None else ""
-					text += release["country"] + '\t' + release_date + "  " + distributor + '\n'
+			release_types = [
+				( 'cinema', _("V kinech:") ),
+				( 'dvd', _("Na DVD:") ),
+				( 'bluray', _("Na blu-ray:") ),
+				( 'tv', _("V televizi:") ),
+			]
+			
+			for release_type in release_types:
+				if release_type[0] in movie_info["releases"]:
+					text += release_type[1] + "\n"
+					for release in movie_info["releases"][release_type[0]]:
+						release_date = release["release_date"]
+						release_date = release_date[8:10] + '.' + release_date[5:7] + '.' + release_date[0:4]
+						distributor = CheckValidValue( release["distributor"] )
+						text += release["country"] + '\t' + release_date + "  " + distributor + '\n'
+					
+					text += '\n'
 
 		LogCSFD.WriteToFile('[CSFD] parserPremiere - konec\n')
-		return (text, pristupnost)
+		return text
 
 	def parserAwards(self):
 		LogCSFD.WriteToFile('[CSFD] parserAwards - zacatek\n')
@@ -1171,42 +918,42 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserUserFansNumber - konec\n')
 		return pocet
 
-	def parserVideoDetail(self, full_image=False):
+	def parserVideoDetail(self, json_data=None, prefer_hd=True, full_image=False):
 		LogCSFD.WriteToFile('[CSFD] parserVideoDetail - zacatek\n')
 		LogCSFD.WriteToFile('[CSFD] parserVideoDetail - 0a\n')
 
 		searchresults = None
 		
-		if len( self.json_data["videos"] ) > 0:
+		if json_data == None:
+			json_data = self.json_data
+		
+		if len( json_data["videos"] ) > 0:
 			searchresults = []
 			
-			for video in self.json_data["videos"]:
-				if "1080" in video["video"]:
-					videoklipurlHD = video["video"]["1080"]
-				elif "720" in video["video"]:
-					videoklipurlHD = video["video"]["720"]
+			for video in json_data["videos"]:
+				if prefer_hd:
+					quality = ( '1080', '720', '480', '360' )
 				else:
-					videoklipurlHD = ''
-
-				if "480" in video["video"]:
-					videoklipurlSD = video["video"]["480"]
-				elif "360" in video["video"]:
-					videoklipurlSD = video["video"]["360"]
-				else:
-					videoklipurlSD = ''
-					
-				videotitulkyurlCZ = ''
-				videotitulkyurlSK = ''
+					quality = ( '480', '360' )
 				
+				video_url = None
+				for q in quality:
+					if q in video["video"]:
+						video_url= video["video"][q]
+						break
+				
+				if video_url == None:
+					continue
+
 				try:
 					videotitulkyurlCZ = video["subtitles"]["české".decode('utf-8')]
 				except:
-					pass
+					videotitulkyurlCZ = ''
 
 				try:
 					videotitulkyurlSK = video["subtitles"]["slovenské".decode('utf-8')]
 				except:
-					pass
+					videotitulkyurlSK = ''
 					
 				videoDescr = video["description"]
 				videoPoster = video["preview_image"]["url"]
@@ -1214,7 +961,7 @@ class CSFDParser():
 				if full_image and videoPoster.endswith("?w700"):
 					videoPoster = videoPoster[:-5]
 					
-				searchresults.append((videoklipurlSD, videoklipurlHD, videotitulkyurlCZ, videotitulkyurlSK, videoDescr, videoPoster))
+				searchresults.append( (video_url, videotitulkyurlCZ, videotitulkyurlSK, videoDescr, videoPoster) )
 
 		LogCSFD.WriteToFile('[CSFD] parserVideoDetail - konec\n')
 		return searchresults
@@ -1239,7 +986,7 @@ class CSFDParser():
 			# convert 2022-01-04 21:55 -> 04.01.2022 21:55
 			ss_date_rating = ss_date_rating[8:10] + '.' + ss_date_rating[5:7] + '.' + ss_date_rating[0:4] + ' ' + ss_date_rating[11:]
 		else:
-			ss_date_rating = None
+			ss_date_rating = ''
 		LogCSFD.WriteToFile('[CSFD] parserDateOwnRating - konec\n')
 		return ss_date_rating
 
@@ -1251,19 +998,6 @@ class CSFDParser():
 			ret = False
 		LogCSFD.WriteToFile('[CSFD] parserRatingAllowed - konec\n')
 		return ret
-
-	def parserTokenLogin(self, html):
-		LogCSFD.WriteToFile('[CSFD] parserTokenLogin - zacatek\n')
-		token = None
-		LogCSFD.WriteToFile('[CSFD] parserTokenLogin - konec\n')
-		return token
-
-	def parserURLLogin(self, html):
-		LogCSFD.WriteToFile('[CSFD] parserURLLogin - zacatek\n')
-		url = ''
-		LogCSFD.WriteToFile('[CSFD] parserURLLogin: ' + url + '\n')
-		LogCSFD.WriteToFile('[CSFD] parserURLLogin - konec\n')
-		return url
 
 	def parserDeleteRatingUrl(self):
 		LogCSFD.WriteToFile('[CSFD] parserDeleteRatingUrl - zacatek\n')
@@ -1316,7 +1050,6 @@ class CSFDParser():
 			LogCSFD.WriteToFile('[CSFD] parserFunctionExists - postery - NE\n')
 			searchresults.append('postery')
 			
-#		if self.parserTokenRating() is None:
 		if self.parserRatingAllowed() == False:
 			LogCSFD.WriteToFile('[CSFD] parserFunctionExists - ownrating - NE\n')
 			searchresults.append('ownrating')
@@ -1340,11 +1073,14 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserFunctionExists - konec\n')
 		return searchresults
 	
-	def parserListOfTVMovies(self, deleteDuplicity=False):
+	def parserListOfTVMovies(self, json_data=None, deleteDuplicity=False):
 		LogCSFD.WriteToFile('[CSFD] parserListOfTVMovies - zacatek\n')
 		searchresults = []
 
-		for station in self.json_data["stations"]:
+		if json_data == None:
+			json_data = self.json_data
+
+		for station in json_data["stations"]:
 			LogCSFD.WriteToFile('[CSFD] parserListOfTVMovies - parsing %s\n' % station['name'])
 			
 			for schedule in station['schedule']:
@@ -1380,6 +1116,3 @@ class CSFDParser():
 
 
 ParserCSFD = CSFDParser()
-ParserOstCSFD = CSFDParser()
-ParserVideoCSFD = CSFDParser()
-ParserTVCSFD = CSFDParser()

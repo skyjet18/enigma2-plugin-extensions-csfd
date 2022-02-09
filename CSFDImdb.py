@@ -4,6 +4,13 @@ from .CSFDLog import LogCSFD
 from .CSFDSettings1 import CSFDGlobalVar
 from .CSFDSettings2 import _, config
 from .CSFDTools import Uni8
+
+try:
+	from twisted.web.client import downloadPage
+except:
+	def downloadPage(self, *a, **kw):
+		pass
+
 import traceback
 LogCSFD.WriteToFile('[CSFD] CSFDImdb - IMDB import - zacatek\n')
 try:
@@ -129,7 +136,6 @@ class CSFD_IMDBcalls(puvIMDB):
 			localfile = '/tmp/imdbquery2.html'
 			fetchurl = moviepath
 			LogCSFD.WriteToFile('[CSFD] CSFDImdb - IMDB - stahuji z url ' + fetchurl + ' do ' + localfile + '\n')
-			from .CSFDTools import downloadPage
 			downloadPage(fetchurl, localfile).addCallback(self.IMDBquery2).addErrback(self.fetchFailedIMDB, fetchurl)
 			self['menu'].hide()
 			self.resetLabels()

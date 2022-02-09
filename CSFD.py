@@ -3,9 +3,8 @@
 from enigma import eTimer, ePicLoad, eServiceCenter, eServiceReference, eConsoleAppContainer, gPixmapPtr, gRGB, RT_HALIGN_LEFT, RT_VALIGN_CENTER
 from .CSFDLog import LogCSFD
 from .CSFDTools import ItemList, ItemListServiceMenu, TextSimilarityBigram, TextSimilarityLD, TextCompare, max_positions, request, requestFileCSFD, internet_on, fromRomanStr, StrtoRoman
-from .CSFDTools import intWithSeparator, char2Diacritic, char2DiacriticSort, char2Allowchar, char2AllowcharNumbers, strUni, Uni8, deletetmpfiles, OdstranitDuplicityRadku, loadPixmapCSFD, picStartDecodeCSFD
-from .CSFDMenu import CSFDIconMenu
-from .CSFDParser import ParserCSFD, ParserConstCSFD, ParserOstCSFD, ParserVideoCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions
+from .CSFDTools import intWithSeparator, char2Diacritic, char2DiacriticSort, char2Allowchar, char2AllowcharNumbers, strUni, Uni8, deletetmpfiles, OdstranitDuplicityRadku, loadPixmapCSFD, picStartDecodeCSFD, AddLine, CreateStrList
+from .CSFDParser import ParserCSFD, ParserConstCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions
 from .CSFDClasses import GetMoviesForTVChannels, CSFDChannelSelection, CSFDEPGSelection, CSFDLCDSummary, CSFDSetup, CSFDInputText, CSFDAbout, CSFDHistory, CSFDVideoInfoScreen, CSFDPlayer, RefreshPlugins
 from .CSFDMovieCache import TVMovieCache
 from .CSFDSettings1 import CSFDGlobalVar
@@ -39,10 +38,8 @@ from random import randint, seed
 import time, traceback
 
 try:
-	from urllib.parse import urlencode
 	from urllib.parse import quote
 except:
-	from urllib import urlencode
 	from urllib import quote
 
 from .CSFDAndroidClient import csfdAndroidClient, CreateCSFDAndroidClient
@@ -376,8 +373,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				'9': (self.keyNumber9, 'key_9'), 
 				'CSFDplay': (self.keyPlay, 'key_play'), 
 				'CSFDpause': (self.keyPause, 'key_playpause'), 
-				'CSFDplaypause': (self.keyPlayPause, 'key_playpause'), 
-				'CSFDtestkey': self.keyTestMenu
+				'CSFDplaypause': (self.keyPlayPause, 'key_playpause')
 				},
 			-2 )
 		self.CSFDTipsLoad()
@@ -421,11 +417,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		else:
 			self.selectedMenuRow = None
 		return
-
-	def getCookies(self):
-		cookies = CSFDGlobalVar.getCSFDCookiesUL2()
-		LogCSFD.WriteToFile('[CSFD] Cookies: ' + str(cookies) + '\n')
-		return cookies
 
 	def AntiFreezeEvent(self):
 		if self.AntiFreezeTimer is not None:
@@ -667,8 +658,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self.DownloadTimer = None
 		del self.DownloadTimer
 		ParserCSFD.resetValues()
-		ParserOstCSFD.resetValues()
-		ParserVideoCSFD.resetValues()
 		ParserIMDB.resetValues()
 		deletetmpfiles()
 		self.PosterBasicSlideList = []
@@ -2189,15 +2178,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self.RunKey(config.misc.CSFD.HotKey9.getValue())
 			LogCSFD.WriteToFile('[CSFD] KeyNumber9 - konec\n')
 
-	def keyTestMenu(self):
-		LogCSFD.WriteToFile('[CSFD] keyTestMenu\n')
-		self.AntiFreezeTimerWorking = False
-		self.session.openWithCallback(self.closeCSFDIconMenu, CSFDIconMenu)
-
-	def closeCSFDIconMenu(self):
-		self.AntiFreezeTimerWorking = True
-		LogCSFD.WriteToFile('[CSFD] closeCSFDIconMenu\n')
-
 	def keyPlayPause(self):
 		self.KeyPressLong = False
 		self.KeyFlag = 'PlayPause'
@@ -2805,47 +2785,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self.KeyPressLong = False
 		return
 
-	def fetchFailedDownloadDetailMovie(self, string, url):
-		LogCSFD.WriteToFile('[CSFD] fetchFailedDownloadDetailMovie - zacatek\n')
-		LogCSFD.WriteToFile('[CSFD] Chyba pri stahovani: ' + Uni8(string.getErrorMessage()) + '\n')
-		LogCSFD.WriteToFile('[CSFD] Chyba pri stahovani - url: ' + Uni8(url) + '\n')
-		chyba = string.getErrorMessage()
-		ss2 = chyba.replace("'", '').strip().lower()
-		LogCSFD.WriteToFile('[CSFD] Chyba pri stahovani - ss2: ' + Uni8(ss2) + '\n')
-		if self.linkComment == '':
-			LogCSFD.WriteToFile('[CSFD] fetchFailedDownloadDetailMovie - zkousim znovu pri chybe\n')
-			self.Page = 0
-			self.stahnutoCSFD2 = ''
-			self.linkComment = 'podle-datetime/'
-			self.showDetails()
-		else:
-			self.stahnutoCSFD2 = ''
-			self.stahnutoCSFDImage = ''
-			self['statusbar'].setText(_('CSFD - Chyba při stahování'))
-			self['key_red'].setText(_('Zpět'))
-		LogCSFD.WriteToFile('[CSFD] fetchFailedDownloadDetailMovie - konec\n')
-
-	def fetchFailedReDownloadDetailMovie(self, string, url):
-		LogCSFD.WriteToFile('[CSFD] fetchFailedReDownloadDetailMovie - zacatek\n')
-		LogCSFD.WriteToFile('[CSFD] Chyba pri stahovani: ' + Uni8(string.getErrorMessage()) + '\n')
-		LogCSFD.WriteToFile('[CSFD] Chyba pri stahovani - url: ' + Uni8(url) + '\n')
-		chyba = string.getErrorMessage()
-		ss2 = chyba.replace("'", '').strip().lower()
-		LogCSFD.WriteToFile('[CSFD] Chyba pri stahovani - ss2: ' + Uni8(ss2) + '\n')
-		self['statusbar'].setText(_('CSFD - Chyba při stahování'))
-		LogCSFD.WriteToFile('[CSFD] fetchFailedReDownloadDetailMovie - konec\n')
-
-	def ReadDetailName(self):
-		LogCSFD.WriteToFile('[CSFD] ReadDetailName - zacatek\n')
-		self.Detail100Exit = False
-		if self.resultlist is not None and len(self.resultlist) > 0:
-			self.selectedMenuRow = self['menu'].getCurrent()[0]
-			link = self.selectedMenuRow[1].strip()
-			self.linkGlobal = link
-			self.DownloadDetailMovie()
-		LogCSFD.WriteToFile('[CSFD] ReadDetailName - konec\n')
-		return
-
 	def showExtras(self):
 		if self.Page == 0:
 			self.KeyText()
@@ -3165,17 +3104,23 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			if isinstance(self.DVBchannel, str):
 				self.DVBchannel = Uni8(self.DVBchannel)
 			self.eventMovieNameYears = self.eventName
+			
 			if self.EPG != '':
-				self.eventMovieYears = ParserConstCSFD.parserGetYears(self.EPG)
+				# we have EPG - search movie first in format (xxxx)
+				self.eventMovieYears = ParserConstCSFD.parserGetYears(self.EPG, '(')
+
+				if len( self.eventMovieYears ) == 0:
+					# not found - so try in format xxxx
+					self.eventMovieYears = ParserConstCSFD.parserGetYears(self.EPG)
+					
 				self.eventMovieSourceOfDataEPG = True
 			else:
-				for yr in ParserConstCSFD.parserGetYears(self.eventName):
-					pos = self.eventName.find(' (' + yr + ')')
-					if pos >= 0:
-						self.eventMovieYears.append(yr)
-					pos = self.eventName.find(' [' + yr + ']')
-					if pos >= 0:
-						self.eventMovieYears.append(yr)
+				# no EPG -> search year in movie in format (xxxx)
+				self.eventMovieYears = ParserConstCSFD.parserGetYears(self.eventName, '(')
+
+				if len( self.eventMovieYears ) == 0:
+					# not found -> search in format [xxxx]
+					self.eventMovieYears = ParserConstCSFD.parserGetYears(self.EPG, '[')
 
 			if self.DVBchannel != '':
 				self.ChannelsCSFD = GetCSFDNumberFromChannel(self.DVBchannel)
@@ -3218,14 +3163,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					err = traceback.format_exc()
 					LogCSFD.WriteToFile(err)
 
-#				if self.FindAllItems:
-#					fetchurl = CSFDGlobalVar.getHTTP() + const_www_csfd + '/hledat/complete-films/?q=' + eventNameUrllib
-#				elif self.eventMovieSourceOfDataEPG == False and len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
-#					yr = quote(strUni(' (' + str(self.eventMovieYears[0]) + ')'))
-#					fetchurl = CSFDGlobalVar.getHTTP() + const_www_csfd + '/hledat/?q=' + eventNameUrllib + yr
-#				else:
-#					fetchurl = CSFDGlobalVar.getHTTP() + const_www_csfd + '/hledat/?q=' + eventNameUrllib
-
 				if self.FindAllItems:
 					fetchurl = '#search_movie#' + eventNameUrllib
 #				elif self.eventMovieSourceOfDataEPG == False and len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
@@ -3237,8 +3174,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 				LogCSFD.WriteToFile('[CSFD] getCSFD - stahuji z url ' + fetchurl + '\n')
 				
-#				page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-				page = csfdAndroidClient.get_json_by_uri( fetchurl )	
+				page = csfdAndroidClient.get_json_by_uri( fetchurl )
 				CSFDGlobalVar.setParalelDownload(self.CSFDquery, page)
 				self.DownloadTimer.start(10, True)
 				
@@ -3382,69 +3318,92 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		resultlist = []
 		res_shoda = False
 		TV_shoda = False
+		
 		if searchresults is None or len(searchresults) == 0:
 			LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - zadny seznam\n')
 			LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - konec\n')
-			return (
-			 resultlist, res_shoda, TV_shoda)
-		else:
-			lastRoman = False
-			lastNumber = False
-			const_shoda_100 = 99.9
-			y = 0
-			vst_eventName = Uni8(eventName)
-			vst_eventName_Corrected_Diacr = NameMovieCorrectionsForCompare(vst_eventName)
-			vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr
-			vst_eventName_Corrected_WO_Diacr = char2Diacritic(vst_eventName_Corrected_Diacr).upper()
-			vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr
-			vst_eventName_Corrected_WO_Diacr_CorrNumber = vst_eventName_Corrected_WO_Diacr
-			TVMovies = None
-			if addTVscore:
-				LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - VYHLEDAVANI ZE SEZNAMU TV\n')
-				if config.misc.CSFD.TVCache.getValue():
-					stations = ''
-					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - ChannelsCSFD: ' + str(self.ChannelsCSFD) + '\n')
-					for channel in self.ChannelsCSFD:
-						if stations == '':
-							stations += channel
-						else:
-							stations += '%2C' + channel
+			return (resultlist, res_shoda, TV_shoda)
 
-					if stations != '':
-						TVMovies = TVMovieCache.getMoviesFromCache(stations)
-						if TVMovies is not None:
-							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TVMovies - existuje\n')
-						else:
-							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TVMovies - nenalezen - 1\n')
+		lastRoman = False
+		lastNumber = False
+		const_shoda_100 = 99.9
+		y = 0
+		vst_eventName = Uni8(eventName)
+		vst_eventName_Corrected_Diacr = NameMovieCorrectionsForCompare(vst_eventName)
+		vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr
+		vst_eventName_Corrected_WO_Diacr = char2Diacritic(vst_eventName_Corrected_Diacr).upper()
+		vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr
+		vst_eventName_Corrected_WO_Diacr_CorrNumber = vst_eventName_Corrected_WO_Diacr
+		TVMovies = None
+		
+		if addTVscore:
+			LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - VYHLEDAVANI ZE SEZNAMU TV\n')
+			if config.misc.CSFD.TVCache.getValue():
+				stations = ''
+				LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - ChannelsCSFD: ' + str(self.ChannelsCSFD) + '\n')
+				for channel in self.ChannelsCSFD:
+					if stations == '':
+						stations += channel
 					else:
-						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TVMovies - nenalezen - 2\n')
-			if simpleSearch:
+						stations += '%2C' + channel
+
+				if stations != '':
+					TVMovies = TVMovieCache.getMoviesFromCache(stations)
+					if TVMovies is not None:
+						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TVMovies - existuje\n')
+					else:
+						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TVMovies - nenalezen - 1\n')
+				else:
+					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TVMovies - nenalezen - 2\n')
+					
+		if simpleSearch:
+			porovnejTexty = TextCompare
+			LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TextCompare\n')
+		else:
+			if config.misc.CSFD.SortFindItems.getValue() == '0':
+				porovnejTexty = TextSimilarityLD
+				LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TextSimilarityLD\n')
+			elif config.misc.CSFD.SortFindItems.getValue() == '1':
+				porovnejTexty = TextSimilarityBigram
+				LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TextSimilarityBigram\n')
+			else:
 				porovnejTexty = TextCompare
 				LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TextCompare\n')
-			else:
-				if config.misc.CSFD.SortFindItems.getValue() == '0':
-					porovnejTexty = TextSimilarityLD
-					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TextSimilarityLD\n')
-				elif config.misc.CSFD.SortFindItems.getValue() == '1':
-					porovnejTexty = TextSimilarityBigram
-					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TextSimilarityBigram\n')
+				
+		zohlednitDiacr = False
+		if self.eventMovieSourceOfDataEPG == True and config.misc.CSFD.FindInclDiacrEPG.getValue():
+			zohlednitDiacr = True
+		if self.eventMovieSourceOfDataEPG == False and config.misc.CSFD.FindInclDiacrOth.getValue():
+			zohlednitDiacr = True
+		pp = ParserConstCSFD.parserGetRomanNumbers(vst_eventName_Corrected_Diacr)
+		pocet_pp = len(pp)
+		
+		if pocet_pp > 0:
+			dodat = pp[(pocet_pp - 1)]
+			dodat1 = ' ' + dodat
+			vv = -1 * len(dodat1)
+			if vst_eventName_Corrected_WO_Diacr[vv:].upper() == dodat1:
+				if dodat == 'I':
+					vst_eventName_Corrected_Diacr = vst_eventName_Corrected_Diacr[:vv].strip()
+					vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr_WO_Roman[:vv].strip()
+					vst_eventName_Corrected_WO_Diacr = char2Diacritic(vst_eventName_Corrected_Diacr).upper()
+					vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr
 				else:
-					porovnejTexty = TextCompare
-					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TextCompare\n')
-					
-			zohlednitDiacr = False
-			if self.eventMovieSourceOfDataEPG == True and config.misc.CSFD.FindInclDiacrEPG.getValue():
-				zohlednitDiacr = True
-			if self.eventMovieSourceOfDataEPG == False and config.misc.CSFD.FindInclDiacrOth.getValue():
-				zohlednitDiacr = True
-			pp = ParserConstCSFD.parserGetRomanNumbers(vst_eventName_Corrected_Diacr)
+					vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr[:vv].strip()
+					vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr[:vv].strip()
+				vst_eventName_Corrected_WO_Diacr_CorrNumber = vst_eventName_Corrected_WO_Diacr_WO_Roman + ' ' + fromRomanStr(dodat)
+				LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - korekce1 ' + vst_eventName_Corrected_WO_Diacr_CorrNumber + '\n')
+				lastRoman = True
+				
+		if not lastRoman:
+			pp = ParserConstCSFD.parserGetNumbers(vst_eventName_Corrected_Diacr)
 			pocet_pp = len(pp)
 			if pocet_pp > 0:
 				dodat = pp[(pocet_pp - 1)]
 				dodat1 = ' ' + dodat
 				vv = -1 * len(dodat1)
 				if vst_eventName_Corrected_WO_Diacr[vv:].upper() == dodat1:
-					if dodat == 'I':
+					if dodat == '1':
 						vst_eventName_Corrected_Diacr = vst_eventName_Corrected_Diacr[:vv].strip()
 						vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr_WO_Roman[:vv].strip()
 						vst_eventName_Corrected_WO_Diacr = char2Diacritic(vst_eventName_Corrected_Diacr).upper()
@@ -3452,102 +3411,101 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					else:
 						vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr[:vv].strip()
 						vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr[:vv].strip()
-					vst_eventName_Corrected_WO_Diacr_CorrNumber = vst_eventName_Corrected_WO_Diacr_WO_Roman + ' ' + fromRomanStr(dodat)
-					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - korekce1 ' + vst_eventName_Corrected_WO_Diacr_CorrNumber + '\n')
-					lastRoman = True
-			if not lastRoman:
-				pp = ParserConstCSFD.parserGetNumbers(vst_eventName_Corrected_Diacr)
+					vst_eventName_Corrected_WO_Diacr_CorrNumber = vst_eventName_Corrected_WO_Diacr_WO_Roman + ' ' + StrtoRoman(dodat)
+					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - korekce2 ' + vst_eventName_Corrected_WO_Diacr_CorrNumber + '\n')
+					lastNumber = True
+					
+		LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - hledany film: ' + vst_eventName + '\n')
+		for x in searchresults:
+			# x = [ "#movie# + id, movie_name, year, colour_rating ]
+			res_Name_Orig = char2Allowchar(ParserConstCSFD.delHTMLtags(x[1]))
+			nameMovies = res_Name_Orig + '#$' + vst_eventName + '#$' + str(simpleSearch)
+			res_Name = NameMovieCorrections(res_Name_Orig)
+			res_Name_Corrected_Diacr = NameMovieCorrectionsForCompare(res_Name)
+			res_Name_Corrected_WO_Diacr = char2Diacritic(res_Name_Corrected_Diacr).upper()
+			res_Name_Corrected_Diacr_WO_Roman = res_Name_Corrected_Diacr
+			res_Name_Corrected_WO_Diacr_WO_Roman = res_Name_Corrected_WO_Diacr
+			
+			if movieCSFDCache.AreMovieNamesInScoreCache(nameMovies):
+				LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - nacteno z cache\n')
+				celkem_bodu, shoda100 = movieCSFDCache.getScoreForMovieNamesFromCache(nameMovies)
+			else:
+				pp = ParserConstCSFD.parserGetRomanNumbers(res_Name_Corrected_WO_Diacr)
 				pocet_pp = len(pp)
+				
 				if pocet_pp > 0:
 					dodat = pp[(pocet_pp - 1)]
 					dodat1 = ' ' + dodat
 					vv = -1 * len(dodat1)
-					if vst_eventName_Corrected_WO_Diacr[vv:].upper() == dodat1:
-						if dodat == '1':
-							vst_eventName_Corrected_Diacr = vst_eventName_Corrected_Diacr[:vv].strip()
-							vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr_WO_Roman[:vv].strip()
-							vst_eventName_Corrected_WO_Diacr = char2Diacritic(vst_eventName_Corrected_Diacr).upper()
-							vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr
-						else:
-							vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr[:vv].strip()
-							vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr[:vv].strip()
-						vst_eventName_Corrected_WO_Diacr_CorrNumber = vst_eventName_Corrected_WO_Diacr_WO_Roman + ' ' + StrtoRoman(dodat)
-						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - korekce2 ' + vst_eventName_Corrected_WO_Diacr_CorrNumber + '\n')
-						lastNumber = True
-			LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - hledany film: ' + vst_eventName + '\n')
-			for x in searchresults:
-				res_Name_Orig = char2Allowchar(ParserConstCSFD.delHTMLtags(x[1]))
-				nameMovies = res_Name_Orig + '#$' + vst_eventName + '#$' + str(simpleSearch)
-				res_Name = NameMovieCorrections(res_Name_Orig)
-				res_Name_Corrected_Diacr = NameMovieCorrectionsForCompare(res_Name)
-				res_Name_Corrected_WO_Diacr = char2Diacritic(res_Name_Corrected_Diacr).upper()
-				res_Name_Corrected_Diacr_WO_Roman = res_Name_Corrected_Diacr
-				res_Name_Corrected_WO_Diacr_WO_Roman = res_Name_Corrected_WO_Diacr
-				if movieCSFDCache.AreMovieNamesInScoreCache(nameMovies):
-					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - nacteno z cache\n')
-					celkem_bodu, shoda100 = movieCSFDCache.getScoreForMovieNamesFromCache(nameMovies)
+					if res_Name_Corrected_WO_Diacr[vv:].upper() == dodat1:
+						res_Name_Corrected_WO_Diacr_WO_Roman = res_Name_Corrected_WO_Diacr[:vv].strip()
+						res_Name_Corrected_Diacr_WO_Roman = res_Name_Corrected_Diacr[:vv].strip()
 				else:
-					pp = ParserConstCSFD.parserGetRomanNumbers(res_Name_Corrected_WO_Diacr)
+					pp = ParserConstCSFD.parserGetNumbers(res_Name_Corrected_WO_Diacr)
 					pocet_pp = len(pp)
+					
 					if pocet_pp > 0:
 						dodat = pp[(pocet_pp - 1)]
 						dodat1 = ' ' + dodat
 						vv = -1 * len(dodat1)
+						
 						if res_Name_Corrected_WO_Diacr[vv:].upper() == dodat1:
 							res_Name_Corrected_WO_Diacr_WO_Roman = res_Name_Corrected_WO_Diacr[:vv].strip()
 							res_Name_Corrected_Diacr_WO_Roman = res_Name_Corrected_Diacr[:vv].strip()
-					else:
-						pp = ParserConstCSFD.parserGetNumbers(res_Name_Corrected_WO_Diacr)
-						pocet_pp = len(pp)
-						if pocet_pp > 0:
-							dodat = pp[(pocet_pp - 1)]
-							dodat1 = ' ' + dodat
-							vv = -1 * len(dodat1)
-							if res_Name_Corrected_WO_Diacr[vv:].upper() == dodat1:
-								res_Name_Corrected_WO_Diacr_WO_Roman = res_Name_Corrected_WO_Diacr[:vv].strip()
-								res_Name_Corrected_Diacr_WO_Roman = res_Name_Corrected_Diacr[:vv].strip()
-					podobnost_Name_Corrected_WO_Diacr_WO_Roman = porovnejTexty(res_Name_Corrected_WO_Diacr_WO_Roman, vst_eventName_Corrected_WO_Diacr_WO_Roman)
-					celkem_bodu = podobnost_Name_Corrected_WO_Diacr_WO_Roman
-					shoda100 = '0'
-					if podobnost_Name_Corrected_WO_Diacr_WO_Roman > const_shoda_100:
-						shoda100 = '1'
-						podobnost_Name_Corrected_WO_Diacr = porovnejTexty(res_Name_Corrected_WO_Diacr, vst_eventName_Corrected_WO_Diacr)
-						celkem_bodu += podobnost_Name_Corrected_WO_Diacr
-						if podobnost_Name_Corrected_WO_Diacr > const_shoda_100:
+							
+				podobnost_Name_Corrected_WO_Diacr_WO_Roman = porovnejTexty(res_Name_Corrected_WO_Diacr_WO_Roman, vst_eventName_Corrected_WO_Diacr_WO_Roman)
+				celkem_bodu = podobnost_Name_Corrected_WO_Diacr_WO_Roman
+				shoda100 = '0'
+				
+				if podobnost_Name_Corrected_WO_Diacr_WO_Roman > const_shoda_100:
+					shoda100 = '1'
+					podobnost_Name_Corrected_WO_Diacr = porovnejTexty(res_Name_Corrected_WO_Diacr, vst_eventName_Corrected_WO_Diacr)
+					celkem_bodu += podobnost_Name_Corrected_WO_Diacr
+					
+					if podobnost_Name_Corrected_WO_Diacr > const_shoda_100:
+						shoda100 = '2'
+						
+						if zohlednitDiacr:
+							podobnost_Name_Corrected_Diacr = porovnejTexty(res_Name_Corrected_Diacr, vst_eventName_Corrected_Diacr)
+							celkem_bodu += podobnost_Name_Corrected_Diacr
+							
+							if podobnost_Name_Corrected_Diacr > const_shoda_100:
+								shoda100 = '3'
+								podobnost_Name = porovnejTexty(res_Name, vst_eventName)
+								celkem_bodu += podobnost_Name
+								
+								if podobnost_Name > const_shoda_100:
+									shoda100 = '4'
+									
+					elif lastNumber or lastRoman:
+						podobnost_Name_Corrected_WO_DiacrCorrNumber = porovnejTexty(res_Name_Corrected_WO_Diacr, vst_eventName_Corrected_WO_Diacr_CorrNumber)
+						
+						if podobnost_Name_Corrected_WO_DiacrCorrNumber > const_shoda_100:
+							celkem_bodu += podobnost_Name_Corrected_WO_DiacrCorrNumber
 							shoda100 = '2'
-							if zohlednitDiacr:
-								podobnost_Name_Corrected_Diacr = porovnejTexty(res_Name_Corrected_Diacr, vst_eventName_Corrected_Diacr)
-								celkem_bodu += podobnost_Name_Corrected_Diacr
-								if podobnost_Name_Corrected_Diacr > const_shoda_100:
-									shoda100 = '3'
-									podobnost_Name = porovnejTexty(res_Name, vst_eventName)
-									celkem_bodu += podobnost_Name
-									if podobnost_Name > const_shoda_100:
-										shoda100 = '4'
-						elif lastNumber or lastRoman:
-							podobnost_Name_Corrected_WO_DiacrCorrNumber = porovnejTexty(res_Name_Corrected_WO_Diacr, vst_eventName_Corrected_WO_Diacr_CorrNumber)
-							if podobnost_Name_Corrected_WO_DiacrCorrNumber > const_shoda_100:
-								celkem_bodu += podobnost_Name_Corrected_WO_DiacrCorrNumber
-								shoda100 = '2'
-					if shoda100 == '1':
-						podobnost_Name_Corrected_Diacr_WO_Roman = porovnejTexty(res_Name_Corrected_Diacr_WO_Roman, vst_eventName_Corrected_Diacr_WO_Roman)
-						celkem_bodu += podobnost_Name_Corrected_Diacr_WO_Roman
-						if podobnost_Name_Corrected_Diacr_WO_Roman > const_shoda_100:
-							shoda100 = '2'
-					movieCSFDCache.addMovieNamesToScoreCache(nameMovies, celkem_bodu, shoda100)
-				if addTVscore and TVMovies is not None:
-					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - ano\n')
-					for movie in TVMovies:
-						if movie[0] == x[0]:
-							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - x[0]: ' + x[0] + '\n')
-							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - movie[0]: ' + movie[0] + '\n')
-							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - shoda\n')
-							celkem_bodu += 1000
-							TV_shoda = True
-							if shoda100 == '0':
-								shoda100 = '1'
+							
+				if shoda100 == '1':
+					podobnost_Name_Corrected_Diacr_WO_Roman = porovnejTexty(res_Name_Corrected_Diacr_WO_Roman, vst_eventName_Corrected_Diacr_WO_Roman)
+					celkem_bodu += podobnost_Name_Corrected_Diacr_WO_Roman
+					if podobnost_Name_Corrected_Diacr_WO_Roman > const_shoda_100:
+						shoda100 = '2'
+						
+				movieCSFDCache.addMovieNamesToScoreCache(nameMovies, celkem_bodu, shoda100)
+				
+			if addTVscore and TVMovies is not None:
+				LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - ano\n')
+				for movie in TVMovies:
+					if movie[0] == x[0]:
+						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - x[0]: ' + x[0] + '\n')
+						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - movie[0]: ' + movie[0] + '\n')
+						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - shoda\n')
+						celkem_bodu += 1000
+						TV_shoda = True
+						if shoda100 == '0':
+							shoda100 = '1'
 
-				if addTVscore and TVMovies is not None and x[2] is not None:
+			if x[2] is not None:
+				if (addTVscore and TVMovies is not None) or len(self.eventMovieYears) == 1:
 					y_body, y_shoda = self.CompareMovieYears(x[2])
 					if y_shoda:
 						shoda100 += '1'
@@ -3556,24 +3514,33 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					celkem_bodu += y_body
 				else:
 					shoda100 += '0'
-				if celkem_bodu >= acceptance:
-					if not res_shoda and shoda100 > '01':
-						res_shoda = True
-					if x[2] is not None:
-						spoj = strUni(res_Name_Orig + ' ' + char2Allowchar(x[2]))
-					else:
-						spoj = strUni(res_Name_Orig)
-					if not self.SearchDuplicity(resultlist, spoj, x[0]):
-						if len(res_Name_Corrected_WO_Diacr) > 0:
-							res_Name_Corrected_WO_DiacrSort = char2DiacriticSort(res_Name)
-							if x[2] is not None:
-								resultlist.append((spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, celkem_bodu, y, shoda100, res_Name_Orig, x[3], x[2]))
-							else:
-								resultlist.append((spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, celkem_bodu, y, shoda100, res_Name_Orig, x[3], ''))
-							y += 1
+					
+			if celkem_bodu >= acceptance:
+				if not res_shoda and shoda100 > '01':
+					res_shoda = True
+				if x[2] is not None:
+					spoj = strUni(res_Name_Orig + ' (' + char2Allowchar(x[2]) + ')' )
+				else:
+					spoj = strUni(res_Name_Orig)
 
-			LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - konec\n')
-			return (resultlist, res_shoda, TV_shoda)
+				if x[4] is not None and x[4] != '':
+					spoj += ' [' + x[4] + ']'
+				
+				if not self.SearchDuplicity(resultlist, spoj, x[0]):
+					if len(res_Name_Corrected_WO_Diacr) > 0:
+						res_Name_Corrected_WO_DiacrSort = char2DiacriticSort(res_Name)
+						if x[2] is not None:
+							resultlist.append((spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, celkem_bodu, y, shoda100, res_Name_Orig, x[3], x[2], x[4]))
+							
+							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - item %s\n' % ' $ '.join( (spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, str(celkem_bodu), str(y), str(shoda100), res_Name_Orig, x[3], x[2], x[4]) ))
+						else:
+							resultlist.append((spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, celkem_bodu, y, shoda100, res_Name_Orig, x[3], '', x[4]))
+							
+							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - item %s\n' % ' $ '.join( (spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, str(celkem_bodu), str(y), str(shoda100), res_Name_Orig, x[3], '', x[4]) ))
+						y += 1
+
+		LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - konec\n')
+		return (resultlist, res_shoda, TV_shoda)
 
 	def GetOtherMovieNamesFromDetail(self, searchresults):
 		LogCSFD.WriteToFile('[CSFD] GetOtherMovieNamesFromDetail - zacatek\n')
@@ -3600,8 +3567,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					LogCSFD.WriteToFile('[CSFD] GetOtherMovieNamesFromDetail - stahuji z url ' + Uni8(fetchurl) + '\n')
 
 					res = csfdAndroidClient.get_json_by_uri( fetchurl )
-					ParserOstCSFD.setJson( res)
-					res_name = ParserOstCSFD.parserOrigMovieTitle()
+					res_name = ParserCSFD.parserOrigMovieTitle(res)
 					if res_name is not None:
 						searchresults.append((pol[0], res_name, pol[2], pol[3]))
 						searchresultsAdd.append((pol[0], res_name, pol[2], pol[3]))
@@ -3610,7 +3576,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				index += 1
 
 
-			ParserOstCSFD.setJson( {} )
 		LogCSFD.WriteToFile('[CSFD] GetOtherMovieNamesFromDetail - konec\n')
 		return (searchresults, searchresultsAdd)
 
@@ -3800,7 +3765,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					self.resultlist = []
 					searchresults = []
 					filmdate = ''
-					res = ParserConstCSFD.parserGetYears(Titeltext[-6:])
+					res = ParserConstCSFD.parserGetYears(Titeltext[-6:], '(')
 					if res is not None and len(res) > 0:
 						LogCSFD.WriteToFile('[CSFD] ParseName - filmdate - ')
 						filmdate = '(' + res[0] + ')'
@@ -3877,9 +3842,10 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - Jmeno\n')
 		
 		resultText = ParserCSFD.parserMovieTitle()
-		if resultText is not None and resultText is not '':
+		if resultText is not '':
 			self.ActName = char2Allowchar(NameMovieCorrectionExtensions(resultText))
 			Detailstext += strUni(resultText + '\n')
+			
 		if self.ActName == '':
 			ss = Titeltext.split(' / ', 1)
 			self.ActName = char2Allowchar(ss[0].strip())
@@ -3887,15 +3853,10 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - ActName: ' + self.ActName + '\n')
 		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - Jmeno serialu v epizode\n')
-		resultText = ParserCSFD.parserSeriesNameInEpisode()
-		if resultText is not None and resultText is not '':
-			Detailstext += strUni(char2Allowchar(resultText))
+		Detailstext += strUni( char2Allowchar( ParserCSFD.parserSeriesNameInEpisode() ) )
 			
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - Ostatni jmena\n')
-		
-		resultText = ParserCSFD.parserOtherMovieTitle()
-		if resultText is not None and resultText is not '':
-			Detailstext += strUni(char2Allowchar(resultText))
+		Detailstext += strUni( char2Allowchar( ParserCSFD.parserOtherMovieTitle() ) )
 			
 		Detailstext = OdstranitDuplicityRadku(Detailstext)
 		textCol1 = self['detailslabel'].AddRowIntoText(Detailstext, '')
@@ -3903,48 +3864,30 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		Detailstext = textCol1
 		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - typ poradu\n')
-		resultText = ParserCSFD.parserTypeOfMovie()
-		if resultText is not None and resultText is not '':
-			Detailstext += resultText + '\n'
+		Detailstext += AddLine( ParserCSFD.parserTypeOfMovie() ) 
 			
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - zanr\n')
 		resultText = ParserCSFD.parserGenre()
-		if resultText is not None and resultText is not '':
-			Detailstext += resultText + '\n'
+		Detailstext += AddLine(resultText)
+		if resultText is not '':
 			self.callbackGenre = resultText
 		
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - origin\n')
-		resultText = ParserCSFD.parserOrigin()
-		if resultText is not None and resultText is not '':
-			delim = ', '
-			Detailstext += resultText
-		else:
-			delim = ''
-
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - length\n')
-		resultText = ParserCSFD.parserMovieDuration()
-		if resultText is not None and resultText is not '':
-			Detailstext += delim + resultText + '\n'
-		elif delim != '':
-			Detailstext += '\n'
-			
+		LogCSFD.WriteToFile('[CSFD] ParseMainPart - origin + length\n')
+		Detailstext += AddLine( CreateStrList( (ParserCSFD.parserOrigin(), ParserCSFD.parserMovieDuration()) ) )
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - zebricky\n')
-		resultText = ParserCSFD.parserCSFDRankings()
-		if resultText is not None and resultText is not '':
-			Detailstext += resultText
+		Detailstext += ParserCSFD.parserCSFDRankings()
 			
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - info, kde film bezi\n')
-		resultText = ParserCSFD.parserWherePlaying()
-		if resultText is not None and resultText is not '':
-			Detailstext += resultText + '\n'
+		Detailstext += AddLine( ParserCSFD.parserWherePlaying() )
 			
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
 		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - vlastni hodnoceni\n')
 		resultText = ParserCSFD.parserOwnRating()[0]
-		if resultText is not None and resultText is not '':
+		if resultText is not '':
 			ss = ParserCSFD.parserDateOwnRating()
-			if ss is not None and ss is not '':
+			if ss is not '':
 				resultText += '	 (' + ss + ')'
 			coltextpart = _('Vlastní hodnocení: ')
 			textCol = textCol + coltextpart + '\n'
@@ -3964,135 +3907,34 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			Detailstext += resultText + '\n'
 		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
 		
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - rezije\n')
-		resultText = ParserCSFD.parserDirector()
-		if resultText is not None and resultText is not '':
-			coltextpart = _('Režie: ')
-			textCol = textCol + coltextpart + '\n'
-			coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
-			Detailstext += coltextspace
-			Detailstext += resultText + '\n'
-		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+		creators = [
+			( 'directors',        _('Režie: ')),
+			( 'authors',          _('Předloha: ')),
+			( 'screenwriters',    _('Scénář: ')),
+			( 'cinematographers', _('Kamera: ')),
+			( 'composers',        _('Hudba: ')),
+			( 'production',       _('Produkce: ')),
+			( 'edit',             _('Střih: ')),
+			( 'sound',            _('Zvuk: ')),
+			( 'scenographies',    _('Scénografie: ')),
+			( 'masks',            _('Masky: ')),
+			( 'costumes',         _('Kostýmy: ')),
+			( 'actors',           _('Hrají: ')),
+			( 'performer',        _('Účinkují: ')),
+		]
 		
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - predloha\n')
-		resultText = ParserCSFD.parserDraft()
-		if resultText is not None and resultText is not '':
-			coltextpart = _('Předloha: ')
-			textCol = textCol + coltextpart + '\n'
-			coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
-			Detailstext += coltextspace
-			Detailstext += resultText + '\n'
-		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
-		
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - scenar\n')
-		resultText = ParserCSFD.parserScenario()
-		if resultText is not None and resultText is not '':
-			coltextpart = _('Scénář: ')
-			textCol = textCol + coltextpart + '\n'
-			coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
-			Detailstext += coltextspace
-			Detailstext += resultText + '\n'
-		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
-		
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - kamera\n')
-		resultText = ParserCSFD.parserCamera()
-		if resultText is not None and resultText is not '':
-			coltextpart = _('Kamera: ')
-			textCol = textCol + coltextpart + '\n'
-			coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
-			Detailstext += coltextspace
-			Detailstext += resultText + '\n'
-		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
-		
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - hudba\n')
-		resultText = ParserCSFD.parserMusic()
-		if resultText is not None and resultText is not '':
-			coltextpart = _('Hudba: ')
-			textCol = textCol + coltextpart + '\n'
-			coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
-			Detailstext += coltextspace
-			Detailstext += resultText + '\n'
-		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
-		
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - produkce\n')
-		resultText = ParserCSFD.parserProduction()
-		if resultText is not None and resultText is not '':
-			coltextpart = _('Produkce: ')
-			textCol = textCol + coltextpart + '\n'
-			coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
-			Detailstext += coltextspace
-			Detailstext += resultText + '\n'
-		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
-		
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - strih\n')
-		resultText = ParserCSFD.parserCutting()
-		if resultText is not None and resultText is not '':
-			coltextpart = _('Střih: ')
-			textCol = textCol + coltextpart + '\n'
-			coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
-			Detailstext += coltextspace
-			Detailstext += resultText + '\n'
-		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
-		
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - zvuk\n')
-		resultText = ParserCSFD.parserSound()
-		if resultText is not None and resultText is not '':
-			coltextpart = _('Zvuk: ')
-			textCol = textCol + coltextpart + '\n'
-			coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
-			Detailstext += coltextspace
-			Detailstext += resultText + '\n'
-		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
-		
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - scenografie\n')
-		resultText = ParserCSFD.parserScenography()
-		if resultText is not None and resultText is not '':
-			coltextpart = _('Scénografie: ')
-			textCol = textCol + coltextpart + '\n'
-			coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
-			Detailstext += coltextspace
-			Detailstext += resultText + '\n'
-		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
-		
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - masky\n')
-		resultText = ParserCSFD.parserMakeUp()
-		if resultText is not None and resultText is not '':
-			coltextpart = _('Masky: ')
-			textCol = textCol + coltextpart + '\n'
-			coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
-			Detailstext += coltextspace
-			Detailstext += resultText + '\n'
-		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
-		
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - kostymy\n')
-		resultText = ParserCSFD.parserCostumes()
-		if resultText is not None and resultText is not '':
-			coltextpart = _('Kostýmy: ')
-			textCol = textCol + coltextpart + '\n'
-			coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
-			Detailstext += coltextspace
-			Detailstext += resultText + '\n'
-		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
-		
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - hraji\n')
-		resultText = ParserCSFD.parserCasting()
-		if resultText is not None and resultText is not '':
-			coltextpart = _('Hrají: ')
-			textCol = textCol + coltextpart + '\n'
-			coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
-			Detailstext += coltextspace
-			Detailstext += resultText + '\n'
-		textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
-		
-		LogCSFD.WriteToFile('[CSFD] ParseMainPart - tagy\n')
-#		resultText = ParserCSFD.parserTags()
-		resultText = None
-		if resultText is not None and resultText is not '':
-			coltextpart = _('Tagy: ')
-			textCol = textCol + coltextpart + '\n'
-			coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
-			Detailstext += coltextspace
-			Detailstext += resultText + '\n'
+		for creator in creators:
+			LogCSFD.WriteToFile('[CSFD] ParseMainPart - %s\n' % creator[0] )
+			resultText = ParserCSFD.parserGetCreatorList( creator[0] )
+			
+			if resultText is not '':
+				coltextpart = creator[1]
+				textCol = textCol + coltextpart + '\n'
+				coltextspace = self['detailslabel'].CalculateSizeInSpace(coltextpart)[0]
+				Detailstext += coltextspace
+				Detailstext += resultText + '\n'
+				textCol = self['detailslabel'].AddRowIntoText(Detailstext, textCol)
+
 		
 		Detailstext = char2Allowchar(Detailstext)
 		self.callbackData += Detailstext
@@ -4315,7 +4157,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		movie_id = self.linkGlobal[7:]
 		
 		self['statusbar'].setText('')
-		if self.querySpecAkce == 'UserGallery' or self.querySpecAkce == 'UserPoster' or self.querySpecAkce == 'UserVideo':
+		if self.querySpecAkce == 'UserGallery' or self.querySpecAkce == 'UserPoster' or self.querySpecAkce == 'UserVideo' or self.querySpecAkce == 'UserPremiery':
 			self.CSFDquerySpec('')
 		else:
 			if CSFDGlobalVar.getCSFDDesktopWidth() > 1250:
@@ -4324,37 +4166,30 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			else:
 				LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - nadpis NE\n')
 				self['statusbar'].setText('')
-			sss = str(self.PageSpec)
+
 			if self.querySpecAkce == 'UserComments':
 #				self.linkComment obsahuje sposob ako zoradit komentare
 				self.linkSpec = '#movie_comments#' +  movie_id
 			elif self.querySpecAkce == 'UserExtReviews':
-				self.linkSpec = 'recenze/strana-%s/' % sss
-			elif self.querySpecAkce == 'UserPremiery':
-#				self.linkSpec = self.linkComment
-				self.linkSpec = '#movie_premiere#'
+				self.linkSpec = ''
 			elif self.querySpecAkce == 'UserDiscussion':
-				self.linkSpec = 'diskuze/strana-%s/' % sss
+				self.linkSpec = ''
 			elif self.querySpecAkce == 'UserInteresting':
 				self.linkSpec = '#movie_trivia#' +  movie_id
 			elif self.querySpecAkce == 'UserAwards':
-				self.linkSpec = 'oceneni/strana-%s/' % sss
+				self.linkSpec = ''
 			elif self.querySpecAkce == 'UserReviews':
-				self.linkSpec = const_quick_page + '?expandUserList=1&ratings-page=%s' % sss
+				self.linkSpec = ''
 			elif self.querySpecAkce == 'UserFans':
-				self.linkSpec = const_quick_page + '?expandUserList=1&fanclub-page=%s' % sss
-			fetchurl = CSFDGlobalVar.getHTTP() + const_csfd_http_film + self.linkGlobal + self.linkSpec
-			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - stahuji z url ' + fetchurl + '\n')
+				self.linkSpec = ''
+
 			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - linkGlobal ' + self.linkGlobal + '\n')
 			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - linkSpec ' + self.linkSpec + '\n')
 			
-#			page = requestCSFD(fetchurl, headers=std_headers_UL2, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-#			CSFDGlobalVar.setParalelDownload(self.CSFDquerySpec, page)
-#			self.DownloadTimer.start(10, True)
-
 			if self.linkSpec.startswith('#'):
 				page = csfdAndroidClient.get_json_by_uri(self.linkSpec, self.PageSpec )
-				self.CSFDquerySpec(page)
+				CSFDGlobalVar.setParalelDownload(self.CSFDquerySpec, page)
+				self.DownloadTimer.start(10, True)
 		LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - konec\n')
 
 	def CSFDquerySpec(self, string):
@@ -4700,9 +4535,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 	def CSFDParseUserPremiery(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDParseUserPremiery - zacatek\n')
-		Extratext, Pristupnost = ParserCSFD.parserPremiere()
-		if Pristupnost != '':
-			Extratext = Pristupnost + '\n\n' + Extratext
+		Extratext = ParserCSFD.parserPremiere()
+
 		if Extratext == '':
 			if self.PageSpec > 1:
 				Extratext = '\n' + _('Žádné další premiéry v databázi.')
@@ -4710,6 +4544,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				Extratext = '\n' + _('Žádné premiéry v databázi.')
 		elif self.PageSpec > 1:
 			Extratext = '\n' + _('Žádné další premiéry v databázi.')
+			
 		Extradopln = _('Premiéry') + ' :' + '\n\n'
 		self['extralabel'].setTextHead(Extradopln)
 		Extratext = self['extralabel'].AddRowIntoText(Extradopln, '') + strUni(char2Allowchar(Extratext))
@@ -4762,29 +4597,24 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - stahuji z url ' + id_filmu + '\n')
 		result = csfdAndroidClient.get_json_by_uri( '#movie_videos#' + id_filmu )
 
-		ParserVideoCSFD.setJson(result)
-		results = ParserVideoCSFD.parserVideoDetail(config.misc.CSFD.QualityVideoPoster.getValue())
+		results = ParserCSFD.parserVideoDetail(result, config.misc.CSFD.VideoResolution.getValue() == 'hd', config.misc.CSFD.QualityVideoPoster.getValue())
 		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - parserVideoDetail\n')
 		if results is not None:
 			for x in results:
-				if video_res == 'hd':
-					videoklipurl = x[1] or x[0]
-				else:
-					videoklipurl = x[0] or x[1]
 				if CSFDGlobalVar.getCSFDlang() == 'sk':
-					videotitulkyurl = x[3] or x[2]
+					videotitulkyurl = x[2] or x[1]
 				else:
-					videotitulkyurl = x[2] or x[3]
-				if videoklipurl != '':
-					ss = strUni(char2Allowchar(x[4]))
-					porVF += 1
-					s_video = 'V' + str(porVF).zfill(7)
-					localfile = CSFDGlobalVar.getCSFDadresarTMP() + 'CSFDVPoster' + str(porVF).zfill(7) + '_' + str(randint(1, 99999)) + '.jpg'
-					LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - videoposter: ' + x[5] + '\n')
-					downloaded = False
-					url = ""
-					self.VideoSlideList.append([url, porVF, ss, s_video, videoklipurl, videotitulkyurl, x[5], char2DiacriticSort(ss), localfile, downloaded])
-					self.VideoCountPix += 1
+					videotitulkyurl = x[1] or x[2]
+					
+				ss = strUni(char2Allowchar(x[3]))
+				porVF += 1
+				s_video = 'V' + str(porVF).zfill(7)
+				localfile = CSFDGlobalVar.getCSFDadresarTMP() + 'CSFDVPoster' + str(porVF).zfill(7) + '_' + str(randint(1, 99999)) + '.jpg'
+				LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - videoposter: ' + x[4] + '\n')
+				downloaded = False
+				url = ""
+				self.VideoSlideList.append([url, porVF, ss, s_video, x[0], videotitulkyurl, x[4], char2DiacriticSort(ss), localfile, downloaded])
+				self.VideoCountPix += 1
 
 			LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - VideoCountPix ' + str(self.VideoCountPix) + '\n')
 			if self.Page == 2 and self.querySpecAkce == 'UserVideo':
@@ -4805,7 +4635,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 		self.VideoSlideList.sort(key=lambda z: z[7])
 		self.VideoIsNotFullyRead = False
-		ParserVideoCSFD.setJson({})
 		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - konec\n')
 		return
 
@@ -5289,12 +5118,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			
 			del_url = None # not supported by api
 
-			if del_url is not None and del_url != '':
+			if del_url is not None:
 				try:
-#					del_url = CSFDGlobalVar.getHTTP() + const_www_csfd + del_url
-#					LogCSFD.WriteToFile('[CSFD] DeleteRatingOnWeb - url: %s \n' % del_url, 8)
-					
-#					page = requestCSFD(del_url, headers=std_headers_UL2, timeout=config.misc.CSFD.TechnicalDownloadTimeOut.getValue())
+					# call api to delete rating
 					
 					if linkG == self.linkGlobal:
 						reloadMovieAfterRating(True)

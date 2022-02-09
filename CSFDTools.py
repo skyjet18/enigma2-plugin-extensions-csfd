@@ -13,29 +13,9 @@ from .CSFDMenuList import CSFDMenuList
 import re, sys, operator, traceback
 import requests
 
-try:
-	# py2
-	from urllib import urlencode
-	from urllib2 import build_opener as urllib_build_opener
-	from urllib2 import HTTPHandler as urllib_HTTPHandler
-	from urllib2 import HTTPSHandler as urllib_HTTPSHandler
-	from urllib2 import HTTPCookieProcessor as urllib_HTTPCookieProcessor
-	from urllib2 import HTTPErrorProcessor as HTTPError
-	from urllib2 import Request as urllib_Request
-	from urllib2 import urlopen as urllib_urlopen
-except:
-	# py3
-	from urllib.parse import urlencode
-	from urllib.request import build_opener as urllib_build_opener
-	from urllib.request import HTTPHandler as urllib_HTTPHandler
-	from urllib.request import HTTPSHandler as urllib_HTTPSHandler
-	from urllib.request import HTTPCookieProcessor as urllib_HTTPCookieProcessor
-	from urllib.error import HTTPError as HTTPError
-	from urllib.request import Request as urllib_Request
-	from urllib.request import urlopen as urllib_urlopen
+if sys.version_info[0] == 3:
 	xrange = range
 	unicode = str
-
 
 csfd_session = requests.Session()
 
@@ -46,14 +26,6 @@ http_adaptor = HTTPAdapter(max_retries=Retry(total=3, backoff_factor=0.1))
 csfd_session.mount('http://', http_adaptor)
 csfd_session.mount('https://', http_adaptor)
 
-csfd_URL_https = 'https://www.csfd.cz/'
-
-try:
-	from twisted.web.client import downloadPage
-except:
-	def downloadPage(self, *a, **kw):
-		pass
-	
 try:
 	import unicodedata
 	unicodedataExist = True
@@ -458,10 +430,17 @@ def char2DiacriticSort(text):
 
 
 charAllowed = '1234567890QWERTZUIOPASDFGHJKLYXCVBNMqwertzuiopasdfghjklyxcvbnm?:./\\+ -()!@;*#$^&[]\'%|;{}",<>=»«_ÁÄĄÀÂČĆÇĎÉĚËĘÈÊÍÏÎĹĽŁŇŃÓÔÖŐŒŔŘŠŚŤÚŮÜŰÙÛÝŸŽŻŹáäąàâčćçďéěëęèêíïîĺľłňńóöôőœřŕšśťúůüűùûýÿžżź\n'
+bigChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄĄÀÂČĆÇĎÉĚËĘÈÊÍÏÎĹĽŁŇŃÓÔÖŐŒŔŘŠŚŤÚŮÜŰÙÛÝŸŽŻŹ'
+
+try:
+	charAllowed = charAllowed.decode('utf-8')
+	bigChar = bigChar.decode('utf-8')
+except:
+	pass
 
 def char2Allowchar(mystring, typeControl=0):
-	if True:
-		return mystring
+#	if True:
+#		return mystring
 	if isinstance(mystring, str):
 		mystring = unicode(mystring, 'utf-8')
 	if typeControl == 1:
@@ -493,8 +472,6 @@ def char2AllowcharNumbers(mystring):
 
 	return mystring
 
-
-bigChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄĄÀÂČĆÇĎÉĚËĘÈÊÍÏÎĹĽŁŇŃÓÔÖŐŒŔŘŠŚŤÚŮÜŰÙÛÝŸŽŻŹ'
 
 def isBigCharInFirst(mystring):
 	result = False
@@ -756,6 +733,31 @@ def IsThereBT_Parameters():
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - IsThereBT_Parameters - konec\n')
 	return OK
 
+def CheckValidValue( value, value_valid = "" ):
+	return str(value) if value != None else value_valid
+
+def CreateNameSurname( data, name_key = "firstname", surname_key = "surname" ):
+	try:
+		ret = CheckValidValue( data[name_key] )
+	except:
+		ret = ""
+	
+	try:
+		surname = data[surname_key]
+		ret += " " + surname if len( ret ) > 0 else surname
+	except:
+		pass
+	
+	return ret
+
+def CreateNameSurnameList( data ):
+	return ', '.join( CreateNameSurname(x) for x in data )
+
+def AddLine( text ):
+	return text + '\n' if len(text) > 0 else ""
+
+def CreateStrList( data ):
+	return ', '.join( x for x in data if len(x) > 0 )
 
 def InitCSFDTools():
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - InitCSFDTools - zacatek\n')
@@ -768,7 +770,6 @@ def InitCSFDTools():
 	CSFDGlobalVar.setCSFDEnigmaVersion(CSFDGlobalVar.getCSFDBoxType()[2])
 	CSFDGlobalVar.setCSFDInstallCommand(GetInstallCommand())
 	CSFDGlobalVar.setBTParameters(IsThereBT_Parameters())
-	CSFDGlobalVar.setHTTP('https')
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - InitCSFDTools - konec\n')
 
 InitCSFDTools()

@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
 
-defaultCSFDCookies = {'cookies-agreement': '1'}
-
 class CSFDGlobalVarDef:
 
 	def __init__(self):
 		self.CSFDcur = 1
 		self.CSFDeventID_EPG = 0
 		self.CSFDeventID_REF = ''
-		self.CSFDCookies = defaultCSFDCookies
-		self.CSFDCookiesUL2 = ''
 		self.IMDBexist = False
 		self.AudioSelectionexist = False
 		self.OpenSSLexist = False
 		self.OpenSSLcontext = False
 		self.TVTimer_channName = ''
-		self.Session = None
 		self.EventName = ''
 		self.CallBackNeeded = False
 		self.EPG = ''
@@ -31,7 +26,6 @@ class CSFDGlobalVarDef:
 		self.CSFDEnigmaVersion = '3'
 		self.CSFDInstallCommand = 'opkg'
 		self.BTParameters = False
-		self.HTTP = 'http'
 		self.ParalelDownloadProcedure = None
 		self.ParalelDownloadPage = ''
 		return
@@ -66,24 +60,6 @@ class CSFDGlobalVarDef:
 	def setIMDBexist(self, IMDBexist):
 		self.IMDBexist = IMDBexist
 
-	def getCSFDCookies(self):
-		return self.CSFDCookies
-
-	def setCSFDCookies(self, CSFDCookies):
-		self.CSFDCookies = CSFDCookies
-
-	def resetCSFDCookies(self):
-		self.CSFDCookies = defaultCSFDCookies
-
-	def getCSFDCookiesUL2(self):
-		return self.CSFDCookiesUL2
-
-	def setCSFDCookiesUL2(self, CSFDCookiesUL2):
-		self.CSFDCookiesUL2 = CSFDCookiesUL2
-
-	def resetCSFDCookiesUL2(self):
-		self.CSFDCookiesUL2 = ''
-
 	def getCSFDcur(self):
 		return self.CSFDcur
 
@@ -101,12 +77,6 @@ class CSFDGlobalVarDef:
 
 	def setCSFDeventID_REF(self, eventID_REF):
 		self.CSFDeventID_REF = eventID_REF
-
-	def getSession(self):
-		return self.Session
-
-	def setSession(self, Session):
-		self.Session = Session
 
 	def getEventName(self):
 		return self.EventName
@@ -197,12 +167,6 @@ class CSFDGlobalVarDef:
 
 	def setBTParameters(self, BTParameters):
 		self.BTParameters = BTParameters
-
-	def getHTTP(self):
-		return self.HTTP
-
-	def setHTTP(self, HTTP):
-		self.HTTP = HTTP
 
 	def getParalelDownload(self):
 		return (
