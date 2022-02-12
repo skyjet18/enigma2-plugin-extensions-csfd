@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from .CSFDLog import LogCSFD
-from .CSFDTools import char2Allowchar, strUni, ExtractNumbers, isBigCharInFirst, char2Diacritic, CheckValidValue, CreateNameSurname, CreateNameSurnameList
+from .CSFDTools import char2Allowchar, strUni, ExtractNumbers, isBigCharInFirst, char2Diacritic, CheckValidValue, CreateNameSurname, CreateNameSurnameList, Uni8, StripAccents
 from .CSFDSettings1 import CSFDGlobalVar
 from datetime import datetime
 import re, traceback
@@ -55,29 +55,31 @@ movie_type_map = {
 	9: "hudební videoklip",
 	10: "série",
 	11: "epizoda",
-	12: "seriál", # inclusive seasons? example: Simpsons
-	13: "pořad", # inclusive seasons? example: MythBusters
+	12: "seriál s epizodami", # example: Simpsons
+	13: "pořad s epizodami", # example: MythBusters
 	14: "video kompilace"
 }
 
-try:
-	import unidecode
-	
-	def strip_accents(s):
-		return unidecode.unidecode(s)
-except:
-	import unicodedata
-	
-	def strip_accents(s):
-		try:
-			# py2
-			s = s.decode('utf-8')
-		except:
-			pass
-		return ''.join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
+movie_type_map_rev = {
+	""                    : 0, # used also for type 1 - to not show type in text form
+	Uni8("video film")          : 1,
+	Uni8("TV film")             : 2,
+	Uni8("seriál")              : 3,
+	Uni8("pořad")               : 4,
+	Uni8("divadelní záznam")    : 5,
+	Uni8("koncert")             : 6,
+	Uni8("studentský film")     : 7,
+	Uni8("amatérský film")      : 8,
+	Uni8("hudební videoklip")   : 9,
+	Uni8("série")               : 10,
+	Uni8("epizoda")             : 11,
+	Uni8("seriál s epizodami")  : 12, # example: Simpsons
+	Uni8("pořad s epizodami")   : 13, # example: MythBusters
+	Uni8("video kompilace")     : 14
+}
 
 def channel_name_normalise( name ):
-	name = strip_accents( name ).lower()
+	name = StripAccents( name ).lower()
 
 	name = name.replace("television", "tv")
 	name = name.replace("(bonus)", "").strip()
@@ -405,10 +407,19 @@ class CSFDParser():
 		
 		for movie in self.json_data["films"]:
 			year = CheckValidValue(movie["year"], None)
-			searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], year, 'c' + movie["rating_category"], CheckValidValue(movie["type"]) ) )
+				
+			movie_info = {
+				'id': movie['id'],
+				'name': movie['name'],
+				'year': CheckValidValue(movie["year"], -1),
+				'rating_category': CheckValidValue(movie["rating_category"], "0"),
+				'type': movie_type_map_rev[ movie['type'] ] if movie['type'] in movie_type_map_rev else 0
+			}
+			searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], year, 'c' + movie["rating_category"], movie_info ) )
 			
-			if movie["search_name"] != movie["name"]:
-				searchresults.append( ( '#movie#%d' % movie["id" ], movie["search_name"], year, 'c' + movie["rating_category"], CheckValidValue(movie["type"]) ) )
+			if movie["search_name"] is not None and movie["search_name"] != movie["name"]:
+				movie_info['name'] = movie["search_name"]
+				searchresults.append( ( '#movie#%d' % movie["id" ], movie["search_name"], year, 'c' + movie["rating_category"], movie_info ) )
 
 		LogCSFD.WriteToFile('[CSFD] parserListOfMovies - konec\n')
 		return searchresults
@@ -424,6 +435,14 @@ class CSFDParser():
 			movie_info = self.json_data["related"]
 			
 			for movie in movie_info:
+				movie_info = {
+					'id': movie['id'],
+					'name': movie['name'],
+					'year': CheckValidValue(movie["year"], -1),
+					'rating_category': CheckValidValue(movie["rating_category"], "0"),
+					'type': movie_type_map_rev[ movie['type'] ] if movie['type'] in movie_type_map_rev else 0
+				}
+
 				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], CheckValidValue(movie["type"] ) ) )
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserListOfRelatedMovies - failed\n')
@@ -442,7 +461,15 @@ class CSFDParser():
 			movie_info = self.json_data["similar"]
 			
 			for movie in movie_info:
-				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], CheckValidValue(movie["type"] ) ) )
+				movie_info = {
+					'id': movie['id'],
+					'name': movie['name'],
+					'year': CheckValidValue(movie["year"], -1),
+					'rating_category': CheckValidValue(movie["rating_category"], "0"),
+					'type': movie_type_map_rev[ movie['type'] ] if movie['type'] in movie_type_map_rev else 0
+				}
+
+				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], movie_info ) )
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserListOfRelatedMovies - failed\n')
 
@@ -460,7 +487,15 @@ class CSFDParser():
 				self.json_data["seasons"] = csfdAndroidClient.get_movie_episodes( self.json_data["info"]["id"], 0, 0 )["seasons"]
 				
 			for movie in self.json_data["seasons"]:
-				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], '' ) )
+				movie_info = {
+					'id': movie['id'],
+					'name': movie['name'],
+					'year': CheckValidValue(movie["year"], -1),
+					'rating_category': CheckValidValue(movie["rating_category"], "0"),
+					'type': 10
+				}
+
+				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], movie_info ) )
 
 		LogCSFD.WriteToFile('[CSFD] parserListOfSeries - konec\n')
 		return searchresults
@@ -477,7 +512,16 @@ class CSFDParser():
 
 			for season in self.json_data["seasons"]:
 				for movie in season["episodes"]:
-					searchresults.append( ( '#movie#%d' % movie["id" ], movie.get("position_code", "") + movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], '' ) )
+					movie_info = {
+						'id': movie['id'],
+						'name': movie['name'],
+						'year': CheckValidValue(movie["year"], -1),
+						'rating_category': CheckValidValue(movie["rating_category"], "0"),
+						'type': type_id - 9,
+						'position_code': movie['position_code'] if 'position_code' in movie else ''
+					}
+
+					searchresults.append( ( '#movie#%d' % movie["id" ], movie_info["position_code"] + ' ' + movie["name"] if movie_info['position_code'] != '' else movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], movie_info ) )
 
 		LogCSFD.WriteToFile('[CSFD] parserListOfEpisodes - konec\n')
 		return searchresults

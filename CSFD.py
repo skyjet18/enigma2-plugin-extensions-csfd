@@ -4,7 +4,7 @@ from enigma import eTimer, ePicLoad, eServiceCenter, eServiceReference, eConsole
 from .CSFDLog import LogCSFD
 from .CSFDTools import ItemList, ItemListServiceMenu, TextSimilarityBigram, TextSimilarityLD, TextCompare, max_positions, request, requestFileCSFD, internet_on, fromRomanStr, StrtoRoman
 from .CSFDTools import intWithSeparator, char2Diacritic, char2DiacriticSort, char2Allowchar, char2AllowcharNumbers, strUni, Uni8, deletetmpfiles, OdstranitDuplicityRadku, loadPixmapCSFD, picStartDecodeCSFD, AddLine, CreateStrList
-from .CSFDParser import ParserCSFD, ParserConstCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions
+from .CSFDParser import ParserCSFD, ParserConstCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions, movie_type_map
 from .CSFDClasses import GetMoviesForTVChannels, CSFDChannelSelection, CSFDEPGSelection, CSFDLCDSummary, CSFDSetup, CSFDInputText, CSFDAbout, CSFDHistory, CSFDVideoInfoScreen, CSFDPlayer, RefreshPlugins
 from .CSFDMovieCache import TVMovieCache
 from .CSFDSettings1 import CSFDGlobalVar
@@ -3418,6 +3418,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - hledany film: ' + vst_eventName + '\n')
 		for x in searchresults:
 			# x = [ "#movie# + id, movie_name, year, colour_rating ]
+			movie_info = x[4]
+			
 			res_Name_Orig = char2Allowchar(ParserConstCSFD.delHTMLtags(x[1]))
 			nameMovies = res_Name_Orig + '#$' + vst_eventName + '#$' + str(simpleSearch)
 			res_Name = NameMovieCorrections(res_Name_Orig)
@@ -3523,8 +3525,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				else:
 					spoj = strUni(res_Name_Orig)
 
-				if x[4] is not None and x[4] != '':
-					spoj += ' [' + x[4] + ']'
+				if x[4]['type'] != 0:
+					spoj += ' [' + movie_type_map[x[4]['type']] + ']'
 				
 				if not self.SearchDuplicity(resultlist, spoj, x[0]):
 					if len(res_Name_Corrected_WO_Diacr) > 0:
@@ -3532,11 +3534,11 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						if x[2] is not None:
 							resultlist.append((spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, celkem_bodu, y, shoda100, res_Name_Orig, x[3], x[2], x[4]))
 							
-							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - item %s\n' % ' $ '.join( (spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, str(celkem_bodu), str(y), str(shoda100), res_Name_Orig, x[3], x[2], x[4]) ))
+							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - item %s\n' % ' $ '.join( (spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, str(celkem_bodu), str(y), str(shoda100), res_Name_Orig, x[3], x[2]) ))
 						else:
 							resultlist.append((spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, celkem_bodu, y, shoda100, res_Name_Orig, x[3], '', x[4]))
 							
-							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - item %s\n' % ' $ '.join( (spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, str(celkem_bodu), str(y), str(shoda100), res_Name_Orig, x[3], '', x[4]) ))
+							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - item %s\n' % ' $ '.join( (spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, str(celkem_bodu), str(y), str(shoda100), res_Name_Orig, x[3], '') ))
 						y += 1
 
 		LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - konec\n')
@@ -3623,31 +3625,10 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 		if ParserCSFD.testJson():
 			if ParserCSFD.parserMoviesFound():
-				if self.FindAllItems:
-					LogCSFD.WriteToFile('[CSFD] CSFDquery - parsuji cely seznam vyhledanych filmu\n')
-					searchresults = ParserCSFD.parserListOfMovies(0)
-					searchresults, searchresultsAdd = self.GetOtherMovieNamesFromDetail(searchresults)
-					self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults)
-				else:
-					LogCSFD.WriteToFile('[CSFD] CSFDquery - parsuji prvni skupinu vyhledanych filmu\n')
-					searchresultsOrig = ParserCSFD.parserListOfMovies(1)
-					searchresults, searchresultsAdd = self.GetOtherMovieNamesFromDetail(searchresultsOrig)
-					self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults, True)
-					
-					if not shoda or not TVshoda and self.CSFDTestingTV():
-						LogCSFD.WriteToFile('[CSFD] CSFDquery - parsuji zbytek nazvu filmu\n')
-						searchresults1 = ParserCSFD.parserListOfMovies(0)
-						if searchresultsOrig != searchresults1:
-							LogCSFD.WriteToFile('[CSFD] CSFDquery - seznamy jsou ruzne\n')
-							searchresults1 = searchresults1 + searchresultsAdd
-							self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults1, True)
-							if not shoda:
-								LogCSFD.WriteToFile('[CSFD] CSFDquery - seznamy jsou ruzne 1\n')
-								self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults1)
-						else:
-							LogCSFD.WriteToFile('[CSFD] CSFDquery - seznamy jsou ruzne 2\n')
-							searchresults1 = searchresults1 + searchresultsAdd
-							self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults1)
+				LogCSFD.WriteToFile('[CSFD] CSFDquery - parsuji cely seznam vyhledanych filmu\n')
+				searchresults = ParserCSFD.parserListOfMovies(0)
+#				searchresults, searchresultsAdd = self.GetOtherMovieNamesFromDetail(searchresults)
+				self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults)
 				
 				LogCSFD.WriteToFile('[CSFD] CSFDquery - konec upravy seznamu\n')
 				self.SortTypeChange(change_s=False)

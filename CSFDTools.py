@@ -756,8 +756,24 @@ def CreateNameSurnameList( data ):
 def AddLine( text ):
 	return text + '\n' if len(text) > 0 else ""
 
-def CreateStrList( data ):
-	return ', '.join( x for x in data if len(x) > 0 )
+def CreateStrList( data, delim=', ' ):
+	return delim.join( x for x in data if x!= None and len(x) > 0 )
+
+try:
+	import unidecode
+	
+	def StripAccents(s):
+		return unidecode.unidecode(s)
+except:
+	import unicodedata
+	
+	def StripAccents(s):
+		try:
+			# py2
+			s = s.decode('utf-8')
+		except:
+			pass
+		return ''.join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
 
 def InitCSFDTools():
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - InitCSFDTools - zacatek\n')

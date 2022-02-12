@@ -275,6 +275,13 @@ class CSFDAndroidClient:
 		return self.do_request( 'search?q=%s&offset=%d&limit=%d' % ( name, offset, limit ) )
 	
 	# ######################################################################################
+
+	def autocomplete_by_name( self, name, offset=0, limit=10 ):
+#		name = quote_plus( name )
+
+		return self.do_request( 'autocomplete?q=%s&offset=%d&limit=%d' % ( name, offset, limit ) )
+	
+	# ######################################################################################
 	
 	# Vrati mapovanie kategorii videi na nazvy
 	def get_video_types( self ):
@@ -379,7 +386,9 @@ class CSFDAndroidClient:
 			if uri.startswith('#search_movie#'):
 				LogCSFD.WriteToFile( "Searching movie: \"%s\"\n" % uri[14:], 2 )
 	
-				return self.search_by_name( uri[14:], (page - 1) * 30, 30 )
+				a = self.autocomplete_by_name( uri[14:], (page - 1) * 30, 30 )
+				b = self.search_by_name( uri[14:], (page - 1) * 30, 30 )
+				return { 'films': a['films'] + b['films'] }
 				
 			elif uri.startswith('#movie#'):
 				LogCSFD.WriteToFile( "Requesting movie info for \"%s\"\n" % uri[7:], 2 )
