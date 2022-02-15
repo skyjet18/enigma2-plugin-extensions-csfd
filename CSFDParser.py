@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from .CSFDLog import LogCSFD
-from .CSFDTools import char2Allowchar, strUni, ExtractNumbers, isBigCharInFirst, char2Diacritic, CheckValidValue, CreateNameSurname, CreateNameSurnameList, Uni8, StripAccents
+from .CSFDTools import char2Allowchar, strUni, ExtractNumbers, isBigCharInFirst, CheckValidValue, CreateNameSurname, CreateNameSurnameList, Uni8, StripAccents
 from .CSFDSettings1 import CSFDGlobalVar
 from datetime import datetime
 import re, traceback
@@ -44,6 +44,24 @@ typeOfMovie = {
 
 movie_type_map = {
 	0: "", # used also for type 1 - to not show type in text form
+	1: _('Video film'),
+	2: _('TV film'),
+	3: _('TV seriál'),
+	4: _('TV pořad'),
+	5: _('Divadelní záznam'),
+	6: _('Koncert'),
+	7: _('Studentský film'),
+	8: _('Amatérský film'),
+	9: _('Hudební videoklip'),
+	10: _('Seriál - série'),
+	11: _('Seriál - epizoda'),
+	12: _('TV seriál'), # example: Simpsons
+	13: _('TV pořad'), # example: MythBusters
+	14: _('Video kompilace')
+}
+
+movie_type_map2 = {
+	0: "", # used also for type 1 - to not show type in text form
 	1: "video film",
 	2: "TV film",
 	3: "seriál",
@@ -60,23 +78,11 @@ movie_type_map = {
 	14: "video kompilace"
 }
 
-movie_type_map_rev = {
-	""                    : 0, # used also for type 1 - to not show type in text form
-	Uni8("video film")          : 1,
-	Uni8("TV film")             : 2,
-	Uni8("seriál")              : 3,
-	Uni8("pořad")               : 4,
-	Uni8("divadelní záznam")    : 5,
-	Uni8("koncert")             : 6,
-	Uni8("studentský film")     : 7,
-	Uni8("amatérský film")      : 8,
-	Uni8("hudební videoklip")   : 9,
-	Uni8("série")               : 10,
-	Uni8("epizoda")             : 11,
-	Uni8("seriál s epizodami")  : 12, # example: Simpsons
-	Uni8("pořad s epizodami")   : 13, # example: MythBusters
-	Uni8("video kompilace")     : 14
-}
+# build reverse map
+movie_type_map_rev = {}
+for movie_type in movie_type_map2:
+	movie_type_map_rev[ Uni8( movie_type_map2[movie_type] ) ] = movie_type
+
 
 def channel_name_normalise( name ):
 	name = StripAccents( name ).lower()
@@ -155,27 +161,27 @@ def GetItemColourRateN(rate=-1):
 
 def GetItemColourRateC(rate=-1):
 	if rate >= 70:
-		typc = 'c1'
+		typc = '1'
 	elif rate >= 30:
-		typc = 'c2'
+		typc = '2'
 	elif rate >= 0:
-		typc = 'c3'
+		typc = '3'
 	else:
-		typc = 'c0'
+		typc = '0'
 	return typc
 
 
 def GetItemColourN(typ=''):
 	if typ == 'c0':
-		typn = 0
+		typn = '0'
 	elif typ == 'c1':
-		typn = 1
+		typn = '1'
 	elif typ == 'c2':
-		typn = 2
+		typn = '2'
 	elif typ == 'c3':
-		typn = 3
+		typn = '3'
 	else:
-		typn = 0
+		typn = '0'
 	return typn
 
 
@@ -400,26 +406,29 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserMoviesFound - False - konec\n')
 		return res
 
-	def parserListOfMovies(self, co_parsovat=0):
+	def parserListOfMovies(self):
 		LogCSFD.WriteToFile('[CSFD] parserListOfMovies - zacatek\n')
 		
 		searchresults = []
 		
 		for movie in self.json_data["films"]:
-			year = CheckValidValue(movie["year"], None)
+#			year = CheckValidValue(movie["year"], None)
 				
 			movie_info = {
 				'id': movie['id'],
 				'name': movie['name'],
-				'year': CheckValidValue(movie["year"], -1),
+				'year': CheckValidValue(movie["year"]),
 				'rating_category': CheckValidValue(movie["rating_category"], "0"),
 				'type': movie_type_map_rev[ movie['type'] ] if movie['type'] in movie_type_map_rev else 0
 			}
-			searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], year, 'c' + movie["rating_category"], movie_info ) )
+#			searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], year, 'c' + movie["rating_category"], movie_info ) )
+			searchresults.append( movie_info )
 			
 			if movie["search_name"] is not None and movie["search_name"] != movie["name"]:
-				movie_info['name'] = movie["search_name"]
-				searchresults.append( ( '#movie#%d' % movie["id" ], movie["search_name"], year, 'c' + movie["rating_category"], movie_info ) )
+				movie_info2 = movie_info.copy()
+				movie_info2['name'] = movie["search_name"]
+#				searchresults.append( ( '#movie#%d' % movie["id" ], movie["search_name"], year, 'c' + movie["rating_category"], movie_info ) )
+				searchresults.append( movie_info2 )
 
 		LogCSFD.WriteToFile('[CSFD] parserListOfMovies - konec\n')
 		return searchresults
@@ -438,12 +447,13 @@ class CSFDParser():
 				movie_info = {
 					'id': movie['id'],
 					'name': movie['name'],
-					'year': CheckValidValue(movie["year"], -1),
+					'year': CheckValidValue(movie["year"]),
 					'rating_category': CheckValidValue(movie["rating_category"], "0"),
-					'type': movie_type_map_rev[ movie['type'] ] if movie['type'] in movie_type_map_rev else 0
+					'type': movie_type_map_rev[ movie['type'] ] if movie['type'] in movie_type_map_rev else 0,
 				}
 
-				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], CheckValidValue(movie["type"] ) ) )
+#				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], movie_info ) )
+				searchresults.append( movie_info )
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserListOfRelatedMovies - failed\n')
 
@@ -464,12 +474,13 @@ class CSFDParser():
 				movie_info = {
 					'id': movie['id'],
 					'name': movie['name'],
-					'year': CheckValidValue(movie["year"], -1),
+					'year': CheckValidValue(movie["year"]),
 					'rating_category': CheckValidValue(movie["rating_category"], "0"),
 					'type': movie_type_map_rev[ movie['type'] ] if movie['type'] in movie_type_map_rev else 0
 				}
 
-				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], movie_info ) )
+#				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], movie_info ) )
+				searchresults.append( movie_info )
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserListOfRelatedMovies - failed\n')
 
@@ -490,12 +501,13 @@ class CSFDParser():
 				movie_info = {
 					'id': movie['id'],
 					'name': movie['name'],
-					'year': CheckValidValue(movie["year"], -1),
+					'year': CheckValidValue(movie["year"]),
 					'rating_category': CheckValidValue(movie["rating_category"], "0"),
 					'type': 10
 				}
 
-				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], movie_info ) )
+#				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], movie_info ) )
+				searchresults.append( movie_info )
 
 		LogCSFD.WriteToFile('[CSFD] parserListOfSeries - konec\n')
 		return searchresults
@@ -515,13 +527,14 @@ class CSFDParser():
 					movie_info = {
 						'id': movie['id'],
 						'name': movie['name'],
-						'year': CheckValidValue(movie["year"], -1),
+						'year': CheckValidValue(movie["year"]),
 						'rating_category': CheckValidValue(movie["rating_category"], "0"),
 						'type': type_id - 9,
 						'position_code': movie['position_code'] if 'position_code' in movie else ''
 					}
 
-					searchresults.append( ( '#movie#%d' % movie["id" ], movie_info["position_code"] + ' ' + movie["name"] if movie_info['position_code'] != '' else movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], movie_info ) )
+#					searchresults.append( ( '#movie#%d' % movie["id" ], movie_info["position_code"] + ' ' + movie["name"] if movie_info['position_code'] != '' else movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], movie_info ) )
+					searchresults.append( movie_info )
 
 		LogCSFD.WriteToFile('[CSFD] parserListOfEpisodes - konec\n')
 		return searchresults
@@ -644,19 +657,31 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserOrigMovieTitle - konec\n')
 		return origname
 
-	def parserMainPosterUrl(self, full_image=False):
+	def getUrlByImageResolution(self, url, image_resolution='' ):
+		qidx = url.rfind('?')
+			
+		if qidx != -1:
+			url = url[:qidx]
+		
+		if image_resolution != '':
+			url += '?' + image_resolution
+			
+		return url
+
+		
+	def parserMainPosterUrl(self, image_resolution=''):
 		LogCSFD.WriteToFile('[CSFD] parserMainPosterUrl - zacatek\n')
 
 		try:
 			url = self.json_data["info"]["poster_url"]
 			
-			if url == None and "root_info" in self.json_data:
-				url = self.json_data["root_info"]["poster_url"]
-				
-			if full_image:
-				qidx = url.rfind('?h')
-				if qidx != -1:
-					url = url[:qidx]
+			if url == None and "parent_info" in self.json_data:
+				url = self.json_data["parent_info"]["poster_url"]
+
+				if url == None and "root_info" in self.json_data:
+					url = self.json_data["root_info"]["poster_url"]
+			
+			url = self.getUrlByImageResolution( url, image_resolution )
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserMainPosterUrl - failed\n')
 			url = None
@@ -664,25 +689,29 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserMainPosterUrl - konec\n')
 		return url
 
-	def parserAllPostersUrl(self, full_image=False):
+	def parserAllPostersUrl(self, image_resolution=''):
 		LogCSFD.WriteToFile('[CSFD] parserAllPostersUrl - zacatek\n')
-		posterresult1 = None
-		ret = self.parserMainPosterUrl( full_image )
-		if ret != None:
-			posterresult1 = [ ret ]
+		result = []
+
+		try:
+			for x in ('info', 'parent_info', 'root_info'):
+				if x in self.json_data:
+					url = self.json_data[x]["poster_url"]
+					if url != None:
+						result.append( self.getUrlByImageResolution( url, image_resolution ) )
+		except:
+			LogCSFD.WriteToFile('[CSFD] parserAllPostersUrl - failed\n')
+
 		LogCSFD.WriteToFile('[CSFD] parserAllPostersUrl - konec\n')
-		return posterresult1
+		return result if len( result ) > 0 else None
 
 	def parserPostersNumber(self):
 		LogCSFD.WriteToFile('[CSFD] parserPostersNumber - zacatek\n')
-		
-		if self.parserMainPosterUrl() != None:
-			pocet = 1
-		else:
-			pocet = None
+
+		urls = self.parserAllPostersUrl()
 
 		LogCSFD.WriteToFile('[CSFD] parserPostersNumber - konec\n')
-		return pocet
+		return len(urls) if urls is not None else None
 
 	def parserGenre(self):
 		LogCSFD.WriteToFile('[CSFD] parserGenre - zacatek\n')
@@ -807,8 +836,18 @@ class CSFDParser():
 			movie_info = self.json_data["info"]
 			Obsahtext = ParserConstCSFD.delHTMLtags(movie_info["plot"]["text"] + '\n(' + movie_info["plot"]["source_name"] + ')' )
 		except:
-			LogCSFD.WriteToFile('[CSFD] parserContent - failed\n')
-			Obsahtext = ''
+			try:
+				# we try to get plot from season (if available)
+				movie_info = self.json_data["parent_info"]
+				Obsahtext = ParserConstCSFD.delHTMLtags(movie_info["plot"]["text"] + '\n(' + movie_info["plot"]["source_name"] + ')' )
+			except:
+				try:
+					# we try to get plot from serie (if available)
+					movie_info = self.json_data["root_info"]
+					Obsahtext = ParserConstCSFD.delHTMLtags(movie_info["plot"]["text"] + '\n(' + movie_info["plot"]["source_name"] + ')' )
+				except:
+					LogCSFD.WriteToFile('[CSFD] parserContent - failed\n')
+					Obsahtext = ''
 
 		LogCSFD.WriteToFile('[CSFD] parserContent - konec\n')
 		return Obsahtext
@@ -928,6 +967,7 @@ class CSFDParser():
 				( 'dvd', _("Na DVD:") ),
 				( 'bluray', _("Na blu-ray:") ),
 				( 'tv', _("V televizi:") ),
+				( 'internet', _("Na internetu:") ),
 			]
 			
 			for release_type in release_types:
@@ -935,9 +975,11 @@ class CSFDParser():
 					text += release_type[1] + "\n"
 					for release in movie_info["releases"][release_type[0]]:
 						release_date = release["release_date"]
+						# convert 2022-02-15 -> 15.02.2022
 						release_date = release_date[8:10] + '.' + release_date[5:7] + '.' + release_date[0:4]
+						country = CheckValidValue( release["country"] )
 						distributor = CheckValidValue( release["distributor"] )
-						text += release["country"] + '\t' + release_date + "  " + distributor + '\n'
+						text += country + ' \t' + release_date + "   " + distributor + '\n'
 					
 					text += '\n'
 
@@ -962,7 +1004,7 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserUserFansNumber - konec\n')
 		return pocet
 
-	def parserVideoDetail(self, json_data=None, prefer_hd=True, full_image=False):
+	def parserVideoDetail(self, json_data=None, video_resolution='', image_resolution=''):
 		LogCSFD.WriteToFile('[CSFD] parserVideoDetail - zacatek\n')
 		LogCSFD.WriteToFile('[CSFD] parserVideoDetail - 0a\n')
 
@@ -974,11 +1016,14 @@ class CSFDParser():
 		if len( json_data["videos"] ) > 0:
 			searchresults = []
 			
+			quality = ( '1080', '720', '480', '360' )
+			try:
+				# update max available quality based on settings
+				quality = quality[quality.index(video_resolution):]
+			except:
+				pass
+			
 			for video in json_data["videos"]:
-				if prefer_hd:
-					quality = ( '1080', '720', '480', '360' )
-				else:
-					quality = ( '480', '360' )
 				
 				video_url = None
 				for q in quality:
@@ -1002,8 +1047,7 @@ class CSFDParser():
 				videoDescr = video["description"]
 				videoPoster = video["preview_image"]["url"]
 				
-				if full_image and videoPoster.endswith("?w700"):
-					videoPoster = videoPoster[:-5]
+				videoPoster = self.getUrlByImageResolution(videoPoster, image_resolution)
 					
 				searchresults.append( (video_url, videotitulkyurlCZ, videotitulkyurlSK, videoDescr, videoPoster) )
 
@@ -1106,7 +1150,7 @@ class CSFDParser():
 			LogCSFD.WriteToFile('[CSFD] parserFunctionExists - podobne - NE\n')
 			searchresults.append('podobne')
 
-		if self.json_data["info"]["type_id"] != 12 or self.json_data["info"]["has_no_seasons"] == True:		
+		if 'has_no_seasons' not in self.json_data["info"] or self.json_data["info"]["has_no_seasons"] == True:		
 			LogCSFD.WriteToFile('[CSFD] parserFunctionExists - serie - NE\n')
 			searchresults.append('serie')
 			
@@ -1130,7 +1174,7 @@ class CSFDParser():
 			for schedule in station['schedule']:
 				movie = schedule['film']
 				if movie['id'] != None:
-					c = movie['rating_category'] if movie['rating_category'] != None else "0"
+					c = CheckValidValue(movie['rating_category'], "0")
 					year = movie['year'] if movie['year'] != None else ''
 					searchresults.append( ( '#movie#' + str(movie['id']), movie['name'], str(year), "c" + str(c) ) )
 

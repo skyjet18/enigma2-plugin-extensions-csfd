@@ -442,7 +442,7 @@ def char2Allowchar(mystring, typeControl=0):
 #	if True:
 #		return mystring
 	if isinstance(mystring, str):
-		mystring = unicode(mystring, 'utf-8')
+		mystring = unicode(mystring, 'utf-8', errors='ignore')
 	if typeControl == 1:
 		mystring = mystring.replace('\xa0', ' ')
 	else:
@@ -666,8 +666,20 @@ def min_positions(iterable, key=None, reverse=False):
 
 
 romanNumeralMap = (
- (
-  'M', 1000), ('CM', 900), ('D', 500), ('CD', 400), ('C', 100), ('XC', 90), ('L', 50), ('XL', 40), ('X', 10), ('IX', 9), ('V', 5), ('IV', 4), ('I', 1))
+	('M',  1000),
+	('CM', 900),
+	('D',  500),
+	('CD', 400),
+	('C',  100),
+	('XC', 90),
+	('L',  50),
+	('XL', 40),
+	('X',  10),
+	('IX', 9),
+	('V',  5),
+	('IV', 4),
+	('I',  1)
+)
 
 def StrtoRoman(s):
 	n = 0
@@ -756,8 +768,12 @@ def CreateNameSurnameList( data ):
 def AddLine( text ):
 	return text + '\n' if len(text) > 0 else ""
 
-def CreateStrList( data, delim=', ' ):
-	return delim.join( x for x in data if x!= None and len(x) > 0 )
+def CreateStrList( data, delim=', ', all_valid=False ):
+	if all_valid:
+		for x in data:
+			if x is None or len(x) == 0:
+				return ''
+	return delim.join( x for x in data if x is not None and len(x) > 0 )
 
 try:
 	import unidecode

@@ -385,15 +385,15 @@ class CSFDLCDSummary(Screen):
 		if (CSFDGlobalVar.getCSFDBoxType()[0] == '800se' or CSFDGlobalVar.getCSFDBoxType()[0] == '900') and CSFDGlobalVar.getCSFDImageCompatibility() < 11:
 			self.ColorLCD = 1
 
-	def setText(self, text, detail):
+	def setText(self, text, colour='10'):
 		if self.ColorLCD == 1:
-			if detail == 0:
+			if colour == '0':
 				self['infomovie'].instance.setForegroundColor(gRGB(CSFDratingColor_Nothing))
-			elif detail == 1:
+			elif colour == '1':
 				self['infomovie'].instance.setForegroundColor(gRGB(CSFDratingColor_100))
-			elif detail == 2:
+			elif colour == '2':
 				self['infomovie'].instance.setForegroundColor(gRGB(CSFDratingColor_50))
-			elif detail == 3:
+			elif colour == '3':
 				self['infomovie'].instance.setForegroundColor(gRGB(CSFDratingColor_0))
 			else:
 				self['infomovie'].instance.setForegroundColor(gRGB(16777215))
@@ -623,11 +623,11 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list1.append(getConfigListEntry(_('Design CSFD obrazovek'), config.misc.CSFD.Design))
 		self.list1.append(getConfigListEntry(_('Velikost fontu pro SD a HD rozlišení'), config.misc.CSFD.FontHeight))
 		self.list1.append(getConfigListEntry(_('Velikost fontu pro FullHD rozlišení'), config.misc.CSFD.FontHeightFullHD))
-		self.list1.append(getConfigListEntry(_('Maximální kvalita stahovaných posterů'), config.misc.CSFD.QualityPoster))
-		self.list1.append(getConfigListEntry(_('Maximální kvalita stahovaných fotek z filmů'), config.misc.CSFD.QualityGallery))
-		self.list1.append(getConfigListEntry(_('Maximální kvalita stahovaných fotek z videí'), config.misc.CSFD.QualityVideoPoster))
-		self.list1.append(getConfigListEntry(_('Oddělovač tisíců'), config.misc.CSFD.ThousandsSeparator))
+		self.list1.append(getConfigListEntry(_('Preferovaná kvalita stahovaných posterů'), config.misc.CSFD.QualityPoster))
+		self.list1.append(getConfigListEntry(_('Preferovaná kvalita stahovaných fotek z filmů'), config.misc.CSFD.QualityGallery))
+		self.list1.append(getConfigListEntry(_('Preferovaná kvalita stahovaných fotek z videí'), config.misc.CSFD.QualityVideoPoster))
 		self.list1.append(getConfigListEntry(_('Preferované rozlišení videa?'), config.misc.CSFD.VideoResolution))
+		self.list1.append(getConfigListEntry(_('Oddělovač tisíců'), config.misc.CSFD.ThousandsSeparator))
 		self.list1.append(getConfigListEntry(_('Načítat poster?'), config.misc.CSFD.PosterBasic))
 		self.list1.append(getConfigListEntry(_('Povolit slideshow pro poster v základu?'), config.misc.CSFD.PosterBasicSlide))
 		self.list1.append(getConfigListEntry(_('Změna posteru při slideshow v základu') + _('-def.10 (02 až 50)*0,5s'), config.misc.CSFD.PosterBasicSlideTime))
@@ -654,7 +654,6 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list2.append(getConfigListEntry(_('Načíst detail na základě skóre podobnosti?'), config.misc.CSFD.ReadDetailBasedOnScore))
 		self.list2.append(getConfigListEntry(_('Vyhledávat včetně diakritiky pro pořady z EPG?'), config.misc.CSFD.FindInclDiacrEPG))
 		self.list2.append(getConfigListEntry(_('Vyhledávat včetně diakritiky pro pořady z ostatních zdrojů?'), config.misc.CSFD.FindInclDiacrOth))
-		self.list2.append(getConfigListEntry(_('Načíst další názvy z detailu kolika filmů?') + _(' def.2 (0 až 4)'), config.misc.CSFD.NumberOfReadMovieNameFromDetail))
 		self.list2.append(getConfigListEntry(_('Načíst seznam pořadů z CSFD pro daný kanál do cache?'), config.misc.CSFD.TVCache))
 		self.list2.append(getConfigListEntry(_('Automaticky načíst seznam pořadů z CSFD při přepínání?'), config.misc.CSFD.ShowSimpleInfo))
 		self.list2.append(getConfigListEntry(_('Jak dlouho nenačítat cache po net chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LanErrorWaiting))
@@ -1311,7 +1310,7 @@ class CSFDVideoInfoScreen(Screen):
 	else:
 		skin = Screen_CSFDVideoInfoScreenFullHD
 
-	def __init__(self, session, aktvideo, video_url='', titulky_url='', eventNameLocal='', colorOLED=10):
+	def __init__(self, session, aktvideo, video_url='', titulky_url='', eventNameLocal='', colorOLED='10'):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
 			self.skin = Screen_CSFDVideoInfoScreenSD
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
@@ -1388,7 +1387,7 @@ class CSFDPlayer(Screen, SubsSupport, InfoBarNotifications, InfoBarSubtitleSuppo
 		skin = Screen_CSFDPlayerFullHD
 	LogCSFD.WriteToFile('[CSFD] CSFDPlayer - konec\n')
 
-	def __init__(self, session, service, lastservice, subtitles, infoCallback=None, nextCallback=None, prevCallback=None, exitCallback=None, existPrevOrNextCallback=None, downloadVideo=None, colorOLED=10):
+	def __init__(self, session, service, lastservice, subtitles, infoCallback=None, nextCallback=None, prevCallback=None, exitCallback=None, existPrevOrNextCallback=None, downloadVideo=None, colorOLED='10'):
 		LogCSFD.WriteToFile('[CSFD] CSFDPlayer - Init - zacatek\n')
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
 			self.skin = Screen_CSFDPlayerSD

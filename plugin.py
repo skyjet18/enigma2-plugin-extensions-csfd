@@ -522,20 +522,16 @@ else:
 							LogCSFD.WriteToFile('[CSFD] EPGSelection - LayoutFinish - zacatek\n')
 							old_EPGSelection_LayoutFinish(self, *args, **kwargs)
 							self['key_red'].setText(_('CSFD'))
-							self['colouractions'] = CSFDHelpableActionMapChng(self, 'ColorActions', {'red': (
-									 self.redButtonPressed, _('Vyhledat akt. pořad v CSFD')), 
-							   'redlong': (
-										 self.redButtonPressedLong, None), 
-							   'green': (
-									   self.greenButtonPressed, None), 
-							   'greenlong': (
-										   self.greenButtonPressedLong, None), 
-							   'yellow': (
-										self.yellowButtonPressed, None), 
-							   'blue': (
-									  self.blueButtonPressed, None), 
-							   'bluelong': (
-										  self.blueButtonPressedLong, None)}, -1)
+							self['colouractions'] = CSFDHelpableActionMapChng(self, 'ColorActions',
+							{
+								'red': (self.redButtonPressed, _('Vyhledat akt. pořad v CSFD')), 
+								'redlong': (self.redButtonPressedLong, None), 
+								'green': (self.greenButtonPressed, None), 
+								'greenlong': (self.greenButtonPressedLong, None), 
+								'yellow': (self.yellowButtonPressed, None), 
+								'blue': (self.blueButtonPressed, None), 
+								'bluelong': (self.blueButtonPressedLong, None)
+							}, -1)
 							LogCSFD.WriteToFile('[CSFD] EPGSelection - LayoutFinish - konec\n')
 							return
 
@@ -658,77 +654,77 @@ else:
 					config.misc.CSFD.ShowInEPGList.save()
 					configfile.save()
 
-		try:
-			if config.misc.CSFD.ShowSimpleInfo.getValue():
-				old_InfoBar_show = InfoBar.show
-
-			def CSFD_InfoBar_show(self, *args, **kwargs):
-				LogCSFD.WriteToFile('[CSFD] InfoBar - show - zacatek\n')
-				try:
-					old_InfoBar_show(self)
-				except:
-					LogCSFD.WriteToFile('[CSFD] ShowSimpleInfo - old_InfoBar_show - chyba\n')
-					err = traceback.format_exc()
-					LogCSFD.WriteToFile(err)
-
-				try:
-					if config.misc.CSFD.TVCache.getValue():
-						service = self.session.nav.getCurrentService()
-						if service is not None:
-							info = service and service.info()
-							if info is not None:
-								name = info.getName()
-								if name is not None:
-									if TVTimer is not None:
-										if TVTimer.isActive():
-											TVTimer.stop()
-									CSFDGlobalVar.setTVTimer_channName(name)
-									TVTimer.start(1000, False)
-				except:
-					LogCSFD.WriteToFile('[CSFD] ShowSimpleInfo - CSFD_InfoBar_show - chyba\n')
-					err = traceback.format_exc()
-					LogCSFD.WriteToFile(err)
-
-				LogCSFD.WriteToFile('[CSFD] InfoBar - show - konec\n')
-				return
-
-
-			if config.misc.CSFD.ShowSimpleInfo.getValue():
-				InfoBar.show = CSFD_InfoBar_show
-		except:
-			LogCSFD.WriteToFile('[CSFD] ShowSimpleInfo - chyba\n')
-			err = traceback.format_exc()
-			LogCSFD.WriteToFile(err)
-			config.misc.CSFD.ShowSimpleInfo.setValue(False)
-			config.misc.CSFD.ShowSimpleInfo.save()
-			configfile.save()
-
-	try:
-
-		def CSFD_EPGList_sortSingleEPG(self, typeP, *args, **kwargs):
-			LogCSFD.WriteToFile('[CSFD] EPGList - sortSingleEPG - zacatek\n')
-			listP = self.list
-			if listP:
-				event_id = self.getSelectedEventId()
-				if typeP == 1:
-					from .CSFDTools import char2DiacriticSort
-					listP.sort(key=lambda x: (char2DiacriticSort(x[4]) and char2DiacriticSort(x[4]).lower(), x[2]))
-				else:
-					listP.sort(key=lambda x: x[2])
-				self.l.invalidate()
-				self.moveToEventId(event_id)
-			LogCSFD.WriteToFile('[CSFD] EPGList - sortSingleEPG - konec\n')
-
-
-		if config.misc.CSFD.SortEPG_CZ_SK.getValue() and 'sortSingleEPG' in dir(EPGList):
-			EPGList.sortSingleEPG = CSFD_EPGList_sortSingleEPG
-	except:
-		LogCSFD.WriteToFile('[CSFD] SortEPG_CZ_SK - chyba\n')
-		err = traceback.format_exc()
-		LogCSFD.WriteToFile(err)
-		config.misc.CSFD.SortEPG_CZ_SK.setValue(False)
-		config.misc.CSFD.SortEPG_CZ_SK.save()
-		configfile.save()
+#		try:
+#			if config.misc.CSFD.ShowSimpleInfo.getValue():
+#				old_InfoBar_show = InfoBar.show
+#
+#			def CSFD_InfoBar_show(self, *args, **kwargs):
+#				LogCSFD.WriteToFile('[CSFD] InfoBar - show - zacatek\n')
+#				try:
+#					old_InfoBar_show(self)
+#				except:
+#					LogCSFD.WriteToFile('[CSFD] ShowSimpleInfo - old_InfoBar_show - chyba\n')
+#					err = traceback.format_exc()
+#					LogCSFD.WriteToFile(err)
+#
+#				try:
+#					if config.misc.CSFD.TVCache.getValue():
+#						service = self.session.nav.getCurrentService()
+#						if service is not None:
+#							info = service and service.info()
+#							if info is not None:
+#								name = info.getName()
+#								if name is not None:
+#									if TVTimer is not None:
+#										if TVTimer.isActive():
+#											TVTimer.stop()
+#									CSFDGlobalVar.setTVTimer_channName(name)
+#									TVTimer.start(1000, False)
+#				except:
+#					LogCSFD.WriteToFile('[CSFD] ShowSimpleInfo - CSFD_InfoBar_show - chyba\n')
+#					err = traceback.format_exc()
+#					LogCSFD.WriteToFile(err)
+#
+#				LogCSFD.WriteToFile('[CSFD] InfoBar - show - konec\n')
+#				return
+#
+#
+#			if config.misc.CSFD.ShowSimpleInfo.getValue():
+#				InfoBar.show = CSFD_InfoBar_show
+#		except:
+#			LogCSFD.WriteToFile('[CSFD] ShowSimpleInfo - chyba\n')
+#			err = traceback.format_exc()
+#			LogCSFD.WriteToFile(err)
+#			config.misc.CSFD.ShowSimpleInfo.setValue(False)
+#			config.misc.CSFD.ShowSimpleInfo.save()
+#			configfile.save()
+#
+#	try:
+#
+#		def CSFD_EPGList_sortSingleEPG(self, typeP, *args, **kwargs):
+#			LogCSFD.WriteToFile('[CSFD] EPGList - sortSingleEPG - zacatek\n')
+#			listP = self.list
+#			if listP:
+#				event_id = self.getSelectedEventId()
+#				if typeP == 1:
+#					from .CSFDTools import char2DiacriticSort
+#					listP.sort(key=lambda x: (char2DiacriticSort(x[4]) and char2DiacriticSort(x[4]).lower(), x[2]))
+#				else:
+#					listP.sort(key=lambda x: x[2])
+#				self.l.invalidate()
+#				self.moveToEventId(event_id)
+#			LogCSFD.WriteToFile('[CSFD] EPGList - sortSingleEPG - konec\n')
+#
+#
+#		if config.misc.CSFD.SortEPG_CZ_SK.getValue() and 'sortSingleEPG' in dir(EPGList):
+#			EPGList.sortSingleEPG = CSFD_EPGList_sortSingleEPG
+#	except:
+#		LogCSFD.WriteToFile('[CSFD] SortEPG_CZ_SK - chyba\n')
+#		err = traceback.format_exc()
+#		LogCSFD.WriteToFile(err)
+#		config.misc.CSFD.SortEPG_CZ_SK.setValue(False)
+#		config.misc.CSFD.SortEPG_CZ_SK.save()
+#		configfile.save()
 
 def eventinfo(session, servicelist, **kwargs):
 	CSFDGlobalVar.setCSFDcur(1)

@@ -37,7 +37,6 @@ def SKIN_DefaultSetup():
 	config.misc.CSFD.PosterSlide.setValue(True)
 	config.misc.CSFD.TipsShow.setValue(True)
 	config.misc.CSFD.ShowLine.setValue(True)
-	config.misc.CSFD.VideoResolution.setValue("sd")
 
 	return
 

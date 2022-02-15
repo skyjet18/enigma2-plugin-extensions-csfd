@@ -270,14 +270,14 @@ class CSFDAndroidClient:
 	# ######################################################################################
 	
 	def search_by_name( self, name, offset=0, limit=10 ):
-#		name = quote_plus( name )
+		name = quote_plus( name )
 
 		return self.do_request( 'search?q=%s&offset=%d&limit=%d' % ( name, offset, limit ) )
 	
 	# ######################################################################################
 
 	def autocomplete_by_name( self, name, offset=0, limit=10 ):
-#		name = quote_plus( name )
+		name = quote_plus( name )
 
 		return self.do_request( 'autocomplete?q=%s&offset=%d&limit=%d' % ( name, offset, limit ) )
 	
@@ -400,7 +400,10 @@ class CSFDAndroidClient:
 				
 				if "root_id" in data1:
 					ret["root_info"] = self.get_movie_info( data1["root_id"] )["info"]
-					
+				
+				if 'parent_id' in data1:
+					ret['parent_info'] = self.get_movie_info( data1['parent_id'] )['info']
+
 				return ret 
 	
 			elif uri.startswith('#movie_photos#'):

@@ -36,6 +36,8 @@ from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 from os import path as os_path
 from random import randint, seed
 import time, traceback
+from skins.CSFDSkin_Default import CSFDratingColor_Nothing
+from CSFDTools import StripAccents
 
 try:
 	from urllib.parse import quote
@@ -431,7 +433,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self.resetLabels()
 				self.Page = 0
 				self.resultlist = []
-				self.summaries.setText('', 10)
+				self.summaries.setText('')
 				self['statusbar'].show()
 				self['statusbar'].setText(_('Chyba - zamrznutí pluginu'))
 				self.session.open(MessageBox, _('Byla aktivována ochrana proti "zamrznutí"!\nTento stav mohl nastat z důvodu dlouhého stahování nebo došlo k nějaké chybě v programu\nZkuste zadat nebo vybrat z EPG pořad znovu'), type=MessageBox.TYPE_ERROR, timeout=20)
@@ -1062,7 +1064,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					self['servicemenu'].setList(self.getServiceMenuList())
 				self['servicemenu'].moveToIndex(0)
 				self['servicemenu'].show()
-				self.summaries.setText(self['servicemenu'].getCurrent()[0][0], 10)
+				self.summaries.setText(self['servicemenu'].getCurrent()[0][0])
 		else:
 			self.exitServiceMenu()
 
@@ -1085,18 +1087,18 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self['servicemenuBackG'].hide()
 		if self.Page == 0:
 			if self.selectedMenuRow is not None:
-				self.summaries.setText(self.selectedMenuRow[0], GetItemColourN(self.selectedMenuRow[8]))
+				self.summaries.setText(self.selectedMenuRow['name_display'], self.selectedMenuRow['rating_category'] )
 			else:
-				self.summaries.setText(' ', 10)
+				self.summaries.setText(' ')
 		else:
 			try:
 				if self['titellabel'] is not None and self.ratingstars is not None:
 					ss12 = self['titellabel'].getText()
 					self.summaries.setText(ss12, GetItemColourRateN(self.ratingstars))
 				else:
-					self.summaries.setText(' ', 10)
+					self.summaries.setText(' ')
 			except:
-				self.summaries.setText(' ', 10)
+				self.summaries.setText(' ')
 				err = traceback.format_exc()
 				LogCSFD.WriteToFile('[CSFD] exitServiceMenu - chyba\n')
 				LogCSFD.WriteToFile(err)
@@ -1196,7 +1198,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 	def UlozitVideoDownload(self, nazev='', videourl='', titulkyurl=''):
 		LogCSFD.WriteToFile('[CSFD] UlozitVideoDownload - zacatek\n')
 		ss = videourl.rsplit('/', 2)
-		nazevvideo = strUni(char2Diacritic(nazev)).replace(' ', '_').replace('.', '_').replace(':', '_').replace('?', '_').replace('/', '_').replace('\\', '_') + '_' + ss[1] + '_' + ss[2]
+		nazevvideo = strUni(StripAccents(nazev)).replace(' ', '_').replace('.', '_').replace(':', '_').replace('?', '_').replace('/', '_').replace('\\', '_') + '_' + ss[1] + '_' + ss[2]
 		localfilevideo = config.misc.CSFD.DirectoryVideoDownload.getValue() + nazevvideo
 		LogCSFD.WriteToFile('[CSFD] UlozitVideoDownload - stahuji z url ' + videourl + ' do ' + localfilevideo + '\n')
 		self.session.open(MessageBox, _('Video bude staženo do : %s') % localfilevideo, type=MessageBox.TYPE_INFO, timeout=10)
@@ -1335,9 +1337,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				if self.Page == 0:
 					self['menu'].pageUp()
 					if self.selectedMenuRow is not None:
-						self.summaries.setText(self.selectedMenuRow[0], GetItemColourN(self.selectedMenuRow[8]))
+						self.summaries.setText(self.selectedMenuRow['name_display'], self.selectedMenuRow['rating_category'] )
 					else:
-						self.summaries.setText(' ', 10)
+						self.summaries.setText(' ')
 				if self.Page == 1:
 					self['contentlabel'].pageUp()
 					self['detailslabel'].pageUp()
@@ -1368,7 +1370,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						self['extralabel'].pageUp()
 		else:
 			self['servicemenu'].pageUp()
-			self.summaries.setText(self['servicemenu'].getCurrent()[0][0], 10)
+			self.summaries.setText(self['servicemenu'].getCurrent()[0][0])
 		return
 
 	def pageExtraDown(self):
@@ -1379,9 +1381,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				if self.Page == 0:
 					self['menu'].pageDown()
 					if self.selectedMenuRow is not None:
-						self.summaries.setText(self.selectedMenuRow[0], GetItemColourN(self.selectedMenuRow[8]))
+						self.summaries.setText(self.selectedMenuRow['name_display'], self.selectedMenuRow['rating_category'] )
 					else:
-						self.summaries.setText(' ', 10)
+						self.summaries.setText(' ')
 				if self.Page == 1:
 					self['contentlabel'].pageDown()
 					self['detailslabel'].pageDown()
@@ -1412,7 +1414,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						self['extralabel'].pageDown()
 		else:
 			self['servicemenu'].pageDown()
-			self.summaries.setText(self['servicemenu'].getCurrent()[0][0], 10)
+			self.summaries.setText(self['servicemenu'].getCurrent()[0][0])
 		return
 
 	def pageUp(self):
@@ -1423,9 +1425,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				if self.Page == 0:
 					self['menu'].up()
 					if self.selectedMenuRow is not None:
-						self.summaries.setText(self.selectedMenuRow[0], GetItemColourN(self.selectedMenuRow[8]))
+						self.summaries.setText(self.selectedMenuRow['name_display'], self.selectedMenuRow['rating_category'])
 					else:
-						self.summaries.setText(' ', 10)
+						self.summaries.setText(' ')
 				if self.Page == 1:
 					self['contentlabel'].Up()
 					self['detailslabel'].Up()
@@ -1461,9 +1463,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				if self.Page == 0:
 					self['menu'].down()
 					if self.selectedMenuRow is not None:
-						self.summaries.setText(self.selectedMenuRow[0], GetItemColourN(self.selectedMenuRow[8]))
+						self.summaries.setText(self.selectedMenuRow['name_display'], self.selectedMenuRow['rating_category'] )
 					else:
-						self.summaries.setText(' ', 10)
+						self.summaries.setText(' ')
 				if self.Page == 1:
 					self['contentlabel'].Down()
 					self['detailslabel'].Down()
@@ -1488,7 +1490,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						self['extralabel'].Down()
 		else:
 			self['servicemenu'].down()
-			self.summaries.setText(self['servicemenu'].getCurrent()[0][0], 10)
+			self.summaries.setText(self['servicemenu'].getCurrent()[0][0])
 		return
 
 	def KeyText(self):
@@ -2331,35 +2333,29 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] ItemsLoad - zacatek\n')
 		listP = []
 		velx = self['menu'].instance.size().width()
-		pic_c0 = loadPixmapCSFD('csfd_c0.png')
-		pic_c1 = loadPixmapCSFD('csfd_c1.png')
-		pic_c2 = loadPixmapCSFD('csfd_c2.png')
-		pic_c3 = loadPixmapCSFD('csfd_c3.png')
+		rating_colour = {
+			'0' : (CSFDratingColor_Nothing, loadPixmapCSFD('csfd_c0.png')),
+			'1' : (CSFDratingColor_100, loadPixmapCSFD('csfd_c1.png')),
+			'2' : (CSFDratingColor_50, loadPixmapCSFD('csfd_c2.png')),
+			'3' : (CSFDratingColor_0, loadPixmapCSFD('csfd_c3.png')),
+		}
+		
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			h = int(config.misc.CSFD.FontHeight.getValue()) + 2
 		else:
 			h = int(config.misc.CSFD.FontHeightFullHD.getValue()) + 3
 		h1 = (h - 10) // 2
-		for item in self.resultlist:
-			res = [
-			 item]
-			barva, typ = self.GetItemColour(item[8])
-			if typ == 'c0':
-				png_type = pic_c0
-			elif typ == 'c1':
-				png_type = pic_c1
-			elif typ == 'c2':
-				png_type = pic_c2
-			elif typ == 'c3':
-				png_type = pic_c3
-			else:
-				png_type = pic_c0
+		for movie_info in self.resultlist:
+			res = [ movie_info ]
+			
+			barva, png_type = rating_colour[ movie_info['rating_category'] ]
+
 			if config.misc.CSFD.Design.getValue() == '1' or config.misc.CSFD.Design.getValue() == '2':
 				barva = CSFDratingColor_Nothing
-				res.append(MultiContentEntryText(pos=(0, 0), size=(velx - 15, h), font=0, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER, text=item[0], color=barva, color_sel=barva))
+				res.append(MultiContentEntryText(pos=(0, 0), size=(velx - 15, h), font=0, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER, text=movie_info['name_display'], color=barva, color_sel=barva))
 			else:
 				res.append(MultiContentEntryPixmap(pos=(0, h1), size=(10, 10), png=png_type))
-				res.append(MultiContentEntryText(pos=(15, 0), size=(velx - 15, h), font=0, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER, text=item[0], color=barva, color_sel=barva))
+				res.append(MultiContentEntryText(pos=(15, 0), size=(velx - 15, h), font=0, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER, text=movie_info['name_display'], color=barva, color_sel=barva))
 			listP.append(res)
 
 		self['menu'].setList(listP)
@@ -2370,7 +2366,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] SortTypeSetUpIndex - zacatek\n')
 		kk = 0
 		for x in self.resultlist:
-			if x[5] == id_polozky:
+			if x['position'] == id_polozky:
 				LogCSFD.WriteToFile('[CSFD] SortTypeSetUpIndex - id nalezeno na pozici ' + str(kk) + '\n')
 				self['menu'].moveToIndex(kk)
 				LogCSFD.WriteToFile('[CSFD] SortTypeSetUpIndex - id menu nastaveno\n')
@@ -2380,6 +2376,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] SortTypeSetUpIndex - konec\n')
 
 	def SortTypeChange(self, change_s=True, back=False, directTypeSort=-1):
+		# self.SortType: 0 = score, 1 = csfd, 2 = date, 3 = abc
 		LogCSFD.WriteToFile('[CSFD] SortTypeChange - zacatek\n')
 		if self.resultlist is None or len(self.resultlist) == 0:
 			LogCSFD.WriteToFile('[CSFD] SortTypeChange - neni seznam\n')
@@ -2389,7 +2386,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			vybrany_prvek_id = 0
 			if change_s:
 				if self.selectedMenuRow is not None:
-					vybrany_prvek_id = self.selectedMenuRow[5]
+					vybrany_prvek_id = self.selectedMenuRow['position']
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange - vybrany prvek ' + str(vybrany_prvek_id) + '\n')
 				if directTypeSort == -1:
 					if back:
@@ -2402,25 +2399,34 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 							self.SortType = 0
 				else:
 					self.SortType = directTypeSort
+			# ( 0 = display name, 1 = movie link, 2 = res_Name_Corrected_WO_DiacrSort, 3 = res_Name_Corrected_WO_Diacr, 4 = celkem_bodu, 5 = y, 6 = shoda100, 7 = res_Name_Orig, 8 = colour, 9 = year, 10 = movie_info)
 			if self.SortType == 0:
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 0 - zacatek\n')
-				self.resultlist.sort(key=lambda z: z[0], reverse=True)
-				self.resultlist.sort(key=lambda z: z[2])
-				self.resultlist.sort(key=lambda z: z[4], reverse=True)
+				# sort by display name
+				self.resultlist.sort(key=lambda z: z['name_display'], reverse=True)
+				# sort by name without diacritics
+#				self.resultlist.sort(key=lambda z: z[2]['name_sort'])
+				# sort by number of points
+				self.resultlist.sort(key=lambda z: z['score'], reverse=True)
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 0 - konec\n')
 			elif self.SortType == 1:
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 1 - zacatek\n')
-				self.resultlist.sort(key=lambda z: z[5])
+				# sort by position received from csfd
+				self.resultlist.sort(key=lambda z: z['position'])
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 1 - konec\n')
 			elif self.SortType == 2:
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 2 - zacatek\n')
-				self.resultlist.sort(key=lambda z: z[0], reverse=True)
-				self.resultlist.sort(key=lambda z: z[2])
-				self.resultlist.sort(key=lambda z: z[9], reverse=True)
+				# sort by display name
+				self.resultlist.sort(key=lambda z: z['name_display'], reverse=True)
+				# sort by name without diacritics
+#				self.resultlist.sort(key=lambda z: z[2]['name_sort'])
+				#sort by year
+				self.resultlist.sort(key=lambda z: z['year'], reverse=True)
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 2 - konec\n')
 			elif self.SortType == 3:
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 3 - zacatek\n')
-				self.resultlist.sort(key=lambda z: z[2])
+				# sort by name without diacritics
+				self.resultlist.sort(key=lambda z: z['name_display'])
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 3 - konec\n')
 			self.ItemsLoad()
 			if change_s:
@@ -2440,9 +2446,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				LogCSFD.WriteToFile('[CSFD] showMenu - zacatek\n')
 				self['statusbar'].setText(_('Autor pluginu: ') + 'petrkl12@tvplugins.cz')
 				if self.selectedMenuRow is not None:
-					self.summaries.setText(self.selectedMenuRow[0], GetItemColourN(self.selectedMenuRow[8]))
+					self.summaries.setText(self.selectedMenuRow['name_display'], self.selectedMenuRow['rating_category'] )
 				else:
-					self.summaries.setText(' ', 10)
+					self.summaries.setText(' ')
 				self['titellabel'].instance.setForegroundColor(gRGB(CSFDColor_Titel))
 				self['menu'].show()
 				self['stars'].hide()
@@ -2560,9 +2566,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self['page'].setText('')
 				self['page'].hide()
 				if self.selectedMenuRow is not None:
-					self.summaries.setText(self.selectedMenuRow[0], GetItemColourN(self.selectedMenuRow[8]))
+					self.summaries.setText(self.selectedMenuRow['name_display'], self.selectedMenuRow['rating_category'] )
 				else:
-					self.summaries.setText(' ', 10)
+					self.summaries.setText(' ')
 				LogCSFD.WriteToFile('[CSFD] showMenu - konec\n')
 		return
 
@@ -2570,7 +2576,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 		def SetNotFind(textInfo='', textStatus=''):
 			self.Page = 0
-			self.summaries.setText(textInfo + self.eventNameLocal, 10)
+			self.summaries.setText(textInfo + self.eventNameLocal)
 			self['detailslabel'].setText(textInfo + self.eventNameLocal)
 			self['statusbar'].setText(textStatus)
 			self['sortlabel'].setText('')
@@ -2735,7 +2741,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self['page'].setText('')
 			self['page'].hide()
 			self.selectedMenuRow = self['menu'].getCurrent()[0]
-			self.linkGlobal = self.selectedMenuRow[1].strip()
+			self.linkGlobal = '#movie#%d' % self.selectedMenuRow['id']
 			self['statusbar'].setText(_('CSFD - stahování detailu probíhá ...'))
 			self['menu'].hide()
 			self.resetLabels()
@@ -2928,9 +2934,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] KeySpustitIMDB - zacatek\n')
 		if config.misc.CSFD.IMDBCharsConversion.getValue():
 			if self.Page == 0:
-				evname = strUni(char2Diacritic(self.eventName))
+				evname = strUni(StripAccents(self.eventName))
 			else:
-				evname = strUni(char2Diacritic(self.ActName))
+				evname = strUni(StripAccents(self.ActName))
 		elif self.Page == 0:
 			evname = strUni(self.eventName)
 		else:
@@ -3099,6 +3105,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] getCSFD - eventName - zacatek\n')
 			if isinstance(self.eventName, str):
 				self.eventName = Uni8(self.eventName)
+			LogCSFD.WriteToFile('[CSFD] getCSFD - eventName: %s\n' % self.eventName )
+			
 			if isinstance(self.EPG, str):
 				self.EPG = Uni8(self.EPG)
 			if isinstance(self.DVBchannel, str):
@@ -3140,10 +3148,19 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					LogCSFD.WriteToFile('[CSFD] getCSFD - CT korekce nazvu - eventNameSecond: ' + self.eventNameSecond + '\n')
 					break
 
-			sss = char2Allowchar(self.eventName).strip()
+			LogCSFD.WriteToFile('[CSFD] getCSFD - 1\n')
+			try:
+				sss = char2Allowchar(self.eventName).strip()
+			except Exception as e:     # most generic exception you can catch
+				LogCSFD.WriteToFile('[CSFD] getCSFD - 1 error: %s\n' % str(e))
+
+			LogCSFD.WriteToFile('[CSFD] getCSFD - 2\n')
 			sss = NameMovieCorrections(sss)
+			LogCSFD.WriteToFile('[CSFD] getCSFD - 3\n')
 			self.eventName = sss
+			LogCSFD.WriteToFile('[CSFD] getCSFD - 4\n')
 			self.eventNameLocal = strUni(sss)
+			LogCSFD.WriteToFile('[CSFD] getCSFD - 5\n')
 			if self.eventName == self.eventNameSecond:
 				self.eventNameSecond = ''
 				LogCSFD.WriteToFile('[CSFD] getCSFD - eventNameSecond - zruseno\n')
@@ -3153,24 +3170,15 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self['statusbar'].setText(_('Probíhá vyhledávání v TV databázi CSFD ... (') + self.eventNameLocal + ')')
 			if self.FindAllItems or not self.CSFDqueryTV():
 				self['statusbar'].setText(_('Probíhá vyhledávání v databázi CSFD ... (') + self.eventNameLocal + ')')
-				try:
-					eventNameUrllib = quote(self.eventNameLocal)
-					LogCSFD.WriteToFile('[CSFD] getCSFD - OK\n')
-				except:
-					LogCSFD.WriteToFile('[CSFD] getCSFD - chyba\n')
-					eventNameUrllib = quote(strUni(char2Diacritic(char2Allowchar(self.eventName)).strip()))
-					LogCSFD.WriteToFile('[CSFD] getCSFD - hledany film - chyba ' + eventNameUrllib + '\n')
-					err = traceback.format_exc()
-					LogCSFD.WriteToFile(err)
 
 				if self.FindAllItems:
-					fetchurl = '#search_movie#' + eventNameUrllib
-#				elif self.eventMovieSourceOfDataEPG == False and len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
-				elif len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
+					fetchurl = '#search_movie#' + self.eventNameLocal
+#				if self.eventMovieSourceOfDataEPG == False and len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
+				if len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
 					yr = ' (' + str(self.eventMovieYears[0]) + ')'
-					fetchurl = '#search_movie#' + eventNameUrllib + yr
+					fetchurl = '#search_movie#' + self.eventNameLocal + yr
 				else:
-					fetchurl = '#search_movie#' + eventNameUrllib
+					fetchurl = '#search_movie#' + self.eventNameLocal
 
 				LogCSFD.WriteToFile('[CSFD] getCSFD - stahuji z url ' + fetchurl + '\n')
 				
@@ -3182,21 +3190,21 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		else:
 			if not is_Internet_OK:
 				LogCSFD.WriteToFile('[CSFD] getCSFD - chyba - Neni funkcni internet\n')
-				self.summaries.setText(_('Není funkční internet!'), 10)
+				self.summaries.setText(_('Není funkční internet!'))
 				self['statusbar'].setText(_('Není funkční internet!'))
 				self['detailslabel'].setText(_('Není funkční internet!'))
 				self['key_green'].setText('')
 				self['key_blue'].setText('')
 			elif self.eventName == '':
 				LogCSFD.WriteToFile('[CSFD] getCSFD - Nemuzu nacist nazev poradu\n')
-				self.summaries.setText(_('Nemůžu načíst název pořadu'), 10)
+				self.summaries.setText(_('Nemůžu načíst název pořadu'))
 				self['statusbar'].setText(_('Nemůžu načíst název pořadu'))
 				self['detailslabel'].setText(_('Nemůžu načíst název pořadu'))
 				self['key_green'].setText(_('Výběr z EPG'))
 				self['key_blue'].setText(_('Zadej pořad'))
 			else:
 				LogCSFD.WriteToFile('[CSFD] getCSFD - chyba - Neznama chyba (Chyba v pluginu!)\n')
-				self.summaries.setText(_('Chyba v pluginu!'), 10)
+				self.summaries.setText(_('Chyba v pluginu!'))
 				self['statusbar'].setText(_('Chyba v pluginu!'))
 				self['detailslabel'].setText(_('Chyba v pluginu!'))
 				self['key_green'].setText('')
@@ -3247,7 +3255,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		finded = False
 		nazev = Uni8(nazev)
 		for x in listOfResult:
-			if Uni8(x[0]) == nazev and x[1] == cesta:
+			if Uni8(x['name_display']) == nazev and x['id'] == cesta:
 				finded = True
 				break
 
@@ -3283,7 +3291,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 	def Search100shoda(self):
 
 		def key(x):
-			return x[6]
+			return x['match100']
 
 		max_value, pozice = max_positions(self.resultlist, key)
 		if max_value:
@@ -3296,15 +3304,15 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				if config.misc.CSFD.ReadDetailBasedOnScore.getValue() and pocet > 1:
 					poc = 0
 					score = -1
-					mv_url = ''
+					movie_id = 0
 					for pol in pozice:
-						if self.resultlist[pol][4] > score:
-							score = self.resultlist[pol][4]
-							mv_url = self.resultlist[pol][1]
+						if self.resultlist[pol]['score'] > score:
+							score = self.resultlist[pol]['score']
+							movie_id = self.resultlist[pol]['id']
 							self.Detail100Pozice = pol
 							poc = 1
-						elif self.resultlist[pol][4] == score:
-							if self.resultlist[pol][1] != mv_url:
+						elif self.resultlist[pol]['score'] == score:
+							if self.resultlist[pol]['id'] != movie_id:
 								poc += 1
 
 					pocet = poc
@@ -3331,7 +3339,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		vst_eventName = Uni8(eventName)
 		vst_eventName_Corrected_Diacr = NameMovieCorrectionsForCompare(vst_eventName)
 		vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr
-		vst_eventName_Corrected_WO_Diacr = char2Diacritic(vst_eventName_Corrected_Diacr).upper()
+		vst_eventName_Corrected_WO_Diacr = StripAccents(vst_eventName_Corrected_Diacr).upper()
 		vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr
 		vst_eventName_Corrected_WO_Diacr_CorrNumber = vst_eventName_Corrected_WO_Diacr
 		TVMovies = None
@@ -3386,7 +3394,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				if dodat == 'I':
 					vst_eventName_Corrected_Diacr = vst_eventName_Corrected_Diacr[:vv].strip()
 					vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr_WO_Roman[:vv].strip()
-					vst_eventName_Corrected_WO_Diacr = char2Diacritic(vst_eventName_Corrected_Diacr).upper()
+					vst_eventName_Corrected_WO_Diacr = StripAccents(vst_eventName_Corrected_Diacr).upper()
 					vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr
 				else:
 					vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr[:vv].strip()
@@ -3406,7 +3414,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					if dodat == '1':
 						vst_eventName_Corrected_Diacr = vst_eventName_Corrected_Diacr[:vv].strip()
 						vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr_WO_Roman[:vv].strip()
-						vst_eventName_Corrected_WO_Diacr = char2Diacritic(vst_eventName_Corrected_Diacr).upper()
+						vst_eventName_Corrected_WO_Diacr = StripAccents(vst_eventName_Corrected_Diacr).upper()
 						vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr
 					else:
 						vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr[:vv].strip()
@@ -3416,15 +3424,15 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					lastNumber = True
 					
 		LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - hledany film: ' + vst_eventName + '\n')
-		for x in searchresults:
+		for movie_info in searchresults:
 			# x = [ "#movie# + id, movie_name, year, colour_rating ]
-			movie_info = x[4]
+#			movie_info = x[4]
 			
-			res_Name_Orig = char2Allowchar(ParserConstCSFD.delHTMLtags(x[1]))
+			res_Name_Orig = movie_info['name']
 			nameMovies = res_Name_Orig + '#$' + vst_eventName + '#$' + str(simpleSearch)
 			res_Name = NameMovieCorrections(res_Name_Orig)
 			res_Name_Corrected_Diacr = NameMovieCorrectionsForCompare(res_Name)
-			res_Name_Corrected_WO_Diacr = char2Diacritic(res_Name_Corrected_Diacr).upper()
+			res_Name_Corrected_WO_Diacr = StripAccents(res_Name_Corrected_Diacr).upper()
 			res_Name_Corrected_Diacr_WO_Roman = res_Name_Corrected_Diacr
 			res_Name_Corrected_WO_Diacr_WO_Roman = res_Name_Corrected_WO_Diacr
 			
@@ -3497,18 +3505,18 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			if addTVscore and TVMovies is not None:
 				LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - ano\n')
 				for movie in TVMovies:
-					if movie[0] == x[0]:
-						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - x[0]: ' + x[0] + '\n')
-						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - movie[0]: ' + movie[0] + '\n')
+					if movie[0] == movie_info['id']:
+						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - movie_id: ' + str(movie_info['id']) + '\n')
+						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - movie[0]: ' + str(movie[0]) + '\n')
 						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - TV test - shoda\n')
 						celkem_bodu += 1000
 						TV_shoda = True
 						if shoda100 == '0':
 							shoda100 = '1'
 
-			if x[2] is not None:
+			if movie_info['year'] != '':
 				if (addTVscore and TVMovies is not None) or len(self.eventMovieYears) == 1:
-					y_body, y_shoda = self.CompareMovieYears(x[2])
+					y_body, y_shoda = self.CompareMovieYears(movie_info['year'])
 					if y_shoda:
 						shoda100 += '1'
 					else:
@@ -3520,66 +3528,30 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			if celkem_bodu >= acceptance:
 				if not res_shoda and shoda100 > '01':
 					res_shoda = True
-				if x[2] is not None:
-					spoj = strUni(res_Name_Orig + ' (' + char2Allowchar(x[2]) + ')' )
-				else:
-					spoj = strUni(res_Name_Orig)
 
-				if x[4]['type'] != 0:
-					spoj += ' [' + movie_type_map[x[4]['type']] + ']'
+				display_name = strUni(movie_info['name'])
+				display_name += CreateStrList( (' (', movie_info['year'], ')' ), '', True )
+				display_name += CreateStrList( (' [', movie_type_map[ movie_info['type'] ], ']' ), '', True )
 				
-				if not self.SearchDuplicity(resultlist, spoj, x[0]):
+				if not self.SearchDuplicity(resultlist, display_name, movie_info['id']):
 					if len(res_Name_Corrected_WO_Diacr) > 0:
-						res_Name_Corrected_WO_DiacrSort = char2DiacriticSort(res_Name)
-						if x[2] is not None:
-							resultlist.append((spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, celkem_bodu, y, shoda100, res_Name_Orig, x[3], x[2], x[4]))
-							
-							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - item %s\n' % ' $ '.join( (spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, str(celkem_bodu), str(y), str(shoda100), res_Name_Orig, x[3], x[2]) ))
-						else:
-							resultlist.append((spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, celkem_bodu, y, shoda100, res_Name_Orig, x[3], '', x[4]))
-							
-							LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - item %s\n' % ' $ '.join( (spoj, x[0], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, str(celkem_bodu), str(y), str(shoda100), res_Name_Orig, x[3], '') ))
+						res_Name_Corrected_WO_DiacrSort = StripAccents(res_Name)
+						
+						movie_info['name_display'] = display_name
+						movie_info['name_sort'] = StripAccents(res_Name)
+						movie_info['name_normalised'] = res_Name_Corrected_WO_Diacr
+						movie_info['score'] = celkem_bodu
+						movie_info['position'] = y
+						movie_info['match100'] = shoda100
+						
+#						resultlist.append((display_name, movie_info['id'], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, celkem_bodu, y, shoda100, res_Name_Orig, x[3], movie_info['year'], movie_info))
+						resultlist.append(movie_info)
+						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - item %s\n' % movie_info )
+
 						y += 1
 
 		LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - konec\n')
 		return (resultlist, res_shoda, TV_shoda)
-
-	def GetOtherMovieNamesFromDetail(self, searchresults):
-		LogCSFD.WriteToFile('[CSFD] GetOtherMovieNamesFromDetail - zacatek\n')
-		searchresultsAdd = []
-		if searchresults is not None and len(searchresults) > 0:
-			try:
-				pocet = int(config.misc.CSFD.NumberOfReadMovieNameFromDetail.getValue())
-			except ValueError:
-				LogCSFD.WriteToFile('[CSFD] GetOtherMovieNamesFromDetail - number - chyba\n')
-				pocet = 1
-
-			stahnuto = []
-			index = 0
-			nacteno = 0
-			while nacteno < pocet:
-				if index >= len(searchresults):
-					break
-				pol = searchresults[index]
-				link = pol[0]
-				if link not in stahnuto:
-					stahnuto.append(link)
-
-					fetchurl = link
-					LogCSFD.WriteToFile('[CSFD] GetOtherMovieNamesFromDetail - stahuji z url ' + Uni8(fetchurl) + '\n')
-
-					res = csfdAndroidClient.get_json_by_uri( fetchurl )
-					res_name = ParserCSFD.parserOrigMovieTitle(res)
-					if res_name is not None:
-						searchresults.append((pol[0], res_name, pol[2], pol[3]))
-						searchresultsAdd.append((pol[0], res_name, pol[2], pol[3]))
-
-					nacteno += 1
-				index += 1
-
-
-		LogCSFD.WriteToFile('[CSFD] GetOtherMovieNamesFromDetail - konec\n')
-		return (searchresults, searchresultsAdd)
 
 	def CSFDTestingTV(self):
 		TVtesting = False
@@ -3601,7 +3573,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] CSFDquery - zacatek\n')
 
 		def SetNotFind(textInfo='', textStatus=''):
-			self.summaries.setText(textInfo + self.eventNameLocal, 10)
+			self.summaries.setText(textInfo + self.eventNameLocal)
 			self['detailslabel'].setText(textInfo + self.eventNameLocal)
 			self['statusbar'].setText(textStatus)
 			self['sortlabel'].setText('')
@@ -3626,8 +3598,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		if ParserCSFD.testJson():
 			if ParserCSFD.parserMoviesFound():
 				LogCSFD.WriteToFile('[CSFD] CSFDquery - parsuji cely seznam vyhledanych filmu\n')
-				searchresults = ParserCSFD.parserListOfMovies(0)
-#				searchresults, searchresultsAdd = self.GetOtherMovieNamesFromDetail(searchresults)
+				searchresults = ParserCSFD.parserListOfMovies()
 				self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults)
 				
 				LogCSFD.WriteToFile('[CSFD] CSFDquery - konec upravy seznamu\n')
@@ -3740,27 +3711,43 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile(Titeltext)
 			LogCSFD.WriteToFile('\n')
 			if len(self.resultlist) == 1:
-				if self.resultlist[0][6] == '91':
+				if self.resultlist[0]['match100'] == '91':
 					LogCSFD.WriteToFile('[CSFD] ParseName - OK\n')
 					pol = self.resultlist[0]
 					self.resultlist = []
 					searchresults = []
-					filmdate = ''
 					res = ParserConstCSFD.parserGetYears(Titeltext[-6:], '(')
+					
 					if res is not None and len(res) > 0:
-						LogCSFD.WriteToFile('[CSFD] ParseName - filmdate - ')
-						filmdate = '(' + res[0] + ')'
-						LogCSFD.WriteToFile(filmdate + '\n')
+						LogCSFD.WriteToFile('[CSFD] ParseName - filmdate - ' + res[0] + '\n')
+						
 					LogCSFD.WriteToFile('[CSFD] ParseName - Jmeno\n')
 					jmeno = ParserCSFD.parserMovieTitle()
 					if jmeno is not None and jmeno != '':
-						searchresults.append((pol[1], jmeno, filmdate, ccrate))
+						movie_info = {
+							'id': pol['id'],
+							'name': jmeno,
+							'year': res[0] if res is not None and len(res) > 0 else '',
+							'rating_category': ccrate,
+							'type': pol['type']
+						}
+
+#						searchresults.append((pol[1], jmeno, filmdate, ccrate))
+						searchresults.append( movie_info )
 					LogCSFD.WriteToFile('[CSFD] ParseName - Ostatni jmena\n')
 					ostjmenaresult = ParserCSFD.parserOtherMovieTitleWOCountry()
 					if ostjmenaresult is not None:
 						for x in ostjmenaresult:
 							if x != '':
-								searchresults.append((pol[1], x, filmdate, ccrate))
+								movie_info = {
+									'id': pol['id'],
+									'name': x,
+									'year': res[0] if res is not None and len(res) > 0 else '',
+									'rating_category': ccrate,
+									'type': pol['type']
+								}
+#								searchresults.append((pol[1], x, filmdate, ccrate))
+								searchresults.append( movie_info )
 
 					self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults, True)
 					self.Detail100Pozice = 0
@@ -3813,7 +3800,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			if len(jme) > 1:
 				Detailstext += strUni(char2Allowchar(NameMovieCorrectionExtensions(jme[1].strip()))) + '\n'
 		
-		ss = self.selectedMenuRow[7].strip()
+		ss = self.selectedMenuRow['name']
 		if ss is not None and ss is not '':
 			jme = ss.split(' / ', 1)
 			Detailstext = strUni(char2Allowchar(NameMovieCorrectionExtensions(jme[0].strip()))) + '\n'
@@ -4030,7 +4017,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			coltextspace = Uni8(coltextspace)
 			Obsahtext = coltextspace + Obsahtext + '\n'
 			if self.EPG != '' and self.selectedMenuRow is not None:
-				if self.selectedMenuRow[6] >= '10':
+				if self.selectedMenuRow['match100'] >= '10':
 					Obsahtext += ' \n'
 					coltext1 = _('Info z EPG: ')
 					coltextspace = self['contentlabel'].CalculateSizeInSpace(coltext1)[0]
@@ -4042,7 +4029,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self['contentlabel'].setTextCol(coltext)
 			self.callbackData += Uni8(Obsahtext)
 		elif self.EPG != '' and self.selectedMenuRow is not None:
-			if self.selectedMenuRow[6] >= '10':
+			if self.selectedMenuRow['match100'] >= '10':
 				coltext = _('Info z EPG: ')
 				coltextspace = self['contentlabel'].CalculateSizeInSpace(coltext)[0]
 				coltextspace = Uni8(coltextspace)
@@ -4557,7 +4544,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 	def CSFDAllVideoDownload(self):
 		self.VideoDwnlIsNotStarted = False
 		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - zacatek\n')
-		video_res = config.misc.CSFD.VideoResolution.getValue()
 		
 		try:
 			id_filmu = self.linkGlobal
@@ -4578,7 +4564,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - stahuji z url ' + id_filmu + '\n')
 		result = csfdAndroidClient.get_json_by_uri( '#movie_videos#' + id_filmu )
 
-		results = ParserCSFD.parserVideoDetail(result, config.misc.CSFD.VideoResolution.getValue() == 'hd', config.misc.CSFD.QualityVideoPoster.getValue())
+		results = ParserCSFD.parserVideoDetail(result, config.misc.CSFD.VideoResolution.getValue(), config.misc.CSFD.QualityVideoPoster.getValue())
 		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - parserVideoDetail\n')
 		if results is not None:
 			for x in results:
@@ -4769,11 +4755,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self.PosterBasicCountPixAllG = len(result["photos"])
 
 			for photo in result["photos"]:
-				photo_url = photo["url"]
-				
-#				qidx = photo_url.rfind('?w')
-#				if qidx != -1:
-#					photo_url = photo_url[:qidx]
+				photo_url = ParserCSFD.getUrlByImageResolution( photo["url"], config.misc.CSFD.QualityGallery.getValue() )
 				
 				porGF += 1
 				porGFtyp += 1
@@ -4821,13 +4803,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 	def CSFDPosterBasic(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDPosterBasic - zacatek\n', 6)
-		try:
-			id_filmu = self.linkGlobal
-		except:
-			id_filmu = ''
-			LogCSFD.WriteToFile('[CSFD] CSFDPosterBasic - chyba self.linkGlobal - konec\n', 6)
-			LogCSFD.WriteToFile(err, 6)
-			return
+		id_filmu = self.linkGlobal
 
 		readmainposter = False
 		filename = resolveFilename(SCOPE_PLUGINS, 'Extensions/CSFD/icons/no_poster.png')

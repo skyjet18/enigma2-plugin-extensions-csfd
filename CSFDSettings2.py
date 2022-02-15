@@ -167,9 +167,12 @@ config.misc.CSFD.TVCache = ConfigYesNo(default=False)
 config.misc.CSFD.DirectoryVideoDownload = CSFDConfigText('/hdd/movie/', fixed_size=False)
 config.misc.CSFD.Skinxml = ConfigYesNo(default=False)
 config.misc.CSFD.SkinOLEDxml = ConfigYesNo(default=True)
-config.misc.CSFD.QualityPoster = ConfigYesNo(default=False)
-config.misc.CSFD.QualityGallery = ConfigYesNo(default=False)
-config.misc.CSFD.QualityVideoPoster = ConfigYesNo(default=False)
+config.misc.CSFD.VideoResolution = ConfigSelection(choices=[('360', '360p'), ('480', '480p'), ('720', '720p'), ('1080', '1080p')], default='1080')
+
+#config.misc.CSFD.QualityPoster = ConfigYesNo(default=False)
+#config.misc.CSFD.QualityGallery = ConfigYesNo(default=False)
+#config.misc.CSFD.QualityVideoPoster = ConfigYesNo(default=False)
+
 CSFDActionDict = [
 	('komentare', 'UserComments'),
 	('ext.recenze', 'UserExtReviews'),
@@ -258,7 +261,6 @@ def ResetParams():
 	config.misc.CSFD.QualityVideoPoster.saved_value = None
 	config.misc.CSFD.VideoResolution.saved_value = None
 	config.misc.CSFD.SortFindItems.saved_value = None
-	config.misc.CSFD.NumberOfReadMovieNameFromDetail.saved_value = None
 	config.misc.CSFD.Info_EPG.saved_value = None
 	config.misc.CSFD.Default_Sort.saved_value = None
 	config.misc.CSFD.Input_Type.saved_value = None
@@ -362,7 +364,6 @@ def ResetParams():
 	config.misc.CSFD.QualityVideoPoster.load()
 	config.misc.CSFD.VideoResolution.load()
 	config.misc.CSFD.SortFindItems.load()
-	config.misc.CSFD.NumberOfReadMovieNameFromDetail.load()
 	config.misc.CSFD.Info_EPG.load()
 	config.misc.CSFD.Default_Sort.load()
 	config.misc.CSFD.Input_Type.load()
@@ -403,9 +404,10 @@ def InitParamsLangImpact():
 	LogCSFD.WriteToFile('[CSFD] CSFDSettings2 - InitParamsLangImpact - zacatek\n')
 	config.misc.CSFD.Language = ConfigSelection(choices=[('0', _('automaticky')), ('1', _('česky')), ('2', _('slovensky'))], default='0')
 	config.misc.CSFD.Resolution = ConfigSelection(choices=[('0', _('automaticky')), ('720', _('720')), ('1280', _('1280')), ('1920', _('1920'))], default='0')
-	config.misc.CSFD.VideoResolution = ConfigSelection(choices=[('sd', _('SD')), ('hd', _('HD'))], default='sd')
+	config.misc.CSFD.QualityPoster = ConfigSelection(choices=[('h180', '180p'), ('h360', '360p'), ('h480', '480p'), ('h720', '720p'), ('h1080', '1080p'), _('Maximální') ], default='h720')
+	config.misc.CSFD.QualityGallery = ConfigSelection(choices=[('h180', '180p'), ('h360', '360p'), ('h480', '480p'), ('h720', '720p'), ('h1080', '1080p'), _('Maximální') ], default='h720')
+	config.misc.CSFD.QualityVideoPoster = ConfigSelection(choices=[('h180', '180p'), ('h360', '360p'), ('h480', '480p'), ('h720', '720p'), ('h1080', '1080p'), _('Maximální') ], default='h720')
 	config.misc.CSFD.SortFindItems = ConfigSelection(choices=[('0', _('metoda 1 - Levenshtein')), ('1', _('metoda 2 - Bigram')), ('2', _('metoda 3 - Jen porovnat'))], default='0')
-	config.misc.CSFD.NumberOfReadMovieNameFromDetail = ConfigSelection(choices=[('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4')], default='2')
 	config.misc.CSFD.Info_EPG = ConfigSelection(choices=[('0', _('rovnou vyhledat aktuální pořad')), ('1', _('zobrazit EPG aktuálního kanálu')), ('2', _('zobrazit seznam kanálů'))], default='0')
 	config.misc.CSFD.Default_Sort = ConfigSelection(choices=[('0', _('vhodnosti názvu')), ('1', _('CSFD.cz')), ('2', _('data vydání')), ('3', _('abecedy'))], default='0')
 	config.misc.CSFD.Input_Type = ConfigSelection(choices=[('0', _('pomocí virtuální klávesnice')), ('1', _('výběrem znaků opakovaným stiskem klávesy'))], default='0')
