@@ -394,8 +394,6 @@ def ResetParams():
 	config.misc.CSFD.Bouquet9.load()
 	config.misc.CSFD.Bouquet10.load()
 	config.misc.CSFD.Bouquet11.load()
-	from .CSFDSubtitles import ResetSubtitleParams
-	ResetSubtitleParams()
 	configfile.save()
 	return
 

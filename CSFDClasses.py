@@ -14,7 +14,6 @@ from .CSFDHelpMenu import CSFDHelpableScreen1
 from Components.ActionMap import ActionMap, HelpableActionMap
 from Components.Pixmap import Pixmap, MultiPixmap
 from Components.Label import Label
-from .CSFDSubtitles import SubsSupport
 from Components.Button import Button
 from Components.MultiContent import MultiContentEntryText
 from Components.ServiceEventTracker import ServiceEventTracker
@@ -31,6 +30,17 @@ from .CSFDParser import GetCSFDNumberFromChannel, ParserCSFD
 from .CSFDSkinLoader import *
 import datetime, time, traceback
 from .CSFDAndroidClient import csfdAndroidClient
+
+try:
+	from Plugins.Extensions.SubsSupport import SubsSupport
+except:
+	# SubsSupport plugin not available, so create fake one
+	class SubsSupport():
+		def resetSubs(self, rst):
+			pass
+
+		def loadSubs(self, fl):
+			pass
 
 isFirstGetMovies = True
 
@@ -1412,8 +1422,13 @@ class CSFDPlayer(Screen, SubsSupport, InfoBarNotifications, InfoBarSubtitleSuppo
 			self.skinName = 'CSFDPlayer__'
 		LogCSFD.WriteToFile('[CSFD] CSFDPlayer - subtitles ' + Uni8(subtitles) + '\n')
 		self.subtitles = subtitles
-		SubsSupport.__init__(self, subPath=self.subtitles, defaultPath='/tmp', forceDefaultPath=True, subclassOfScreen=False)
-		SubsSupport.setPlayerDelay(self, config.misc.CSFD.PlayerSubtDelayPlus.getValue() - config.misc.CSFD.PlayerSubtDelayMinus.getValue())
+		
+		try:
+			SubsSupport.__init__(self, subsPath=self.subtitles, defaultPath='/tmp', forceDefaultPath=True)
+			SubsSupport.setPlayerDelay(self, config.misc.CSFD.PlayerSubtDelayPlus.getValue() - config.misc.CSFD.PlayerSubtDelayMinus.getValue())
+		except:
+			pass
+
 		self.lastservice = lastservice
 		self.session = session
 		self.service = service
@@ -1468,8 +1483,7 @@ class CSFDPlayer(Screen, SubsSupport, InfoBarNotifications, InfoBarSubtitleSuppo
 		   'next': self.playNextFile, 
 		   'previous': self.playPrevFile, 
 		   'record': self.downloadMovie, 
-		   'videoInfo': self.showVideoInfo, 
-		   'subtitles': self.subtitlesSetup}, -2)
+		   'videoInfo': self.showVideoInfo}, -2)
 		self.hidetimer = eTimer()
 		self.hidetimerConn = None
 		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
@@ -1486,12 +1500,6 @@ class CSFDPlayer(Screen, SubsSupport, InfoBarNotifications, InfoBarSubtitleSuppo
 		self.play()
 		return
 
-	def subtitlesSetup(self):
-		LogCSFD.WriteToFile('[CSFD] CSFDPlayer - subtitlesSetup - zacatek\n')
-		SubsSupport.subsMenu(self)
-		SubsSupport.resumeSubs(self)
-		LogCSFD.WriteToFile('[CSFD] CSFDPlayer - subtitlesSetup - konec\n')
-
 	def __onClose(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDPlayer - __onClose - zacatek\n')
 		if self.hidetimer.isActive():
@@ -1499,7 +1507,6 @@ class CSFDPlayer(Screen, SubsSupport, InfoBarNotifications, InfoBarSubtitleSuppo
 		self.session.nav.stopService()
 		self.session.nav.playService(self.lastservice)
 		self.exitCallback()
-		SubsSupport.exitSubs(self)
 		InfoBarNotifications = None
 		InfoBarSubtitleSupport = None
 		self.__event_tracker = None
@@ -1684,7 +1691,6 @@ class CSFDPlayer(Screen, SubsSupport, InfoBarNotifications, InfoBarSubtitleSuppo
 		SubsSupport.resetSubs(self, True)
 		self.session.nav.playService(self.service)
 		SubsSupport.loadSubs(self, self.subtitles)
-		SubsSupport.startSubs(self, 2000)
 		self.summaries.setText(self.service.getName(), self.colorOLED)
 		if self.shown:
 			self.__setHideTimer()
@@ -1708,14 +1714,12 @@ class CSFDPlayer(Screen, SubsSupport, InfoBarNotifications, InfoBarSubtitleSuppo
 		LogCSFD.WriteToFile('[CSFD] CSFDPlayer - pauseService - zacatek\n')
 		if self.state == self.STATE_PLAYING:
 			self.setSeekState(self.STATE_PAUSED)
-			SubsSupport.pauseSubs(self)
 		LogCSFD.WriteToFile('[CSFD] CSFDPlayer - pauseService - konec\n')
 
 	def unPauseService(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDPlayer - unpauseService - zacatek\n')
 		if self.state == self.STATE_PAUSED:
 			self.setSeekState(self.STATE_PLAYING)
-			SubsSupport.resumeSubs(self)
 		LogCSFD.WriteToFile('[CSFD] CSFDPlayer - unpauseService - konec\n')
 
 	def getSeek(self):
@@ -1758,7 +1762,6 @@ class CSFDPlayer(Screen, SubsSupport, InfoBarNotifications, InfoBarSubtitleSuppo
 			seekable.seekRelative(pts < 0 and -1 or 1, abs(pts))
 			if abs(pts) > 100 and config.usage.show_infobar_on_skip.getValue():
 				self.ok()
-			SubsSupport.playAfterSeek(self)
 			seekable = None
 			LogCSFD.WriteToFile('[CSFD] CSFDPlayer - doSeekRelative - konec\n')
 			return
@@ -1776,7 +1779,6 @@ class CSFDPlayer(Screen, SubsSupport, InfoBarNotifications, InfoBarSubtitleSuppo
 		LogCSFD.WriteToFile('[CSFD] CSFDPlayer - __serviceStarted - zacatek\n')
 		self.state = self.STATE_PLAYING
 		self.__seekableStatusChanged()
-		SubsSupport.resumeSubs(self)
 		LogCSFD.WriteToFile('[CSFD] CSFDPlayer - __serviceStarted - konec\n')
 
 	def setSeekState(self, wantstate):
