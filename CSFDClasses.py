@@ -1474,17 +1474,20 @@ class CSFDPlayer(Screen, SubsSupport, InfoBarNotifications, InfoBarSubtitleSuppo
 
 					return
 
-		self['actions'] = CSFDSeekActionMap(['CSFDPlayerActions'], self.doSeekRelative, {'ok': self.ok, 
-		   'cancel': self.leavePlayer, 
-		   'stop': self.leavePlayer, 
-		   'menu': self.leavePlayer, 
-		   'play': self.unPauseService, 
-		   'pause': self.pauseService, 
-		   'playpause': self.playpauseService, 
-		   'next': self.playNextFile, 
-		   'previous': self.playPrevFile, 
-		   'record': self.downloadMovie, 
-		   'videoInfo': self.showVideoInfo}, -2)
+		self['actions'] = CSFDSeekActionMap(['CSFDPlayerActions'], self.doSeekRelative, {
+			'ok': self.ok,
+			'cancel': self.leavePlayer,
+			'stop': self.leavePlayer,
+			'menu': self.leavePlayer,
+			'play': self.unPauseService,
+			'pause': self.pauseService,
+			'playpause': self.playpauseService,
+			'next': self.playNextFile,
+			'previous': self.playPrevFile,
+			'record': self.downloadMovie,
+			'videoInfo': self.showVideoInfo,
+			'subtitles': self.subtitleSelection
+		}, -2)
 		self.hidetimer = eTimer()
 		self.hidetimerConn = None
 		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':

@@ -20,7 +20,7 @@ from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.EpgList import EPGList, EPG_TYPE_SIMILAR, EPG_TYPE_MULTI
 from Components.config import configfile
-import traceback, inspect
+import traceback, inspect, os
 LogCSFD.WriteToFile('[CSFD] Log CSFD pluginu - zacatek\n')
 LogCSFD.WriteToFile('[CSFD] Log CSFD pluginu: ' + config.misc.CSFD.Version.getValue() + '  ' + config.misc.CSFD.VersionData.getValue() + '\n')
 LogCSFD.WriteToFile('[CSFD] Log CSFD pluginu - konec\n')
@@ -322,6 +322,17 @@ else:
 						EPG += ext
 					if EPG != '':
 						EPG = curevent_name + ' - ' + EPG
+			
+			# curevent_name can be a path or file name - make some processing for better search
+			if curevent_name.endswith('/'): # remove / from the end of name
+				curevent_name = curevent_name[:-1]
+			
+			# remove path and extension from name
+			curevent_name = os.path.splitext( os.path.basename( curevent_name ) )[0]
+			
+			# convert '.' into spaces (example: The.Simpsons.2020 -> The Simpsons 2020)
+			curevent_name = curevent_name.replace('.', ' ')
+			
 			RunCSFD(self.session, curevent_name, False, EPG, True, DVBchannel)
 			LogCSFD.WriteToFile('[CSFD] MovieSelection - showEventInformation - konec\n')
 			return
