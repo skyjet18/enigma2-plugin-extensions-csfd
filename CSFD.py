@@ -4,7 +4,7 @@ from enigma import eTimer, ePicLoad, eServiceCenter, eServiceReference, eConsole
 from .CSFDLog import LogCSFD
 from .CSFDTools import ItemList, ItemListServiceMenu, TextSimilarityBigram, TextSimilarityLD, TextCompare, max_positions, request, requestFileCSFD, internet_on, fromRomanStr, StrtoRoman
 from .CSFDTools import intWithSeparator, char2Diacritic, char2DiacriticSort, char2Allowchar, char2AllowcharNumbers, strUni, Uni8, deletetmpfiles, OdstranitDuplicityRadku, loadPixmapCSFD, picStartDecodeCSFD, AddLine, CreateStrList
-from .CSFDParser import ParserCSFD, ParserConstCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions, movie_type_map
+from .CSFDParser import ParserCSFD, ParserConstCSFD, GetItemColourRateN, GetItemColourRateC, GetItemColourN, NameMovieCorrections, NameMovieCorrectionsForCompare, GetCSFDNumberFromChannel, NameMovieCorrectionsForCTChannels, NameMovieCorrectionExtensions, movieType
 from .CSFDClasses import GetMoviesForTVChannels, CSFDChannelSelection, CSFDEPGSelection, CSFDLCDSummary, CSFDSetup, CSFDInputText, CSFDAbout, CSFDHistory, CSFDVideoInfoScreen, CSFDPlayer, RefreshPlugins
 from .CSFDMovieCache import TVMovieCache
 from .CSFDSettings1 import CSFDGlobalVar
@@ -85,6 +85,11 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self.versionCSFD = config.misc.CSFD.Version.getValue()
 		self.versionCSFDdate = config.misc.CSFD.VersionData.getValue()
 		self.lastservice = session.nav.getCurrentlyPlayingServiceReference()
+		self.event_info = {
+			'name' : eventName if eventName is not None else '',
+			'EPG' : EPG if EPG is not None else ''
+		}
+		
 		if eventName is not None:
 			self.eventName = eventName
 		else:
@@ -821,10 +826,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] RunKey - EPG zacatek\n')
 			self.openChannelSelection()
 			LogCSFD.WriteToFile('[CSFD] RunKey - EPG konec\n')
-		elif akce == 'test':
-			LogCSFD.WriteToFile('[CSFD] RunKey - Test - zacatek\n')
-			self.KeyTesting()
-			LogCSFD.WriteToFile('[CSFD] RunKey - Test - konec\n')
 		elif akce == 'findall':
 			LogCSFD.WriteToFile('[CSFD] RunKey - Vyhledat vsechny polozky - zacatek\n')
 			self.KeyFindAll()
@@ -2400,7 +2401,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				else:
 					self.SortType = directTypeSort
 			# ( 0 = display name, 1 = movie link, 2 = res_Name_Corrected_WO_DiacrSort, 3 = res_Name_Corrected_WO_Diacr, 4 = celkem_bodu, 5 = y, 6 = shoda100, 7 = res_Name_Orig, 8 = colour, 9 = year, 10 = movie_info)
-			if self.SortType == 0:
+			if self.SortType == 0: # by score
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 0 - zacatek\n')
 				# sort by display name
 				self.resultlist.sort(key=lambda z: z['name_display'], reverse=True)
@@ -2409,12 +2410,12 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				# sort by number of points
 				self.resultlist.sort(key=lambda z: z['score'], reverse=True)
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 0 - konec\n')
-			elif self.SortType == 1:
+			elif self.SortType == 1: # by positou from CSFD
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 1 - zacatek\n')
 				# sort by position received from csfd
 				self.resultlist.sort(key=lambda z: z['position'])
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 1 - konec\n')
-			elif self.SortType == 2:
+			elif self.SortType == 2: # by year
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 2 - zacatek\n')
 				# sort by display name
 				self.resultlist.sort(key=lambda z: z['name_display'], reverse=True)
@@ -2423,7 +2424,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				#sort by year
 				self.resultlist.sort(key=lambda z: z['year'], reverse=True)
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 2 - konec\n')
-			elif self.SortType == 3:
+			elif self.SortType == 3: # A-Z
 				LogCSFD.WriteToFile('[CSFD] SortTypeChange 3 - zacatek\n')
 				# sort by name without diacritics
 				self.resultlist.sort(key=lambda z: z['name_display'])
@@ -2895,14 +2896,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self['page'].setText(_('Strana č.%s' % sss))
 			self['page'].show()
 
-	def KeyTesting(self):
-		LogCSFD.WriteToFile('[CSFD] KeyTesting - zacatek\n')
-		self.AntiFreezeTimerWorking = False
-		from CSFDSimpleInfo import CSFDFindMovie
-		CSFDFindMovie.FindMovieBasedOnName(self.eventName)
-		self.AntiFreezeTimerWorking = True
-		LogCSFD.WriteToFile('[CSFD] KeyTesting - konec\n')
-
 	def openChannelSelection(self):
 		CSFDGlobalVar.setCSFDcur(1)
 		CSFDGlobalVar.setCSFDeventID_EPG(0)
@@ -2955,6 +2948,25 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self.exitServiceMenu()
 		LogCSFD.WriteToFile('[CSFD] IMDBClosed - konec\n')
 
+	def createSearchQuery(self):
+		if config.misc.CSFD.FindInclDiacrEPG.getValue() == False:
+			search_query = StripAccents( self.eventNameLocal )
+		else:
+			search_query = self.eventNameLocal
+
+#		if self.event_info['position_code'] != None and config.misc.CSFD.SearchEpisodes() == True:
+#			search_query += ' ' + self.event_info['position_code']
+		
+#		if self.eventMovieSourceOfDataEPG == False and len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
+		if len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
+			search_query += ' ' + str(self.eventMovieYears[0])
+
+#		if self.event_info['year'] != None and config.misc.CSFD.FindInclYear.getValue():
+#			search_query += ' ' + self.event_info['year']
+
+		return '#search_movie#' + search_query
+	
+	
 	def getCSFD(self):
 		LogCSFD.CheckAndEmptyLog()
 		LogCSFD.WriteToFile('[CSFD] getCSFD - zacatek\n')
@@ -3171,14 +3183,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			if self.FindAllItems or not self.CSFDqueryTV():
 				self['statusbar'].setText(_('Probíhá vyhledávání v databázi CSFD ... (') + self.eventNameLocal + ')')
 
-				if self.FindAllItems:
-					fetchurl = '#search_movie#' + self.eventNameLocal
-#				if self.eventMovieSourceOfDataEPG == False and len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
-				if len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
-					yr = ' (' + str(self.eventMovieYears[0]) + ')'
-					fetchurl = '#search_movie#' + self.eventNameLocal + yr
-				else:
-					fetchurl = '#search_movie#' + self.eventNameLocal
+				fetchurl = self.createSearchQuery()
 
 				LogCSFD.WriteToFile('[CSFD] getCSFD - stahuji z url ' + fetchurl + '\n')
 				
@@ -3531,14 +3536,14 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 				display_name = strUni(movie_info['name'])
 				display_name += CreateStrList( (' (', movie_info['year'], ')' ), '', True )
-				display_name += CreateStrList( (' [', movie_type_map[ movie_info['type'] ], ']' ), '', True )
+				display_name += CreateStrList( (' [', movieType.idToStr(movie_info['type']), ']' ), '', True )
 				
 				if not self.SearchDuplicity(resultlist, display_name, movie_info['id']):
 					if len(res_Name_Corrected_WO_Diacr) > 0:
 						res_Name_Corrected_WO_DiacrSort = StripAccents(res_Name)
 						
 						movie_info['name_display'] = display_name
-						movie_info['name_sort'] = StripAccents(res_Name)
+#						movie_info['name_sort'] = StripAccents(res_Name)
 						movie_info['name_normalised'] = res_Name_Corrected_WO_Diacr
 						movie_info['score'] = celkem_bodu
 						movie_info['position'] = y

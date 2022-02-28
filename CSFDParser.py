@@ -42,46 +42,74 @@ typeOfMovie = {
 	'epizoda': _('Seriál - epizoda')
 }
 
-movie_type_map = {
-	0: "", # used also for type 1 - to not show type in text form
-	1: _('Video film'),
-	2: _('TV film'),
-	3: _('TV seriál'),
-	4: _('TV pořad'),
-	5: _('Divadelní záznam'),
-	6: _('Koncert'),
-	7: _('Studentský film'),
-	8: _('Amatérský film'),
-	9: _('Hudební videoklip'),
-	10: _('Seriál - série'),
-	11: _('Seriál - epizoda'),
-	12: _('TV seriál'), # example: Simpsons
-	13: _('TV pořad'), # example: MythBusters
-	14: _('Video kompilace')
-}
+class MovieType():
+	UNUSED = 0
+	VIDEO_MOVIE = 1
+	TV_MOVIE = 2
+	SERIAL = 3
+	SHOW = 4
+	THEATRE_RECORD = 5
+	CONCERT = 6
+	STUDENT_MOVIE = 7
+	AMATEUR_MOVIE = 8
+	MUSIC_VIDEO = 9
+	SERIE = 10
+	EPISODE = 11
+	SERIAL_WITH_EPISODES = 12 # example: Simpsons
+	SHOW_WITH_EPISODES = 13 # example: MythBusters
+	VIDEO_COMPILATION = 14
 
-movie_type_map2 = {
-	0: "", # used also for type 1 - to not show type in text form
-	1: "video film",
-	2: "TV film",
-	3: "seriál",
-	4: "pořad",
-	5: "divadelní záznam",
-	6: "koncert",
-	7: "studentský film",
-	8: "amatérský film",
-	9: "hudební videoklip",
-	10: "série",
-	11: "epizoda",
-	12: "seriál s epizodami", # example: Simpsons
-	13: "pořad s epizodami", # example: MythBusters
-	14: "video kompilace"
-}
-
-# build reverse map
-movie_type_map_rev = {}
-for movie_type in movie_type_map2:
-	movie_type_map_rev[ Uni8( movie_type_map2[movie_type] ) ] = movie_type
+	# used for translation
+	movie_type_map = {
+		0: "", # used also for type 1 - to not show type in text form
+		1: _('Video film'),
+		2: _('TV film'),
+		3: _('TV seriál'),
+		4: _('TV pořad'),
+		5: _('Divadelní záznam'),
+		6: _('Koncert'),
+		7: _('Studentský film'),
+		8: _('Amatérský film'),
+		9: _('Hudební videoklip'),
+		10: _('Seriál - série'),
+		11: _('Seriál - epizoda'),
+		12: _('TV seriál'), # example: Simpsons
+		13: _('TV pořad'), # example: MythBusters
+		14: _('Video kompilace')
+	}
+	
+	# used for reverse mapping
+	movie_type_map2 = {
+		0: "", # used also for type 1 - to not show type in text form
+		1: "video film",
+		2: "TV film",
+		3: "seriál",
+		4: "pořad",
+		5: "divadelní záznam",
+		6: "koncert",
+		7: "studentský film",
+		8: "amatérský film",
+		9: "hudební videoklip",
+		10: "série",
+		11: "epizoda",
+		12: "seriál s epizodami", # example: Simpsons
+		13: "pořad s epizodami", # example: MythBusters
+		14: "video kompilace"
+	}
+	movie_type_map_rev = {}
+	
+	def __init__(self):
+		# build reverse map
+		for movie_type in self.movie_type_map2:
+			self.movie_type_map_rev[ Uni8( self.movie_type_map2[movie_type] ) ] = movie_type
+	
+	def idToStr(self, type_id ):
+		return self.movie_type_map[type_id]
+	
+	def strToId(self, type_str ):
+		return self.movie_type_map_rev[type_str] if type_str in self.movie_type_map_rev else 0
+	
+movieType = MovieType()
 
 
 def channel_name_normalise( name ):
@@ -419,7 +447,7 @@ class CSFDParser():
 				'name': movie['name'],
 				'year': CheckValidValue(movie["year"]),
 				'rating_category': CheckValidValue(movie["rating_category"], "0"),
-				'type': movie_type_map_rev[ movie['type'] ] if movie['type'] in movie_type_map_rev else 0
+				'type': movieType.strToId( movie['type'] )
 			}
 #			searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], year, 'c' + movie["rating_category"], movie_info ) )
 			searchresults.append( movie_info )
@@ -449,7 +477,7 @@ class CSFDParser():
 					'name': movie['name'],
 					'year': CheckValidValue(movie["year"]),
 					'rating_category': CheckValidValue(movie["rating_category"], "0"),
-					'type': movie_type_map_rev[ movie['type'] ] if movie['type'] in movie_type_map_rev else 0,
+					'type': movieType.strToId( movie['type'] )
 				}
 
 #				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], movie_info ) )
@@ -476,7 +504,7 @@ class CSFDParser():
 					'name': movie['name'],
 					'year': CheckValidValue(movie["year"]),
 					'rating_category': CheckValidValue(movie["rating_category"], "0"),
-					'type': movie_type_map_rev[ movie['type'] ] if movie['type'] in movie_type_map_rev else 0
+					'type': movieType.strToId( movie['type'] )
 				}
 
 #				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], movie_info ) )

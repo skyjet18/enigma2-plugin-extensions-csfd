@@ -368,8 +368,7 @@ class CSFDAndroidClient:
 
 	def set_tv_stations( self, stations ):
 		if type(stations) == list:
-			data = ','.join(str(sid) for sid in stations)
-			data = quote_plus(data)
+			data = '%2C'.join(str(sid) for sid in stations)
 		else:
 			data = stations
 		return self.do_request( 'tv/stations', data='stations=' + data )
