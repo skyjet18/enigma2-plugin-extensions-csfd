@@ -37,7 +37,8 @@ from os import path as os_path
 from random import randint, seed
 import time, traceback
 from skins.CSFDSkin_Default import CSFDratingColor_Nothing
-from CSFDTools import StripAccents
+from .CSFDTools import StripAccents
+from .compat import eConnectCallback, ePicloadDecodeData
 
 try:
 	from urllib.parse import quote
@@ -127,11 +128,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self.automaticUpdate = True
 		self.container_output = ''
 		self.container = eConsoleAppContainer()
-		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-			self.container.dataAvail.append(self.consoleAppContainer_avail)
-			self.dataAvail_conn = None
-		else:
-			self.dataAvail_conn = self.container.dataAvail.connect(self.consoleAppContainer_avail)
+		self.dataAvail_conn = eConnectCallback( self.container.dataAvail, self.consoleAppContainer_avail )
 		self.workingConfig = None
 		self.linkGlobal = ''
 		self.selectedMenuRow = None
@@ -151,52 +148,30 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self['servicemenuTop'].hide()
 		self['poster'] = Pixmap()
 		self.picload = ePicLoad()
+		
 		self.PosterBasicSlideShowTimer = eTimer()
+		self.PosterBasicSlideShowTimerConn = eConnectCallback( self.PosterBasicSlideShowTimer.timeout, self.CSFDPosterBasicSlideShowEvent )
 		self.NewVersionTimer = eTimer()
+		self.NewVersionTimerConn = eConnectCallback( self.NewVersionTimer.timeout, self.NewVersionTimerEvent )
 		self.LoadIMDBTimer = eTimer()
+		self.LoadIMDBTimerConn = eConnectCallback( self.LoadIMDBTimer.timeout, self.LoadIMDBTimerEvent )
 		self.GalleryDownloadTimer = eTimer()
+		self.GalleryDownloadTimerConn = eConnectCallback( self.GalleryDownloadTimer.timeout, self.GalleryDownloadTimerEvent )
 		self.PosterDownloadTimer = eTimer()
+		self.PosterDownloadTimerConn = eConnectCallback( self.PosterDownloadTimer.timeout, self.PosterDownloadTimerEvent )
 		self.AntiFreezeTimer = eTimer()
+		self.AntiFreezeTimerConn = eConnectCallback( self.AntiFreezeTimer.timeout, self.AntiFreezeEvent )
 		self.PosterSlideShowTimer = eTimer()
+		self.PosterSlideShowTimerConn = eConnectCallback( self.PosterSlideShowTimer.timeout, self.CSFDPosterSlideShowEvent )
 		self.GallerySlideShowTimer = eTimer()
+		self.GallerySlideShowTimerConn = eConnectCallback( self.GallerySlideShowTimer.timeout, self.CSFDGallerySlideShowEvent )
 		self.TipsTimer = eTimer()
+		self.TipsTimerConn = eConnectCallback( self.TipsTimer.timeout, self.CSFDTipsTimerEvent )
 		self.RatingTimer = eTimer()
+		self.RatingTimerConn = eConnectCallback( self.RatingTimer.timeout, self.RatingTimerEvent )
 		self.DownloadTimer = eTimer()
-		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-			self.PosterBasicSlideShowTimer.callback.append(self.CSFDPosterBasicSlideShowEvent)
-			self.NewVersionTimer.callback.append(self.NewVersionTimerEvent)
-			self.LoadIMDBTimer.callback.append(self.LoadIMDBTimerEvent)
-			self.GalleryDownloadTimer.callback.append(self.GalleryDownloadTimerEvent)
-			self.PosterDownloadTimer.callback.append(self.PosterDownloadTimerEvent)
-			self.AntiFreezeTimer.callback.append(self.AntiFreezeEvent)
-			self.PosterSlideShowTimer.callback.append(self.CSFDPosterSlideShowEvent)
-			self.GallerySlideShowTimer.callback.append(self.CSFDGallerySlideShowEvent)
-			self.TipsTimer.callback.append(self.CSFDTipsTimerEvent)
-			self.RatingTimer.callback.append(self.RatingTimerEvent)
-			self.DownloadTimer.callback.append(self.DownloadParalel)
-			self.PosterBasicSlideShowTimerConn = None
-			self.NewVersionTimerConn = None
-			self.LoadIMDBTimerConn = None
-			self.GalleryDownloadTimerConn = None
-			self.PosterDownloadTimerConn = None
-			self.AntiFreezeTimerConn = None
-			self.PosterSlideShowTimerConn = None
-			self.GallerySlideShowTimerConn = None
-			self.TipsTimerConn = None
-			self.RatingTimerConn = None
-			self.DownloadTimerConn = None
-		else:
-			self.PosterBasicSlideShowTimerConn = self.PosterBasicSlideShowTimer.timeout.connect(self.CSFDPosterBasicSlideShowEvent)
-			self.NewVersionTimerConn = self.NewVersionTimer.timeout.connect(self.NewVersionTimerEvent)
-			self.LoadIMDBTimerConn = self.LoadIMDBTimer.timeout.connect(self.LoadIMDBTimerEvent)
-			self.GalleryDownloadTimerConn = self.GalleryDownloadTimer.timeout.connect(self.GalleryDownloadTimerEvent)
-			self.PosterDownloadTimerConn = self.PosterDownloadTimer.timeout.connect(self.PosterDownloadTimerEvent)
-			self.AntiFreezeTimerConn = self.AntiFreezeTimer.timeout.connect(self.AntiFreezeEvent)
-			self.PosterSlideShowTimerConn = self.PosterSlideShowTimer.timeout.connect(self.CSFDPosterSlideShowEvent)
-			self.GallerySlideShowTimerConn = self.GallerySlideShowTimer.timeout.connect(self.CSFDGallerySlideShowEvent)
-			self.TipsTimerConn = self.TipsTimer.timeout.connect(self.CSFDTipsTimerEvent)
-			self.RatingTimerConn = self.RatingTimer.timeout.connect(self.RatingTimerEvent)
-			self.DownloadTimerConn = self.DownloadTimer.timeout.connect(self.DownloadParalel)
+		self.DownloadTimerConn = eConnectCallback( self.DownloadTimer.timeout, self.DownloadParalel )
+
 		self.PosterBasicCountPixAllP = -1
 		self.PosterBasicCountPixAllG = -1
 		self.PosterBasicCountPix = 0
@@ -619,29 +594,28 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] exit - chyba - konec\n')
 			LogCSFD.WriteToFile(err)
 
-		if CSFDGlobalVar.getCSFDEnigmaVersion() >= '4':
-			self.GalleryDownloadTimerConn = None
-			del self.GalleryDownloadTimerConn
-			self.PosterDownloadTimerConn = None
-			del self.PosterDownloadTimerConn
-			self.NewVersionTimerConn = None
-			del self.NewVersionTimerConn
-			self.LoadIMDBTimerConn = None
-			del self.LoadIMDBTimerConn
-			self.GallerySlideShowTimerConn = None
-			del self.GallerySlideShowTimerConn
-			self.PosterSlideShowTimerConn = None
-			del self.PosterSlideShowTimerConn
-			self.PosterBasicSlideShowTimerConn = None
-			del self.PosterBasicSlideShowTimerConn
-			self.TipsTimerConn = None
-			del self.TipsTimerConn
-			self.RatingTimerConn = None
-			del self.RatingTimerConn
-			self.AntiFreezeTimerConn = None
-			del self.AntiFreezeTimerConn
-			self.DownloadTimerConn = None
-			del self.DownloadTimerConn
+		self.GalleryDownloadTimerConn = None
+		del self.GalleryDownloadTimerConn
+		self.PosterDownloadTimerConn = None
+		del self.PosterDownloadTimerConn
+		self.NewVersionTimerConn = None
+		del self.NewVersionTimerConn
+		self.LoadIMDBTimerConn = None
+		del self.LoadIMDBTimerConn
+		self.GallerySlideShowTimerConn = None
+		del self.GallerySlideShowTimerConn
+		self.PosterSlideShowTimerConn = None
+		del self.PosterSlideShowTimerConn
+		self.PosterBasicSlideShowTimerConn = None
+		del self.PosterBasicSlideShowTimerConn
+		self.TipsTimerConn = None
+		del self.TipsTimerConn
+		self.RatingTimerConn = None
+		del self.RatingTimerConn
+		self.AntiFreezeTimerConn = None
+		del self.AntiFreezeTimerConn
+		self.DownloadTimerConn = None
+		del self.DownloadTimerConn
 		self.GalleryDownloadTimer = None
 		del self.GalleryDownloadTimer
 		self.PosterDownloadTimer = None
@@ -4916,29 +4890,14 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] paintPosterBasicPixmap - showing poster file: ' + Uni8(image_path) + '\n')
 			try:
 				self['poster'].instance.setPixmap(gPixmapPtr())
-				if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-					if self.picload.startDecode(str(image_path), 0, 0, False) == 0:
-						ptr = self.picload.getData()
-						if ptr is not None:
-							self['poster'].instance.setPixmap(ptr)
-							self['poster'].show()
-						else:
-							LogCSFD.WriteToFile('[CSFD] paintPosterBasicPixmap - ptr nenalezeno: ' + Uni8(image_path) + '\n')
-							self['poster'].show()
-					else:
-						LogCSFD.WriteToFile('[CSFD] paintPosterBasicPixmap - decode nenalezeno: ' + Uni8(image_path) + '\n')
-						self['poster'].show()
-				elif self.picload.startDecode(str(image_path), False) == 0:
-					ptr = self.picload.getData()
-					if ptr is not None:
-						self['poster'].instance.setPixmap(ptr)
-						self['poster'].show()
-					else:
-						LogCSFD.WriteToFile('[CSFD] paintPosterBasicPixmap - ptr nenalezeno: ' + Uni8(image_path) + '\n')
-						self['poster'].show()
-				else:
-					LogCSFD.WriteToFile('[CSFD] paintPosterBasicPixmap - decode nenalezeno: ' + Uni8(image_path) + '\n')
+				ptr = ePicloadDecodeData( self.picload, str(image_path) )
+				if ptr is not None:
+					self['poster'].instance.setPixmap(ptr)
 					self['poster'].show()
+				else:
+					LogCSFD.WriteToFile('[CSFD] paintPosterBasicPixmap - ptr nenalezeno: ' + Uni8(image_path) + '\n')
+					self['poster'].show()
+
 			except:
 				LogCSFD.WriteToFile('[CSFD] paintPosterBasicPixmap - chyba\n')
 				err = traceback.format_exc()
@@ -4951,28 +4910,12 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		if self.Page == 2 and self.querySpecAkce == 'UserPoster':
 			try:
 				self['photolabel'].instance.setPixmap(gPixmapPtr())
-				if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-					if self.posterload.startDecode(str(image_path), 0, 0, False) == 0:
-						ptr = self.posterload.getData()
-						if ptr is not None:
-							self['photolabel'].instance.setPixmap(ptr)
-							self['photolabel'].show()
-						else:
-							LogCSFD.WriteToFile('[CSFD] paintPosterPixmap - ptr nenalezeno: ' + Uni8(image_path) + '\n')
-							self['photolabel'].show()
-					else:
-						LogCSFD.WriteToFile('[CSFD] paintPosterPixmap - decode nenalezeno: ' + Uni8(image_path) + '\n')
-						self['photolabel'].show()
-				elif self.posterload.startDecode(str(image_path), False) == 0:
-					ptr = self.posterload.getData()
-					if ptr is not None:
-						self['photolabel'].instance.setPixmap(ptr)
-						self['photolabel'].show()
-					else:
-						LogCSFD.WriteToFile('[CSFD] paintPosterPixmap - ptr nenalezeno: ' + Uni8(image_path) + '\n')
-						self['photolabel'].show()
+				ptr = ePicloadDecodeData( self.posterload, str(image_path) )
+				if ptr is not None:
+					self['photolabel'].instance.setPixmap(ptr)
+					self['photolabel'].show()
 				else:
-					LogCSFD.WriteToFile('[CSFD] paintPosterPixmap - decode nenalezeno: ' + Uni8(image_path) + '\n')
+					LogCSFD.WriteToFile('[CSFD] paintPosterPixmap - ptr nenalezeno: ' + Uni8(image_path) + '\n')
 					self['photolabel'].show()
 			except:
 				LogCSFD.WriteToFile('[CSFD] paintPosterPixmap - chyba\n')
@@ -4986,28 +4929,12 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		if self.Page == 2 and self.querySpecAkce == 'UserGallery':
 			try:
 				self['photolabel'].instance.setPixmap(gPixmapPtr())
-				if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-					if self.galleryload.startDecode(str(image_path), 0, 0, False) == 0:
-						ptr = self.galleryload.getData()
-						if ptr is not None:
-							self['photolabel'].instance.setPixmap(ptr)
-							self['photolabel'].show()
-						else:
-							LogCSFD.WriteToFile('[CSFD] paintGalleryPixmap - ptr nenalezeno: ' + Uni8(image_path) + '\n')
-							self['photolabel'].show()
-					else:
-						LogCSFD.WriteToFile('[CSFD] paintGalleryPixmap - decode nenalezeno: ' + Uni8(image_path) + '\n')
-						self['photolabel'].show()
-				elif self.galleryload.startDecode(str(image_path), False) == 0:
-					ptr = self.galleryload.getData()
-					if ptr is not None:
-						self['photolabel'].instance.setPixmap(ptr)
-						self['photolabel'].show()
-					else:
-						LogCSFD.WriteToFile('[CSFD] paintGalleryPixmap - ptr nenalezeno: ' + Uni8(image_path) + '\n')
-						self['photolabel'].show()
+				ptr = ePicloadDecodeData( self.galleryload, str(image_path) )
+				if ptr is not None:
+					self['photolabel'].instance.setPixmap(ptr)
+					self['photolabel'].show()
 				else:
-					LogCSFD.WriteToFile('[CSFD] paintGalleryPixmap - decode nenalezeno: ' + Uni8(image_path) + '\n')
+					LogCSFD.WriteToFile('[CSFD] paintGalleryPixmap - ptr nenalezeno: ' + Uni8(image_path) + '\n')
 					self['photolabel'].show()
 			except:
 				LogCSFD.WriteToFile('[CSFD] paintGalleryPixmap - chyba\n')
@@ -5021,28 +4948,12 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		if self.Page == 2 and self.querySpecAkce == 'UserVideo':
 			try:
 				self['photolabel'].instance.setPixmap(gPixmapPtr())
-				if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-					if self.videoload.startDecode(str(image_path), 0, 0, False) == 0:
-						ptr = self.videoload.getData()
-						if ptr is not None:
-							self['photolabel'].instance.setPixmap(ptr)
-							self['photolabel'].show()
-						else:
-							LogCSFD.WriteToFile('[CSFD] paintVideoPixmap - ptr nenalezeno: ' + Uni8(image_path) + '\n')
-							self['photolabel'].show()
-					else:
-						LogCSFD.WriteToFile('[CSFD] paintVideoPixmap - decode nenalezeno: ' + Uni8(image_path) + '\n')
-						self['photolabel'].show()
-				elif self.videoload.startDecode(str(image_path), False) == 0:
-					ptr = self.videoload.getData()
-					if ptr is not None:
-						self['photolabel'].instance.setPixmap(ptr)
-						self['photolabel'].show()
-					else:
-						LogCSFD.WriteToFile('[CSFD] paintVideoPixmap - ptr nenalezeno: ' + Uni8(image_path) + '\n')
-						self['photolabel'].show()
+				ptr = ePicloadDecodeData( self.videoload, str(image_path) )
+				if ptr is not None:
+					self['photolabel'].instance.setPixmap(ptr)
+					self['photolabel'].show()
 				else:
-					LogCSFD.WriteToFile('[CSFD] paintVideoPixmap - decode nenalezeno: ' + Uni8(image_path) + '\n')
+					LogCSFD.WriteToFile('[CSFD] paintVideoPixmap - ptr nenalezeno: ' + Uni8(image_path) + '\n')
 					self['photolabel'].show()
 			except:
 				LogCSFD.WriteToFile('[CSFD] paintVideoPixmap - chyba\n')
@@ -5303,6 +5214,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self.TipsTimer.stop()
 		if config.misc.CSFD.TipsShow.getValue():
 			iconshow = False
+			icon_ptr = None
 			poc = 0
 			omezeni = True
 			while omezeni:
@@ -5344,33 +5256,28 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					mezery = ''
 					self['tips_detail'].setText(mezery + self.Tips[tip_cislo][3])
 				else:
-					if picStartDecodeCSFD(self.tipsiconload, png_type):
+					icon_ptr = picStartDecodeCSFD(self.tipsiconload, png_type)
+					if icon_ptr != None:
 						mezery = '		   '
-						iconshow = True
 					else:
 						mezery = ''
-						iconshow = False
 						LogCSFD.WriteToFile('[CSFD] CSFDTipsTimerEvent - decode nenalezeno: ' + Uni8(png_type) + '\n')
 					self['tips_detail'].setText(mezery + self.Tips[tip_cislo][2])
 			else:
-				if picStartDecodeCSFD(self.tipsiconload, self.Tips[tip_cislo][0]):
+				icon_ptr = picStartDecodeCSFD(self.tipsiconload, self.Tips[tip_cislo][0])
+				if icon_ptr != None:
 					mezery = '		   '
-					iconshow = True
 				else:
 					mezery = ''
-					iconshow = False
 					LogCSFD.WriteToFile('[CSFD] CSFDTipsTimerEvent - decode nenalezeno: ' + Uni8(self.Tips[tip_cislo][0]) + '\n')
 				self['tips_detail'].setText(mezery + self.Tips[tip_cislo][2])
+				
 			if self['key_red'].getText() != '':
 				self['tips_label'].show()
 				self['tips_detail'].show()
-				if iconshow:
-					ptr = self.tipsiconload.getData()
-					if ptr is not None:
-						self['tips_icon'].instance.setPixmap(ptr)
-						self['tips_icon'].show()
-					else:
-						self['tips_icon'].hide()
+				if icon_ptr is not None:
+					self['tips_icon'].instance.setPixmap(icon_ptr)
+					self['tips_icon'].show()
 				else:
 					self['tips_icon'].hide()
 			else:
@@ -6072,11 +5979,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			output = CSFDGlobalVar.getCSFDadresarTMP() + 'CSFDversion.txt'
 		LogCSFD.WriteToFile('[CSFD] UpdateViaCURL - stahuji soubor verzi ' + url + ' do ' + output + '\n', 10)
 		self.container_output = ''
-		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-			self.container.appClosed.append(self.UpdateViaCURLfinished)
-			self.appClosed_conn = None
-		else:
-			self.appClosed_conn = self.container.appClosed.connect(self.UpdateViaCURLfinished)
+		self.appClosed_conn = eConnectCallback( self.container.appClosed, self.UpdateViaCURLfinished )
 		exc = 'curl -m 10 -k -L -o ' + output + ' ' + url
 		LogCSFD.WriteToFile('[CSFD] UpdateViaCURL - instalacni prikaz: ' + exc + '\n', 10)
 		LogCSFD.WriteToFileWithoutTime(exc + '\n')
@@ -6089,11 +5992,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] UpdateViaCURLfinished - retval: %s\n' % str(retval), 10)
 		LogCSFD.WriteToFile('[CSFD] UpdateViaCURLfinished - container_output:\n', 10)
 		LogCSFD.WriteToFileWithoutTime(self.container_output)
-		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-			self.container.appClosed.remove(self.UpdateViaCURLfinished)
-			self.appClosed_conn = None
-		else:
-			self.appClosed_conn = None
+		self.appClosed_conn = None
+
 		if retval == 0:
 			LogCSFD.WriteToFile('[CSFD] UpdateViaCURLfinished - OK - pri stahovani souboru verzi\n', 10)
 			self.ReadUpdateInformation()

@@ -12,6 +12,7 @@ from Tools.LoadPixmap import LoadPixmap
 from .CSFDMenuList import CSFDMenuList
 import re, sys, operator, traceback
 import requests
+from .compat import ePicloadDecodeData
 
 if sys.version_info[0] == 3:
 	xrange = range
@@ -112,21 +113,14 @@ def loadPixmapCSFD(name):
 
 
 def picStartDecodeCSFD(pic, name):
-	OK = False
 	filename = resolveFilename(SCOPE_CURRENT_SKIN, 'skin_default/icons/%s' % name)
-	if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-		if pic.startDecode(filename, 0, 0, False) == 0:
-			OK = True
-	elif pic.startDecode(filename, False) == 0:
-		OK = True
-	if not OK:
+	ptr = ePicloadDecodeData( pic, filename )
+	
+	if ptr is None:
 		filename = resolveFilename(SCOPE_PLUGINS, 'Extensions/CSFD/icons/%s' % name)
-		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-			if pic.startDecode(filename, 0, 0, False) == 0:
-				OK = True
-		elif pic.startDecode(filename, False) == 0:
-			OK = True
-	return OK
+		ptr = ePicloadDecodeData( pic, filename )
+		
+	return ptr
 
 
 def strUni(mystring):

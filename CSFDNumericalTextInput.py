@@ -3,6 +3,7 @@
 from enigma import eTimer
 from Components.Language import language
 from .CSFDSettings1 import CSFDGlobalVar
+from .compat import eConnectCallback
 
 class CSFDNumericalTextInput:
 
@@ -15,11 +16,7 @@ class CSFDNumericalTextInput:
 			self.timer_conn = None
 			self.timer = None
 			self.timer = eTimer()
-			if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-				self.timer.callback.append(self.timeout)
-				self.timer_conn = None
-			else:
-				self.timer_conn = self.timer.timeout.connect(self.timeout)
+			self.timer_conn = eConnectCallback( self.timer.timeout, self.timeout )
 		else:
 			self.timer_conn = None
 			self.timer = None

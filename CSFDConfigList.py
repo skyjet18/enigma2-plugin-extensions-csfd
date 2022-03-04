@@ -9,6 +9,7 @@ from enigma import eListbox, eListboxPythonConfigContent, eTimer
 from Screens.MessageBox import MessageBox
 from .CSFDSettings1 import CSFDGlobalVar
 from .CSFDSettings2 import _
+from .compat import eConnectCallback
 
 class ConfigList(HTMLComponent, GUIComponent, object):
 
@@ -24,17 +25,10 @@ class ConfigList(HTMLComponent, GUIComponent, object):
 		return
 
 	def execBegin(self):
-		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-			self.timer.callback.append(self.timeout)
-		else:
-			self.timer_conn = self.timer.timeout.connect(self.timeout)
+		self.timer_conn = eConnectCallback( self.timer.timeout, self.timeout )
 
 	def execEnd(self):
-		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-			self.timer.callback.remove(self.timeout)
-		else:
-			self.timer_conn = None
-		return
+		self.timer_conn = None
 
 	def toggle(self):
 		selection = self.getCurrent()
@@ -85,19 +79,14 @@ class ConfigList(HTMLComponent, GUIComponent, object):
 			self.current[1].onDeselect(self.session)
 
 	def postWidgetCreate(self, instance):
-		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-			instance.selectionChanged.get().append(self.selectionChanged)
-		else:
-			self.selectionChanged_conn = instance.selectionChanged.connect(self.selectionChanged)
+		self.selectionChanged_conn = eConnectCallback( instance.selectionChanged, self.selectionChanged )
 		instance.setContent(self.l)
 
 	def preWidgetRemove(self, instance):
 		if isinstance(self.current, tuple) and len(self.current) > 1:
 			self.current[1].onDeselect(self.session)
-		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-			instance.selectionChanged.get().remove(self.selectionChanged)
-		else:
-			self.selectionChanged_conn = None
+			
+		self.selectionChanged_conn = None
 		instance.setContent(None)
 		return
 

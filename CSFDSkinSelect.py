@@ -16,6 +16,7 @@ from .CSFDSettings1 import CSFDGlobalVar
 from enigma import ePicLoad, gPixmapPtr, gFont
 from os import path as os_path, listdir as os_listdir
 import traceback
+from .compat import ePicloadDecodeData
 
 class CSFDSkinSelect(Screen):
 	if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
@@ -177,23 +178,11 @@ class CSFDSkinSelect(Screen):
 	def paintPreview(self, image_path=''):
 		try:
 			self['preview'].instance.setPixmap(gPixmapPtr())
-			if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-				if self.previewload.startDecode(image_path, 0, 0, False) == 0:
-					ptr = self.previewload.getData()
-					if ptr is not None:
-						self['preview'].instance.setPixmap(ptr)
-					else:
-						LogCSFD.WriteToFile('[CSFD] SkinSelect - paintPreview - ptr nenalezeno: ' + Uni8(image_path) + '\n')
-				else:
-					LogCSFD.WriteToFile('[CSFD] SkinSelect - paintPreview - decode nenalezeno: ' + Uni8(image_path) + '\n')
-			elif self.previewload.startDecode(image_path, False) == 0:
-				ptr = self.previewload.getData()
-				if ptr is not None:
-					self['preview'].instance.setPixmap(ptr)
-				else:
-					LogCSFD.WriteToFile('[CSFD] SkinSelect - paintPreview - ptr nenalezeno: ' + Uni8(image_path) + '\n')
+			ptr = ePicloadDecodeData( self.previewload, image_path )
+			if ptr is not None:
+				self['preview'].instance.setPixmap(ptr)
 			else:
-				LogCSFD.WriteToFile('[CSFD] SkinSelect - paintPreview - decode nenalezeno: ' + Uni8(image_path) + '\n')
+				LogCSFD.WriteToFile('[CSFD] SkinSelect - paintPreview - ptr nenalezeno: ' + Uni8(image_path) + '\n')
 		except:
 			LogCSFD.WriteToFile('[CSFD] SkinSelect - Chyba v paintPreview\n')
 			err = traceback.format_exc()

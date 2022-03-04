@@ -7,6 +7,7 @@ from .CSFDScrollColorLabel import CSFDScrollColorLabel
 from .CSFDSettings1 import CSFDGlobalVar
 from .CSFDLog import LogCSFD
 from .CSFDSkinLoader import *
+from .compat import eConnectCallback
 
 class CSFDConsole(Screen):
 	if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
@@ -65,14 +66,8 @@ class CSFDConsole(Screen):
 		self.newtitle = title
 		self.container = eConsoleAppContainer()
 		self.run = 0
-		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-			self.container.dataAvail.append(self.dataAvail)
-			self.dataAvail_conn = None
-			self.container.appClosed.append(self.runFinished)
-			self.appClosed_conn = None
-		else:
-			self.dataAvail_conn = self.container.dataAvail.connect(self.dataAvail)
-			self.appClosed_conn = self.container.appClosed.connect(self.runFinished)
+		self.dataAvail_conn = eConnectCallback( self.container.dataAvail, self.dataAvail )
+		self.appClosed_conn = eConnectCallback( self.container.appClosed, self.runFinished )
 		self.onLayoutFinish.append(self.layoutFinished)
 		LogCSFD.WriteToFile('[CSFD] CSFDConsole - Init - konec\n')
 		return
@@ -194,14 +189,8 @@ class CSFDConsole(Screen):
 	def cancel(self):
 		LogCSFD.WriteToFile('[CSFD] CSFDConsole - cancel - zacatek\n')
 		if self.cmdlist is None or len(self.cmdlist) == 0 or self.run >= len(self.cmdlist):
-			if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-				self.container.appClosed.remove(self.runFinished)
-				self.container.dataAvail.remove(self.dataAvail)
-				self.dataAvail_conn = None
-				self.appClosed_conn = None
-			else:
-				self.appClosed_conn = None
-				self.dataAvail_conn = None
+			self.appClosed_conn = None
+			self.dataAvail_conn = None
 			LogCSFD.WriteToFile('[CSFD] CSFDConsole - cancel - done\n')
 			LogCSFD.WriteToFile('[CSFD] CSFDConsole - cancel - konec\n')
 			self.close(self.retValue)

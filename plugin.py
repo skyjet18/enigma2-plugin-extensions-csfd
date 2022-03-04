@@ -20,6 +20,7 @@ from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.EpgList import EPGList, EPG_TYPE_SIMILAR, EPG_TYPE_MULTI
 from Components.config import configfile
+from .compat import eConnectCallback
 import traceback, inspect, os
 LogCSFD.WriteToFile('[CSFD] Log CSFD pluginu - zacatek\n')
 LogCSFD.WriteToFile('[CSFD] Log CSFD pluginu: ' + config.misc.CSFD.Version.getValue() + '  ' + config.misc.CSFD.VersionData.getValue() + '\n')
@@ -96,11 +97,8 @@ def TimerEventGetMoviesForTVChannels():
 
 
 TVTimer = eTimer()
-if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-	TVTimer.callback.append(TimerEventGetMoviesForTVChannels)
-	TVTimerConn = None
-else:
-	TVTimerConn = TVTimer.timeout.connect(TimerEventGetMoviesForTVChannels)
+TVTimerConn = eConnectCallback( TVTimer.timeout, TimerEventGetMoviesForTVChannels )
+	
 if CSFDGlobalVar.getCSFDImageType() == 'openatv' or CSFDGlobalVar.getCSFDImageType() == 'openvix':
 	LogCSFD.WriteToFile('[CSFD] CSFDEventViewEPGSelect - ATV/VIX image\n')
 	try:
@@ -738,7 +736,7 @@ except:
 #	configfile.save()
 
 def eventinfo(session, eventName='', **kwargs):
-	LogCSFD.WriteToFile('[CSFD] eventinfo called: eventName: %s, kwargs: %s\n', eventName, str(kwargs) )
+	LogCSFD.WriteToFile('[CSFD] eventinfo called: eventName: %s, kwargs: %s\n' %(eventName, str(kwargs)) )
 	CSFDGlobalVar.setCSFDcur(1)
 	CSFDGlobalVar.setCSFDeventID_EPG(0)
 	CSFDGlobalVar.setCSFDeventID_REF('')
@@ -754,7 +752,7 @@ def eventinfo(session, eventName='', **kwargs):
 
 
 def main(session, eventName='', **kwargs):
-	LogCSFD.WriteToFile('[CSFD] main with eventName: %s: kwargs: %s\n', eventName, str(kwargs) )
+	LogCSFD.WriteToFile('[CSFD] main with eventName: %s: kwargs: %s\n' % (eventName, str(kwargs)) )
 	CSFDGlobalVar.setCSFDcur(1)
 	CSFDGlobalVar.setCSFDeventID_EPG(0)
 	CSFDGlobalVar.setCSFDeventID_REF('')

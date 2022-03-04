@@ -30,6 +30,7 @@ from .CSFDParser import GetCSFDNumberFromChannel, ParserCSFD
 from .CSFDSkinLoader import *
 import datetime, time, traceback
 from .CSFDAndroidClient import csfdAndroidClient
+from .compat import eConnectCallback
 
 try:
 	from Plugins.Extensions.SubsSupport import SubsSupport
@@ -507,15 +508,9 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self['config1'].setText(_('Design'))
 		self['config2'].setText(_('Různé'))
 		self.delay_timerHide = eTimer()
+		self.delay_timerHideConn = eConnectCallback( self.delay_timerHide.timeout, self.hideInputHelp )
 		self.delay_timerShow = eTimer()
-		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-			self.delay_timerHide.callback.append(self.hideInputHelp)
-			self.delay_timerHideConn = None
-			self.delay_timerShow.callback.append(self.showInputHelp)
-			self.delay_timerShowConn = None
-		else:
-			self.delay_timerHideConn = self.delay_timerHide.timeout.connect(self.hideInputHelp)
-			self.delay_timerShowConn = self.delay_timerShow.timeout.connect(self.showInputHelp)
+		self.delay_timerShowConn = eConnectCallback( self.delay_timerShow.timeout, self.showInputHelp )
 		self['VKeyText'] = Pixmap()
 		self['VKeyText'].hide()
 		self['VKeyIcon'] = Pixmap()
@@ -1489,11 +1484,7 @@ class CSFDPlayer(Screen, SubsSupport, InfoBarNotifications, InfoBarSubtitleSuppo
 			'subtitles': self.subtitleSelection
 		}, -2)
 		self.hidetimer = eTimer()
-		self.hidetimerConn = None
-		if CSFDGlobalVar.getCSFDEnigmaVersion() < '4':
-			self.hidetimer.timeout.get().append(self.ok)
-		else:
-			self.hidetimerConn = self.hidetimer.timeout.connect(self.ok)
+		self.hidetimerConn = eConnectCallback( self.hidetimer.timeout, self.ok )
 		self.returning = False
 		self.state = self.STATE_PLAYING
 		self.lastseekstate = self.STATE_PLAYING
