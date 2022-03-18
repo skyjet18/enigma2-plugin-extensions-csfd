@@ -86,10 +86,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self.versionCSFD = config.misc.CSFD.Version.getValue()
 		self.versionCSFDdate = config.misc.CSFD.VersionData.getValue()
 		self.lastservice = session.nav.getCurrentlyPlayingServiceReference()
-		self.event_info = {
-			'name' : eventName if eventName is not None else '',
-			'EPG' : EPG if EPG is not None else ''
-		}
+		self.event_info = {}
 		
 		if eventName is not None:
 			self.eventName = eventName
@@ -1652,7 +1649,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self.Detail100Pozice = 0
 				self.selectedMenuRow = None
 				self.NacistNazevPoradu = False
-				self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults, True, False)
+				self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults, True, False, showMovieType=False)
 				self.ItemsLoad()
 				self['menu'].moveToIndex(0)
 				self.showMenu()
@@ -1679,7 +1676,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self.Detail100Pozice = 0
 				self.selectedMenuRow = None
 				self.NacistNazevPoradu = False
-				self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults, True, False)
+				self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults, True, False, showMovieType=False)
 				self.ItemsLoad()
 				self['menu'].moveToIndex(0)
 				self.showMenu()
@@ -2547,7 +2544,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				LogCSFD.WriteToFile('[CSFD] showMenu - konec\n')
 		return
 
-	def DownloadDetailMovie(self):
+	def DownloadDetailMovie(self, show_episode_detail=False):
 
 		def SetNotFind(textInfo='', textStatus=''):
 			self.Page = 0
@@ -2571,11 +2568,39 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - linkGlobal ' + self.linkGlobal + '\n', 2)
 		
 		fetchurl = self.linkGlobal
-		data = csfdAndroidClient.get_json_by_uri( fetchurl )
+		data = None
+		
+		# we have a link to main series part
+		# if it is enabled and we have position code of episode, then we try to search
+		# directly for episode or serie link here
+		if show_episode_detail and self.event_info['position_code'] != '':
+			ParserCSFD.setJson( csfdAndroidClient.get_json_by_uri( fetchurl, load_full=False ) )
+			
+			if ParserCSFD.testJson():
+				if self.event_info['position_code_e'] is None:
+					movie_infos = ParserCSFD.parserListOfSeries()
+				else:
+					movie_infos = ParserCSFD.parserListOfEpisodes()
+
+				if len(movie_infos) > 0 and movie_infos[0]['position_code'][0] != 'S' and self.event_info['position_code'].startswith('S01E'):
+					# remove first serie identifier when there are no series available
+					event_pc = self.event_info['position_code'][3:]
+				else:
+					event_pc = self.event_info['position_code']
+
+				for movie_info in movie_infos:
+					LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - position code movie_info: %s\n' % movie_info['position_code'], 2)
+					if movie_info['position_code'] == event_pc:
+						LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - found season/episode: %s\n' % str(movie_info['id']), 2)
+						data = csfdAndroidClient.get_json_by_uri( '#movie#' + str(movie_info['id']) )
+						break
+		
+		if data is None:
+			data = csfdAndroidClient.get_json_by_uri( fetchurl )
+			
 		ParserCSFD.setJson( data )
 		
 		if ParserCSFD.testJson():
-
 			try:
 				self.CSFDparseUser()
 			except:
@@ -2692,7 +2717,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self['ratinglabel'].instance.setForegroundColor(gRGB(CSFDColor_Metacritic))
 			self['ratinglabel'].setText(self.ratingtextMetacritic)
 
-	def showDetails(self):
+	def showDetails(self, show_episode_detail=False):
 		akce = False
 		self.Detail100Akce = False
 		if self.resultlist is not None and len(self.resultlist) > 0 and self.Page == 0:
@@ -2720,7 +2745,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self['statusbar'].setText(_('CSFD - stahování detailu probíhá ...'))
 			self['menu'].hide()
 			self.resetLabels()
-			self.DownloadDetailMovie()
+			self.DownloadDetailMovie(show_episode_detail)
 		if self.Page == 2:
 			akce = True
 			if self.querySpecAkce == 'UserVideo' and self.KeyFlag == 'OK' and self.VideoCountPix > 0:
@@ -2922,25 +2947,73 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self.exitServiceMenu()
 		LogCSFD.WriteToFile('[CSFD] IMDBClosed - konec\n')
 
+
 	def createSearchQuery(self):
 		if config.misc.CSFD.FindInclDiacrEPG.getValue() == False:
-			search_query = StripAccents( self.eventNameLocal )
+			search_query = StripAccents( self.event_info['name'] )
 		else:
-			search_query = self.eventNameLocal
+			search_query = self.event_info['name']
 
-#		if self.event_info['position_code'] != None and config.misc.CSFD.SearchEpisodes() == True:
-#			search_query += ' ' + self.event_info['position_code']
-		
-#		if self.eventMovieSourceOfDataEPG == False and len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
-		if len(self.eventMovieYears) == 1 and config.misc.CSFD.FindInclYear.getValue():
+		if self.event_info['year' ] != '' and config.misc.CSFD.FindInclYear.getValue():
 			search_query += ' ' + str(self.eventMovieYears[0])
 
-#		if self.event_info['year'] != None and config.misc.CSFD.FindInclYear.getValue():
-#			search_query += ' ' + self.event_info['year']
-
+		LogCSFD.WriteToFile('[CSFD] search query: "%s"\n' % search_query )
 		return '#search_movie#' + search_query
 	
 	
+	def eventInfoCreate(self):
+		event_info = {}
+		
+		# search for movie year
+		if self.EPG != '':
+			# we have EPG - search movie first in format (xxxx)
+			years = ParserConstCSFD.parserGetYears(self.EPG, '(')
+		else:
+			# no EPG -> search year in movie in format (xxxx)
+			years = ParserConstCSFD.parserGetYears(self.eventName, '(')
+
+#			if len( years ) == 0:
+				# not found -> search in format [xxxx]
+#				years = ParserConstCSFD.parserGetYears(self.EPG, '[')
+
+		if len( years ) == 1:
+			event_info['year'] = years[0]
+		else:
+			event_info['year'] = ''
+		
+		# search for position code in series
+		event_info['name'] = NameMovieCorrections( self.eventName if self.eventName is not None else '' )
+		event_info['name'], _, event_info['episode_name'], s, e = ParserConstCSFD.rozlozeniNazvu( event_info['name'] )
+
+		if s is None and e is None:
+			s, e = ParserConstCSFD.parserGetPositionCode(self.EPG)
+			
+		if s is None:
+			s = ParserConstCSFD.parserGetSerie(self.EPG)
+
+		if e is None:
+			e = ParserConstCSFD.parserGetEpisode(self.EPG)
+			
+		event_info['position_code'] = ''
+		event_info['position_code_s'] = s
+		event_info['position_code_e'] = e
+		
+		if s is not None:
+			event_info['position_code'] = 'S' + str(s).zfill(2)
+
+		if e is not None:
+			event_info['position_code'] += 'E' + str(e).zfill(2)
+		
+		if event_info['position_code'] != '':
+			event_info['is_series'] = True
+		else:
+			event_info['is_series'] = False
+				
+		LogCSFD.WriteToFile('[CSFD] eventInfoCreate - final position code: %s\n' % event_info['position_code'])
+		
+		return event_info
+
+		
 	def getCSFD(self):
 		LogCSFD.CheckAndEmptyLog()
 		LogCSFD.WriteToFile('[CSFD] getCSFD - zacatek\n')
@@ -3008,6 +3081,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self.eventNameSecond = ''
 		if not self.EPG:
 			self.EPG = ''
+			LogCSFD.WriteToFile('[CSFD] getCSFD - we dont have EPG\n')
 		if not self.DVBchannel:
 			self.DVBchannel = ''
 		if not self.eventMovieSourceOfDataEPG:
@@ -3087,6 +3161,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				LogCSFD.WriteToFile('[CSFD] getCSFD - getServiceName - pokus2 - konec\n')
 		is_Internet_OK = internet_on()
 		
+		self.event_info = self.eventInfoCreate()
+
 		if self.eventName is not '' and is_Internet_OK:
 			LogCSFD.WriteToFile('[CSFD] getCSFD - eventName - zacatek\n')
 			if isinstance(self.eventName, str):
@@ -3123,16 +3199,16 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] getCSFD - DVBchannel - ' + self.DVBchannel + '\n')
 			LogCSFD.WriteToFile('[CSFD] getCSFD - ChannelsCSFD - ' + (' ').join(x for x in self.ChannelsCSFD) + '\n')
 			self.eventNameSecond = ''
-			for channel in self.ChannelsCSFD:
-				if channel == '4' or channel == '5' or channel == '64' or channel == '65':
-					LogCSFD.WriteToFile('[CSFD] getCSFD - CT puvodni nazev - ' + self.eventName + '\n')
-					self.eventName, self.eventNameSecond = NameMovieCorrectionsForCTChannels(self.eventName)
-					sss = char2Allowchar(self.eventNameSecond).strip()
-					sss = NameMovieCorrections(sss)
-					self.eventNameSecond = sss
-					LogCSFD.WriteToFile('[CSFD] getCSFD - CT korekce nazvu - eventName: ' + self.eventName + '\n')
-					LogCSFD.WriteToFile('[CSFD] getCSFD - CT korekce nazvu - eventNameSecond: ' + self.eventNameSecond + '\n')
-					break
+#			for channel in self.ChannelsCSFD:
+#				if channel == '4' or channel == '5' or channel == '64' or channel == '65':
+#					LogCSFD.WriteToFile('[CSFD] getCSFD - CT puvodni nazev - ' + self.eventName + '\n')
+#					self.eventName, self.eventNameSecond = NameMovieCorrectionsForCTChannels(self.eventName)
+#					sss = char2Allowchar(self.eventNameSecond).strip()
+#					sss = NameMovieCorrections(sss)
+#					self.eventNameSecond = sss
+#					LogCSFD.WriteToFile('[CSFD] getCSFD - CT korekce nazvu - eventName: ' + self.eventName + '\n')
+#					LogCSFD.WriteToFile('[CSFD] getCSFD - CT korekce nazvu - eventNameSecond: ' + self.eventNameSecond + '\n')
+#					break
 
 			LogCSFD.WriteToFile('[CSFD] getCSFD - 1\n')
 			try:
@@ -3300,7 +3376,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self.Detail100Pozice = 0
 		return pocet
 
-	def CSFDMenuPreparation(self, eventName, searchresults, simpleSearch=False, addTVscore=True, acceptance=0):
+	def CSFDMenuPreparation(self, eventName, searchresults, simpleSearch=False, addTVscore=True, acceptance=0, showMovieType=True):
 		LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - zacatek\n')
 		resultlist = []
 		res_shoda = False
@@ -3403,6 +3479,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					lastNumber = True
 					
 		LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - hledany film: ' + vst_eventName + '\n')
+		
 		for movie_info in searchresults:
 			# x = [ "#movie# + id, movie_name, year, colour_rating ]
 #			movie_info = x[4]
@@ -3503,21 +3580,31 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					celkem_bodu += y_body
 				else:
 					shoda100 += '0'
-					
+			
+			if self.event_info['position_code_e'] is not None and movieType.isSeriesOrShow( movie_info['type'] ) == False:
+				shoda100 = '0'
+			
 			if celkem_bodu >= acceptance:
 				if not res_shoda and shoda100 > '01':
 					res_shoda = True
-
-				display_name = strUni(movie_info['name'])
+				
+				if showMovieType == False and movie_info.get('position_code', '') != '':
+					display_name = strUni(movie_info['position_code']) + ' - '
+				else:
+					display_name = strUni('')
+					
+				display_name += strUni(movie_info['name'])
 				display_name += CreateStrList( (' (', movie_info['year'], ')' ), '', True )
-				display_name += CreateStrList( (' [', movieType.idToStr(movie_info['type']), ']' ), '', True )
+				
+				if showMovieType == True:
+					display_name += CreateStrList( (' [', movieType.idToStr(movie_info['type']), ']' ), '', True )
+				
+				
 				
 				if not self.SearchDuplicity(resultlist, display_name, movie_info['id']):
 					if len(res_Name_Corrected_WO_Diacr) > 0:
-						res_Name_Corrected_WO_DiacrSort = StripAccents(res_Name)
 						
 						movie_info['name_display'] = display_name
-#						movie_info['name_sort'] = StripAccents(res_Name)
 						movie_info['name_normalised'] = res_Name_Corrected_WO_Diacr
 						movie_info['score'] = celkem_bodu
 						movie_info['position'] = y
@@ -3525,28 +3612,13 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						
 #						resultlist.append((display_name, movie_info['id'], res_Name_Corrected_WO_DiacrSort, res_Name_Corrected_WO_Diacr, celkem_bodu, y, shoda100, res_Name_Orig, x[3], movie_info['year'], movie_info))
 						resultlist.append(movie_info)
-						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - item %s\n' % movie_info )
+#						LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - item %s\n' % movie_info )
 
 						y += 1
 
 		LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - konec\n')
 		return (resultlist, res_shoda, TV_shoda)
 
-	def CSFDTestingTV(self):
-		TVtesting = False
-		stations = ''
-		for channel in self.ChannelsCSFD:
-			if stations == '':
-				stations += channel
-			else:
-				stations += '%2C' + channel
-
-		if stations != '':
-			if TVMovieCache.IsChannelInCache(stations):
-				searchresults = TVMovieCache.getMoviesFromCache(stations)
-				if searchresults is not None and len(searchresults) > 0:
-					TVtesting = True
-		return TVtesting
 
 	def CSFDquery(self, string=''):
 		LogCSFD.WriteToFile('[CSFD] CSFDquery - zacatek\n')
@@ -3577,7 +3649,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		if ParserCSFD.testJson():
 			if ParserCSFD.parserMoviesFound():
 				LogCSFD.WriteToFile('[CSFD] CSFDquery - parsuji cely seznam vyhledanych filmu\n')
-				searchresults = ParserCSFD.parserListOfMovies()
+				searchresults = ParserCSFD.parserListOfMovies( config.misc.CSFD.ShowLowPriorityResults.getValue() )
 				self.resultlist, shoda, TVshoda = self.CSFDMenuPreparation(self.eventNameLocal, searchresults)
 				
 				LogCSFD.WriteToFile('[CSFD] CSFDquery - konec upravy seznamu\n')
@@ -3592,7 +3664,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						self.Detail100Exit = True
 						self['menu'].moveToIndex(self.Detail100Pozice)
 						self.Page = 0
-						self.showDetails()
+						self.showDetails( config.misc.CSFD.SearchEpisodes.getValue() )
 					else:
 						LogCSFD.WriteToFile('[CSFD] CSFDquery - neni detail 100%\n')
 						self.Detail100Exit = False
@@ -3800,11 +3872,11 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - ActName: ' + self.ActName + '\n')
 		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - Jmeno serialu v epizode\n')
-		Detailstext += strUni( char2Allowchar( ParserCSFD.parserSeriesNameInEpisode() ) )
-			
+		Detailstext += AddLine( ParserCSFD.parserSeriesNameInEpisode() )
+		
 		LogCSFD.WriteToFile('[CSFD] ParseMainPart - Ostatni jmena\n')
-		Detailstext += strUni( char2Allowchar( ParserCSFD.parserOtherMovieTitle() ) )
-			
+		Detailstext += AddLine( ParserCSFD.parserOtherMovieTitle() )
+		
 		Detailstext = OdstranitDuplicityRadku(Detailstext)
 		textCol1 = self['detailslabel'].AddRowIntoText(Detailstext, '')
 		textCol = Detailstext

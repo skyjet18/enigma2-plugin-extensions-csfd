@@ -660,6 +660,7 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list2.append(getConfigListEntry(_('Vyhledávat včetně diakritiky pro pořady z EPG?'), config.misc.CSFD.FindInclDiacrEPG))
 		self.list2.append(getConfigListEntry(_('Vyhledávat včetně diakritiky pro pořady z ostatních zdrojů?'), config.misc.CSFD.FindInclDiacrOth))
 		self.list2.append(getConfigListEntry(_('Vyhledávat epizody?'), config.misc.CSFD.SearchEpisodes))
+		self.list2.append(getConfigListEntry(_('Zobrazovat výsledky s nízkou prioritou?'), config.misc.CSFD.ShowLowPriorityResults))
 		self.list2.append(getConfigListEntry(_('Načíst seznam pořadů z CSFD pro daný kanál do cache?'), config.misc.CSFD.TVCache))
 		self.list2.append(getConfigListEntry(_('Automaticky načíst seznam pořadů z CSFD při přepínání?'), config.misc.CSFD.ShowSimpleInfo))
 		self.list2.append(getConfigListEntry(_('Jak dlouho nenačítat cache po net chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LanErrorWaiting))

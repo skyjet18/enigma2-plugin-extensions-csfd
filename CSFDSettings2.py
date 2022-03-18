@@ -130,6 +130,7 @@ config.misc.CSFD.ReadDetailBasedOnScore = ConfigYesNo(default=True)
 config.misc.CSFD.FindInclDiacrEPG = ConfigYesNo(default=True)
 config.misc.CSFD.FindInclDiacrOth = ConfigYesNo(default=False)
 config.misc.CSFD.SearchEpisodes = ConfigYesNo(default=True)
+config.misc.CSFD.ShowLowPriorityResults = ConfigYesNo(default=False)
 config.misc.CSFD.ShowEPGMulti = ConfigYesNo(default=True)
 config.misc.CSFD.ShowInEPGList = ConfigYesNo(default=True)
 config.misc.CSFD.ShowInEPGListBlueButton = ConfigYesNo(default=False)
@@ -224,6 +225,7 @@ def ResetParams():
 	config.misc.CSFD.FindInclDiacrEPG.saved_value = None
 	config.misc.CSFD.FindInclDiacrOth.saved_value = None
 	config.misc.CSFD.SearchEpisodes.saved_value = None
+	config.misc.CSFD.ShowLowPriorityResults.saved_value = None
 	config.misc.CSFD.ShowEPGMulti.saved_value = None
 	config.misc.CSFD.ShowInEPGList.saved_value = None
 	config.misc.CSFD.ShowInEPGListBlueButton.saved_value = None
@@ -328,6 +330,7 @@ def ResetParams():
 	config.misc.CSFD.FindInclDiacrEPG.load()
 	config.misc.CSFD.FindInclDiacrOth.load()
 	config.misc.CSFD.SearchEpisodes.load()
+	config.misc.CSFD.ShowLowPriorityResults.load()
 	config.misc.CSFD.ShowEPGMulti.load()
 	config.misc.CSFD.ShowInEPGList.load()
 	config.misc.CSFD.ShowInEPGListBlueButton.load()

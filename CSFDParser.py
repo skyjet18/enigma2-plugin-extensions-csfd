@@ -109,6 +109,15 @@ class MovieType():
 	def strToId(self, type_str ):
 		return self.movie_type_map_rev[type_str] if type_str in self.movie_type_map_rev else 0
 	
+	def isEpisode(self, movie_type ):
+		return movie_type == self.EPISODE
+
+	def isSeriesOrShow(self, movie_type ):
+		return movie_type in (self.SERIAL, self.SERIAL_WITH_EPISODES, self.SHOW, self.SHOW_WITH_EPISODES)
+	
+	def isLowPriority(self, movie_type ):
+		return movie_type not in ( self.UNUSED, self.VIDEO_MOVIE, self.TV_MOVIE, self.SERIAL, self.SHOW, self.SERIAL_WITH_EPISODES, self.SHOW_WITH_EPISODES )
+	
 movieType = MovieType()
 
 
@@ -333,6 +342,11 @@ def NameMovieCorrections(name_s):
 	name_s = corr2d(name_s)
 	name_s = corr3(name_s)
 	name_s = corr4(name_s).replace('  ', ' ')
+	
+	# correct wrong roman numbers (1 or i at the end)
+	if len(name_s) > 2 and (name_s[-1] == '1' or name_s[-1] == 'i') and name_s[-2] in ('I', 'V', 'X'):
+		name_s = name_s[:-1] + 'I'
+	
 	return name_s
 
 
@@ -365,6 +379,11 @@ class CSFDConstParser():
 		self.parserDate = re.compile('\\d{2}\\.\\d{2}\\.\\d{4}', re.DOTALL)
 		self.parserNumbers = re.compile(' \\d+', re.DOTALL)
 		self.parserRomanNumerals = re.compile('\\b(?!LLC)(?=[MDCLXVI]+\\b)M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\\b', re.DOTALL)
+		self.parserPositionCode1 = re.compile( '\(S[0-9]+E[0-9]+\)', re.DOTALL )
+		self.parserPositionCode2 = re.compile( '\(S[0-9]+E[0-9]+[/-][0-9]+\)', re.DOTALL )
+
+		self.parserEpisode = re.compile( '\(E[0-9]+\)', re.DOTALL )
+		self.parserSerie = re.compile( '\(S[0-9]+\)', re.DOTALL )
 
 		LogCSFD.WriteToFile('[CSFD] CSFDConstParser - init - konec\n')
 
@@ -414,7 +433,109 @@ class CSFDConstParser():
 
 	def delHTMLtags(self, string):
 		return self.parserhtmltags.sub('', string)
+	
+	def parserGetPositionCode(self, name ):
+		results = self.parserPositionCode1.findall(name)
+		
+		if results is not None and len(results) == 1:
+			pc = results[0][1:-1].split('E')
+			return int(pc[0][1:]), int(pc[1])
 
+		results = self.parserPositionCode2.findall(name)
+		
+		if results is not None and len(results) == 1:
+			pc = results[0][1:-1].split('E')
+			return int(pc[0][1:]), int(pc[1].split('/')[0].pc[1].split('-')[0])
+
+		return None, None
+
+	def parserGetEpisode(self, name ):
+		results = self.parserEpisode.findall(name)
+		
+		if results is not None and len(results) == 1:
+			return int(results[0][2:-1])
+
+		return None
+
+	def parserGetSerie(self, name ):
+		results = self.parserSerie.findall(name)
+		
+		if results is not None and len(results) == 1:
+			return int(results[0][2:-1])
+
+		return None
+
+	def najdi(self, retezec, celytext):
+		maska = re.compile(retezec, re.DOTALL)
+		vysledek = maska.findall(celytext)
+		vysledek = vysledek[0] if vysledek else ""
+		return vysledek
+
+	def rimskeArabske(self, vstupnirimska):
+		definicecislic = {'I':1, 'V':5, 'X':10, 'L':50, 'C':100, 'D':500, 'M':1000}
+		rimska = ""
+		for rznak in vstupnirimska:
+			if rznak in "IVXLCDM":
+				rimska+= rznak
+		arabska = 0
+		for iii, ccc in enumerate(rimska):
+			if (iii+1) == len(rimska) or definicecislic[ccc] >= definicecislic[rimska[iii+1]]:
+				arabska += definicecislic[ccc]
+			else:
+				arabska -= definicecislic[ccc]
+		if arabska == 0:
+			return None
+
+		return arabska
+
+	def rozlozeniNazvu(self, upravovanytext):
+		zbytecnosti = [" -HD", " -W", " -ST", " -AD"]
+		for zbytecnost in zbytecnosti:
+			upravovanytext = upravovanytext.replace(zbytecnost, '')
+		serialy = self.najdi('\s+([IVX]{0,7}\.?\s?\([0-9]?[0-9]?[0-9][,-]?\s?[0-9]?[0-9]?[0-9]?\))', upravovanytext)
+		casti = self.najdi('\s+(\(?[0-9]?[0-9]?[0-9]/[0-9]?[0-9]?[0-9]\)?)(?![0-9])', upravovanytext)
+		rimska_na_konci = self.najdi('\s+([IVX]{1,5}\.?)\s*$', upravovanytext)
+		arabska_na_konci = self.najdi('\s+([0-9]?[0-9]?[0-9])\s*$', upravovanytext)
+		kompletnazev = upravovanytext.replace(serialy, '').replace(" "+casti, ' ').replace(" "+rimska_na_konci, ' ').replace(" "+arabska_na_konci, ' ')
+		rimska_na_konci = rimska_na_konci.replace(".","")
+		rozlozenynazev = re.split('[:,;]', kompletnazev)
+		nazev1 = rozlozenynazev[0].rstrip(' ')
+		nazev2 = ""
+		
+		seria_num = None
+		epizoda_num = None
+		
+		if len(rozlozenynazev) > 1:
+			nazev2 = rozlozenynazev[1].lstrip(' ').rstrip(' ')
+		if serialy:
+#			print("X_Serialy: %s" % serialy)
+			serie = self.najdi('([IVX]{1,5})', serialy)
+			if serie:
+				seria_num = self.rimskeArabske(serie)
+				
+			epizoda = self.najdi('\(([0-9]?[0-9]?[0-9])', serialy)
+			epizoda_num = int(epizoda)
+		elif casti:
+#			print("X_Casti: %s" % casti)
+			epizoda = self.najdi('([0-9]?[0-9]?[0-9])/', casti)
+			epizoda_num = int(epizoda)
+		elif rimska_na_konci:
+#			print("X_RNK: %s" % rimska_na_konci)
+			seria_num = self.rimskeArabske(rimska_na_konci)
+	
+		serialy = self.najdi('\s+([IVX]{0,7}\.?\s?\([0-9]?[0-9]?[0-9][,-]?\s?[0-9]?[0-9]?[0-9]?\))', nazev1)
+		casti = self.najdi('\s+(\(?[0-9]?[0-9]?[0-9]/[0-9]?[0-9]?[0-9]\)?)(?![0-9])', nazev1)
+		rimska_na_konci = self.najdi('([IVX]{1,5}\.?)\s*$', nazev1)
+		arabska_na_konci = self.najdi('([0-9]?[0-9]?[0-9])\s*$', nazev1)
+		nazev1 = nazev1.replace(serialy, '').replace(" "+casti, ' ').replace(" "+rimska_na_konci, ' ').replace(" "+arabska_na_konci, ' ')
+	
+		serialy = self.najdi('\s+([IVX]{0,7}\.?\s?\([0-9]?[0-9]?[0-9][,-]?\s?[0-9]?[0-9]?[0-9]?\))', nazev2)
+		casti = self.najdi('\s+(\(?[0-9]?[0-9]?[0-9]/[0-9]?[0-9]?[0-9]\)?)(?![0-9])', nazev2)
+		rimska_na_konci = self.najdi('([IVX]{1,5}\.?)\s*$', nazev2)
+		arabska_na_konci = self.najdi('([0-9]?[0-9]?[0-9])\s*$', nazev2)
+		nazev2 = nazev2.replace(serialy, '').replace(" "+casti, ' ').replace(" "+rimska_na_konci, ' ').replace(" "+arabska_na_konci, ' ')
+	
+		return kompletnazev, nazev1, nazev2, seria_num, epizoda_num
 
 ParserConstCSFD = CSFDConstParser()
 
@@ -434,14 +555,12 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserMoviesFound - False - konec\n')
 		return res
 
-	def parserListOfMovies(self):
+	def parserListOfMovies(self, low_priority=True):
 		LogCSFD.WriteToFile('[CSFD] parserListOfMovies - zacatek\n')
 		
 		searchresults = []
 		
 		for movie in self.json_data["films"]:
-#			year = CheckValidValue(movie["year"], None)
-				
 			movie_info = {
 				'id': movie['id'],
 				'name': movie['name'],
@@ -449,10 +568,14 @@ class CSFDParser():
 				'rating_category': CheckValidValue(movie["rating_category"], "0"),
 				'type': movieType.strToId( movie['type'] )
 			}
+			
+			if low_priority == False and movieType.isLowPriority( movie_info['type'] ):
+				continue
+			
 #			searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], year, 'c' + movie["rating_category"], movie_info ) )
 			searchresults.append( movie_info )
 			
-			if movie["search_name"] is not None and movie["search_name"] != movie["name"]:
+			if movie.get("search_name") is not None and movie["search_name"] != movie["name"]:
 				movie_info2 = movie_info.copy()
 				movie_info2['name'] = movie["search_name"]
 #				searchresults.append( ( '#movie#%d' % movie["id" ], movie["search_name"], year, 'c' + movie["rating_category"], movie_info ) )
@@ -521,17 +644,24 @@ class CSFDParser():
 		searchresults = []
 		type_id = self.json_data["info"]["type_id"]
 		
-		if (type_id == 11 or type_id == 12) and self.json_data["info"]["has_no_seasons"] == False:
+		if type_id in (movieType.SERIAL_WITH_EPISODES, movieType.SHOW_WITH_EPISODES, movieType.EPISODE) and self.json_data["info"]["has_no_seasons"] == False:
 			if "seasons" not in self.json_data:
 				self.json_data["seasons"] = csfdAndroidClient.get_movie_episodes( self.json_data["info"]["id"], 0, 0 )["seasons"]
 				
 			for movie in self.json_data["seasons"]:
+				position_code = movie['episodes'][0]['position_code']
+				if 'S' in position_code:
+					position_code = position_code.split('E')[0]
+				else:
+					position_code = 'S01'
+					
 				movie_info = {
 					'id': movie['id'],
 					'name': movie['name'],
 					'year': CheckValidValue(movie["year"]),
 					'rating_category': CheckValidValue(movie["rating_category"], "0"),
-					'type': 10
+					'type': movieType.SERIE,
+					'position_code': position_code
 				}
 
 #				searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], CheckValidValue(movie["year"], None), 'c' + movie["rating_category"], movie_info ) )
@@ -546,7 +676,7 @@ class CSFDParser():
 		searchresults = []
 		
 		type_id = self.json_data["info"]["type_id"]
-		if type_id == 10 or type_id == 11 or type_id == 12:
+		if type_id in (movieType.SERIAL_WITH_EPISODES, movieType.SHOW_WITH_EPISODES, movieType.SERIE):
 			if "seasons" not in self.json_data:
 				self.json_data["seasons"] = csfdAndroidClient.get_movie_episodes( self.json_data["info"]["id"], 0, 0 )["seasons"]
 
