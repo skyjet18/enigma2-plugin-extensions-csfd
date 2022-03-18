@@ -23,6 +23,11 @@ from .CSFDLog import LogCSFD
 from .CSFDSettings2 import config
 from .CSFDTools import internet_on
 
+try:
+	from functools import lru_cache
+except:
+	from .lru import lru_cache
+	
 # ######################################################################################
 
 class CSFDAndroidClient:
@@ -200,7 +205,7 @@ class CSFDAndroidClient:
 		return login_url, form_data
 
 	# ######################################################################################
-	
+	@lru_cache(maxsize=32)
 	def do_request( self, params, data=None ):
 		try:
 			if data == None:
@@ -380,7 +385,7 @@ class CSFDAndroidClient:
 	
 	# ######################################################################################
 	
-	def get_json_by_uri(self, uri, page=1 ):
+	def get_json_by_uri(self, uri, page=1, load_full=True ):
 		try:
 			if uri.startswith('#search_movie#'):
 				LogCSFD.WriteToFile( "Searching movie: \"%s\"\n" % uri[14:], 2 )
@@ -393,17 +398,18 @@ class CSFDAndroidClient:
 				LogCSFD.WriteToFile( "Requesting movie info for \"%s\"\n" % uri[7:], 2 )
 	
 				data1 = self.get_movie_info( uri[7:])["info"]
-				data2 = self.get_movie_creators( uri[7:], 0, 30 )["creators"]
+				ret = { "info": data1 }
 				
-				ret = { "info": data1, "creators" : data2 }
-				
-				if "root_id" in data1:
-					ret["root_info"] = self.get_movie_info( data1["root_id"] )["info"]
-				
-				if 'parent_id' in data1:
-					ret['parent_info'] = self.get_movie_info( data1['parent_id'] )['info']
+				if load_full:
+					ret["creators"] = self.get_movie_creators( uri[7:], 0, 30 )["creators"]
+					
+					if "root_id" in data1:
+						ret["root_info"] = self.get_movie_info( data1["root_id"] )["info"]
+					
+					if 'parent_id' in data1:
+						ret['parent_info'] = self.get_movie_info( data1['parent_id'] )['info']
 
-				return ret 
+				return ret
 	
 			elif uri.startswith('#movie_photos#'):
 				LogCSFD.WriteToFile( "Requesting movie photos for \"%s\"\n" % uri[14:], 2 )
