@@ -740,8 +740,30 @@ def eventinfo(session, eventName='', **kwargs):
 	CSFDGlobalVar.setCSFDcur(1)
 	CSFDGlobalVar.setCSFDeventID_EPG(0)
 	CSFDGlobalVar.setCSFDeventID_REF('')
+	
 	if config.misc.CSFD.Info_EPG.getValue() == '0':
-		RunCSFD(session, eventName)
+		EPG=''
+		eventMovieSourceOfDataEPG = False
+		
+		try:
+			event = kwargs['event']
+			if event is not None:
+				eventName = event.getEventName()
+				short = event.getShortDescription()
+				ext = event.getExtendedDescription()
+				if short and short != eventName:
+					EPG = short
+				if ext:
+					EPG += ext
+				if EPG != '':
+					EPG = eventName + ' - ' + EPG
+					
+				eventMovieSourceOfDataEPG = True
+		except:
+			EPG=''
+			eventMovieSourceOfDataEPG = False
+
+		RunCSFD(session, eventName, False, EPG, eventMovieSourceOfDataEPG)
 	elif config.misc.CSFD.Info_EPG.getValue() == '1':
 		ref = session.nav.getCurrentlyPlayingServiceReference()
 		from .CSFDClasses import CSFDEPGSelection
