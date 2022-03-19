@@ -23,8 +23,7 @@ from .CSFDConfigList import CSFDConfigListScreen
 from .CSFDConfigText import CSFDConfigText, CSFDConfigPassword
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 from .CSFDSettings1 import CSFDGlobalVar
-from .CSFDSettings2 import _, const_www_csfd
-from .CSFDSettings2 import config
+from .CSFDSettings2 import _, config
 from .CSFDMovieCache import TVMovieCache
 from .CSFDParser import GetCSFDNumberFromChannel, ParserCSFD
 from .CSFDSkinLoader import *

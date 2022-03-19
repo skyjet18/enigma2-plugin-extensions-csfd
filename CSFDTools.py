@@ -436,7 +436,10 @@ def char2Allowchar(mystring, typeControl=0):
 #	if True:
 #		return mystring
 	if isinstance(mystring, str):
-		mystring = unicode(mystring, 'utf-8', errors='ignore')
+		try:
+			mystring = unicode(mystring, 'utf-8', errors='ignore')
+		except:
+			pass
 	if typeControl == 1:
 		mystring = mystring.replace('\xa0', ' ')
 	else:

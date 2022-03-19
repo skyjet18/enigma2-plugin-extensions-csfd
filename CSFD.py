@@ -8,7 +8,7 @@ from .CSFDParser import ParserCSFD, ParserConstCSFD, GetItemColourRateN, GetItem
 from .CSFDClasses import GetMoviesForTVChannels, CSFDChannelSelection, CSFDEPGSelection, CSFDLCDSummary, CSFDSetup, CSFDInputText, CSFDAbout, CSFDHistory, CSFDVideoInfoScreen, CSFDPlayer, RefreshPlugins
 from .CSFDMovieCache import TVMovieCache
 from .CSFDSettings1 import CSFDGlobalVar
-from .CSFDSettings2 import _, localeInit, CSFDActionDict, std_media_header, MainUpdateUrl, MainUpdateUrlIpk, const_www_csfd, const_csfd_http_film, const_quick_page, ResetParams
+from .CSFDSettings2 import _, localeInit, CSFDActionDict, std_media_header, MainUpdateUrl, MainUpdateUrlIpk, ResetParams
 from .CSFDSettings2 import config
 from .CSFDSkinSelect import CSFDSkinSelect
 from .CSFDSkinLoader import *
@@ -36,7 +36,6 @@ from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 from os import path as os_path
 from random import randint, seed
 import time, traceback
-from skins.CSFDSkin_Default import CSFDratingColor_Nothing
 from .CSFDTools import StripAccents
 from .compat import eConnectCallback, ePicloadDecodeData
 
@@ -2982,8 +2981,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			event_info['year'] = ''
 		
 		# search for position code in series
-		event_info['name'] = NameMovieCorrections( self.eventName if self.eventName is not None else '' )
+		event_info['name'] = NameMovieCorrections( self.eventName if self.eventName is not None else '', False )
 		event_info['name'], _, event_info['episode_name'], s, e = ParserConstCSFD.rozlozeniNazvu( event_info['name'] )
+		event_info['name'] = NameMovieCorrections( self.eventName if self.eventName is not None else '' )
 
 		if s is None and e is None:
 			s, e = ParserConstCSFD.parserGetPositionCode(self.EPG)

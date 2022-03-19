@@ -255,9 +255,12 @@ def NameMovieCorrectionsForCTChannels(name_s):
 	 name1, name2)
 
 
-def NameMovieCorrections(name_s):
+def NameMovieCorrections(name_s, corr1_enable=True):
 
 	def corr1(name1):
+		if corr1_enable == False:
+			return name1
+		
 		pos = name1.rfind(' (')
 		if pos > 0 and name1[-1:] == ')':
 			name1 = name1[0:pos].strip()
@@ -492,7 +495,8 @@ class CSFDConstParser():
 		zbytecnosti = [" -HD", " -W", " -ST", " -AD"]
 		for zbytecnost in zbytecnosti:
 			upravovanytext = upravovanytext.replace(zbytecnost, '')
-		serialy = self.najdi('\s+([IVX]{0,7}\.?\s?\([0-9]?[0-9]?[0-9][,-]?\s?[0-9]?[0-9]?[0-9]?\))', upravovanytext)
+			
+		serialy = self.najdi('\s+([IVX]{0,7}\.?\s?\([0-9]?[0-9]?[0-9][,-/]?\s?[0-9]?[0-9]?[0-9]?\))', upravovanytext)
 		casti = self.najdi('\s+(\(?[0-9]?[0-9]?[0-9]/[0-9]?[0-9]?[0-9]\)?)(?![0-9])', upravovanytext)
 		rimska_na_konci = self.najdi('\s+([IVX]{1,5}\.?)\s*$', upravovanytext)
 		arabska_na_konci = self.najdi('\s+([0-9]?[0-9]?[0-9])\s*$', upravovanytext)

@@ -32,9 +32,6 @@ config.misc.CSFD.TestVersion = ConfigYesNo(default=False)
 config.misc.CSFD.CurrentSkin = CSFDConfigText('Default', fixed_size=False)
 config.misc.CSFD.Version = NoSave(CSFDConfigText(default=CSFDVersion))
 config.misc.CSFD.VersionData = NoSave(CSFDConfigText(default=CSFDVersionData))
-const_www_csfd = '://www.csfd.cz'
-const_csfd_http_film = '://www.csfd.cz/film/'
-const_quick_page = 'komentare/strana-300/'
 
 std_media_header = {'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'}
 
@@ -161,7 +158,7 @@ config.misc.CSFD.DownloadTimeOut = ConfigInteger(default=25, limits=(5, 120))
 config.misc.CSFD.TechnicalDownloadTimeOut = ConfigInteger(default=10, limits=(5, 120))
 config.misc.CSFD.InternetTest = ConfigYesNo(default=True)
 config.misc.CSFD.AntiFreeze = ConfigYesNo(default=True)
-config.misc.CSFD.AntiFreezeLimit = ConfigInteger(default=30, limits=(20, 60))
+config.misc.CSFD.AntiFreezeLimit = ConfigInteger(default=30, limits=(10, 60))
 config.misc.CSFD.PlayerSubtDelayPlus = ConfigInteger(default=0, limits=(0, 60000))
 config.misc.CSFD.PlayerSubtDelayMinus = ConfigInteger(default=0, limits=(0, 60000))
 config.misc.CSFD.BackCSFDCompatibility = ConfigYesNo(default=True)
