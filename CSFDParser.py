@@ -1186,7 +1186,6 @@ class CSFDParser():
 
 	def parserVideoDetail(self, json_data=None, video_resolution='', image_resolution=''):
 		LogCSFD.WriteToFile('[CSFD] parserVideoDetail - zacatek\n')
-		LogCSFD.WriteToFile('[CSFD] parserVideoDetail - 0a\n')
 
 		searchresults = None
 		
@@ -1215,12 +1214,12 @@ class CSFDParser():
 					continue
 
 				try:
-					videotitulkyurlCZ = video["subtitles"]["české".decode('utf-8')]
+					videotitulkyurlCZ = video["subtitles"][u"české"]
 				except:
 					videotitulkyurlCZ = ''
 
 				try:
-					videotitulkyurlSK = video["subtitles"]["slovenské".decode('utf-8')]
+					videotitulkyurlSK = video["subtitles"][u"slovenské"]
 				except:
 					videotitulkyurlSK = ''
 					
