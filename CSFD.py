@@ -119,7 +119,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self.stahnutoCSFDImage = ''
 		self.NacistNazevPoradu = False
 		self.querySpecAkce = 'UserComments'
-		self.eventMovieYears = []
 		self.eventMovieNameYears = ''
 		self.automaticUpdate = True
 		self.container_output = ''
@@ -2948,13 +2947,15 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 
 	def createSearchQuery(self):
+		event_name = self.event_info['name_search'] if 'name_search' in self.event_info else self.event_info['name']
+		
 		if config.misc.CSFD.FindInclDiacrEPG.getValue() == False:
-			search_query = StripAccents( self.event_info['name'] )
+			search_query = StripAccents( event_name )
 		else:
-			search_query = self.event_info['name']
+			search_query = event_name
 
-		if self.event_info['year' ] != '' and config.misc.CSFD.FindInclYear.getValue():
-			search_query += ' ' + str(self.eventMovieYears[0])
+		if len(self.event_info['years' ]) == 1 and config.misc.CSFD.FindInclYear.getValue():
+			search_query += ' ' + str(self.event_info['years'][0])
 
 		LogCSFD.WriteToFile('[CSFD] search query: "%s"\n' % search_query )
 		return '#search_movie#' + search_query
@@ -2967,22 +2968,25 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		if self.EPG != '':
 			# we have EPG - search movie first in format (xxxx)
 			years = ParserConstCSFD.parserGetYears(self.EPG, '(')
+			
+			if len( years ) == 0:
+				years = ParserConstCSFD.parserGetYears(self.EPG, '')
 		else:
 			# no EPG -> search year in movie in format (xxxx)
 			years = ParserConstCSFD.parserGetYears(self.eventName, '(')
 
-#			if len( years ) == 0:
+			if len( years ) == 0:
 				# not found -> search in format [xxxx]
-#				years = ParserConstCSFD.parserGetYears(self.EPG, '[')
+				years = ParserConstCSFD.parserGetYears(self.EPG, '[')
 
 		if len( years ) == 1:
-			event_info['year'] = years[0]
+			event_info['years'] = years
 		else:
-			event_info['year'] = ''
+			event_info['years'] = []
 		
 		# search for position code in series
-		event_info['name'] = NameMovieCorrections( self.eventName if self.eventName is not None else '', False )
-		event_info['name'], _, event_info['episode_name'], s, e = ParserConstCSFD.rozlozeniNazvu( event_info['name'] )
+		event_name = NameMovieCorrections( self.eventName if self.eventName is not None else '', False )
+		event_info['name_search'], _, event_info['episode_name'], s, e = ParserConstCSFD.rozlozeniNazvu( event_name )
 		event_info['name'] = NameMovieCorrections( self.eventName if self.eventName is not None else '' )
 
 		if s is None and e is None:
@@ -3065,7 +3069,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self.KeyPressLong = False
 		self.BouquetIndex = -1
 		self.LastDownloadedMovieUrl = ''
-		self.eventMovieYears = []
 		self.eventMovieNameYears = ''
 		self.selectedMenuRow = None
 		self.ChannelsCSFD = []
@@ -3175,23 +3178,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				self.DVBchannel = Uni8(self.DVBchannel)
 			self.eventMovieNameYears = self.eventName
 			
-			if self.EPG != '':
-				# we have EPG - search movie first in format (xxxx)
-				self.eventMovieYears = ParserConstCSFD.parserGetYears(self.EPG, '(')
-
-				if len( self.eventMovieYears ) == 0:
-					# not found - so try in format xxxx
-					self.eventMovieYears = ParserConstCSFD.parserGetYears(self.EPG)
-					
-				self.eventMovieSourceOfDataEPG = True
-			else:
-				# no EPG -> search year in movie in format (xxxx)
-				self.eventMovieYears = ParserConstCSFD.parserGetYears(self.eventName, '(')
-
-				if len( self.eventMovieYears ) == 0:
-					# not found -> search in format [xxxx]
-					self.eventMovieYears = ParserConstCSFD.parserGetYears(self.EPG, '[')
-
 			if self.DVBchannel != '':
 				self.ChannelsCSFD = GetCSFDNumberFromChannel(self.DVBchannel)
 			else:
@@ -3316,31 +3302,27 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 		return finded
 
-	def CompareMovieYears(self, year=''):
+	def CompareMovieYears(self, movie_year, series_years=[]):
 		percent = 0
 		shoda = False
-		if not config.misc.CSFD.CompareInclYear.getValue() or len(self.eventMovieYears) == 0:
+		
+		series_years = [int(movie_year)] + list(series_years)
+		
+		if not config.misc.CSFD.CompareInclYear.getValue() or len(series_years) == 0:
 			return (percent, shoda)
 		
-		if len(year) == 6:
-			year = year[1:-1]
-			v_year = int(year)
-		else:
-			if len(year) == 4:
-				v_year = int(year)
-			else:
-				return (percent, shoda)
-				
-		for yr in self.eventMovieYears:
-			m_year = int(yr)
-			if m_year == v_year:
-				shoda = True
-			if abs(m_year - v_year) < 6:
-				per = (200 - float(abs(m_year - v_year))) / 200 * 100
-				if per > percent:
-					percent = per
+		for s_year in series_years:
+			for e_year in self.event_info['years']:
 
-		percent = percent / len(self.eventMovieYears)
+				if e_year == s_year:
+					shoda = True
+					
+				if abs(e_year - s_year) < 6:
+					per = (200 - float(abs(e_year - s_year))) / 200 * 100
+					if per > percent:
+						percent = per
+
+		percent = percent / len(self.event_info['years'])
 		return (percent, shoda)
 
 	def Search100shoda(self):
@@ -3571,8 +3553,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 							shoda100 = '1'
 
 			if movie_info['year'] != '':
-				if (addTVscore and TVMovies is not None) or len(self.eventMovieYears) == 1:
-					y_body, y_shoda = self.CompareMovieYears(movie_info['year'])
+				if (addTVscore and TVMovies is not None) or len(self.event_info['years']) > 0:
+					y_body, y_shoda = self.CompareMovieYears(int(movie_info['year']), movie_info.get('series_years', ()))
 					if y_shoda:
 						shoda100 += '1'
 					else:
@@ -3598,8 +3580,6 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				
 				if showMovieType == True:
 					display_name += CreateStrList( (' [', movieType.idToStr(movie_info['type']), ']' ), '', True )
-				
-				
 				
 				if not self.SearchDuplicity(resultlist, display_name, movie_info['id']):
 					if len(res_Name_Corrected_WO_Diacr) > 0:

@@ -117,6 +117,9 @@ class MovieType():
 	
 	def isLowPriority(self, movie_type ):
 		return movie_type not in ( self.UNUSED, self.VIDEO_MOVIE, self.TV_MOVIE, self.SERIAL, self.SHOW, self.SERIAL_WITH_EPISODES, self.SHOW_WITH_EPISODES )
+
+	def hasEpisodes(self, movie_type ):
+		return movie_type in ( self.SERIAL_WITH_EPISODES, self.SHOW_WITH_EPISODES )
 	
 movieType = MovieType()
 
@@ -425,11 +428,11 @@ class CSFDConstParser():
 			if delim == '':
 				for value in results:
 					LogCSFD.WriteToFile('[CSFD] parserGetYears - have year %s\n' % value[1:-1])
-					searchresults.append(value)
+					searchresults.append(int(value))
 			else:
 				for value in results:
 					LogCSFD.WriteToFile('[CSFD] parserGetYears - have year %s\n' % value)
-					searchresults.append(value[1:-1])
+					searchresults.append(int(value[1:-1]))
 
 		LogCSFD.WriteToFile('[CSFD] parserGetYears - konec\n')
 		return list(set(searchresults))
@@ -492,10 +495,6 @@ class CSFDConstParser():
 		return arabska
 
 	def rozlozeniNazvu(self, upravovanytext):
-		zbytecnosti = [" -HD", " -W", " -ST", " -AD"]
-		for zbytecnost in zbytecnosti:
-			upravovanytext = upravovanytext.replace(zbytecnost, '')
-			
 		serialy = self.najdi('\s+([IVX]{0,7}\.?\s?\([0-9]?[0-9]?[0-9][,-/]?\s?[0-9]?[0-9]?[0-9]?\))', upravovanytext)
 		casti = self.najdi('\s+(\(?[0-9]?[0-9]?[0-9]/[0-9]?[0-9]?[0-9]\)?)(?![0-9])', upravovanytext)
 		rimska_na_konci = self.najdi('\s+([IVX]{1,5}\.?)\s*$', upravovanytext)
@@ -559,6 +558,22 @@ class CSFDParser():
 		LogCSFD.WriteToFile('[CSFD] parserMoviesFound - False - konec\n')
 		return res
 
+	def parserListOfSeriesYears(self, movie_id ):
+		LogCSFD.WriteToFile('[CSFD] parserListOfSeriesYears - zacatek\n')
+
+		searchresults = []
+				
+		try:
+			for movie in csfdAndroidClient.get_movie_episodes( movie_id, 0, 0 )["seasons"]:
+				if movie["year"] is not None:
+					searchresults.append( movie["year"] )
+		except:
+			LogCSFD.WriteToFile('[CSFD] parserListOfSeriesYears - chyba\n')
+			pass
+
+		LogCSFD.WriteToFile('[CSFD] parserListOfSeriesYears - konec\n')
+		return set(searchresults)
+
 	def parserListOfMovies(self, low_priority=True):
 		LogCSFD.WriteToFile('[CSFD] parserListOfMovies - zacatek\n')
 		
@@ -576,6 +591,9 @@ class CSFDParser():
 			if low_priority == False and movieType.isLowPriority( movie_info['type'] ):
 				continue
 			
+			if movieType.hasEpisodes( movie_info['type'] ):
+				movie_info['series_years'] = self.parserListOfSeriesYears( movie['id'] )
+				
 #			searchresults.append( ( '#movie#%d' % movie["id" ], movie["name"], year, 'c' + movie["rating_category"], movie_info ) )
 			searchresults.append( movie_info )
 			
