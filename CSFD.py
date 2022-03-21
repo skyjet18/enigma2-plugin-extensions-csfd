@@ -4616,7 +4616,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 			LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - VideoCountPix ' + str(self.VideoCountPix) + '\n')
 			if self.Page == 2 and self.querySpecAkce == 'UserVideo':
-				self.VideoSlideList.sort(key=lambda z: z[7])
+				# this will sort videos by description, but this is not needed, because we receive videos from CSFD in "best" order
+#				self.VideoSlideList.sort(key=lambda z: z[7])
 				if self.VideoIsNotFullyRead:
 					self.VideoIsNotFullyRead = False
 					if self['extralabel'].instance.isVisible():
@@ -4631,7 +4632,8 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					ss = str(idx + 1) + '/' + str(self.VideoCountPix) + '  ' + strUni(self.VideoSlideList[idx][2])
 					self['statusbar'].setText(ss)
 
-		self.VideoSlideList.sort(key=lambda z: z[7])
+		# this will sort videos by description, but this is not needed, because we receive videos from CSFD in "best" order
+#		self.VideoSlideList.sort(key=lambda z: z[7])
 		self.VideoIsNotFullyRead = False
 		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - konec\n')
 		return
