@@ -205,7 +205,7 @@ class CSFDAndroidClient:
 		return login_url, form_data
 
 	# ######################################################################################
-	@lru_cache(maxsize=32)
+	@lru_cache(maxsize=64)
 	def do_request( self, params, data=None ):
 		try:
 			if data == None:
@@ -377,7 +377,26 @@ class CSFDAndroidClient:
 		else:
 			data = stations
 		return self.do_request( 'tv/stations', data='stations=' + data )
+	
+	# ######################################################################################
+	
+	def set_all_tv_stations( self ):
+		sl = []
+		need_set = False
+		try:
+			for station in self.get_tv_stations()['stations']:
+				sl.append(station['id'])
+				if station['selected'] == False:
+					need_set = True
 			
+			if need_set:
+				self.set_tv_station( sl )
+				
+		except:
+			pass
+
+		return
+	
 	# ######################################################################################
 
 	def get_tv_schedule( self, day, offset=0, limit=20 ):

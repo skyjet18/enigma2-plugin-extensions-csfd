@@ -120,8 +120,7 @@ config.misc.CSFD.ShowInEventInfoMenu = ConfigYesNo(default=True)
 config.misc.CSFD.ShowInExtensionMenu = ConfigYesNo(default=True)
 config.misc.CSFD.ShowInATV = ConfigYesNo(default=True)
 config.misc.CSFD.ShowInInfoBar = ConfigYesNo(default=True)
-config.misc.CSFD.FindAllItems = ConfigYesNo(default=False)
-config.misc.CSFD.FindInclYear = ConfigYesNo(default=True)
+config.misc.CSFD.FindInclYear = ConfigYesNo(default=False)
 config.misc.CSFD.CompareInclYear = ConfigYesNo(default=True)
 config.misc.CSFD.ReadDetailBasedOnScore = ConfigYesNo(default=True)
 config.misc.CSFD.FindInclDiacrEPG = ConfigYesNo(default=True)
@@ -133,9 +132,7 @@ config.misc.CSFD.ShowInEPGList = ConfigYesNo(default=True)
 config.misc.CSFD.ShowInEPGListBlueButton = ConfigYesNo(default=False)
 config.misc.CSFD.ShowInEPGDetail = ConfigYesNo(default=True)
 config.misc.CSFD.ShowInMovieSelection = ConfigYesNo(default=True)
-config.misc.CSFD.ShowSimpleInfo = ConfigYesNo(default=False)
 config.misc.CSFD.CSFDreplaceIMDB = ConfigYesNo(default=True)
-config.misc.CSFD.SortEPG_CZ_SK = ConfigYesNo(default=True)
 config.misc.CSFD.PriorityInMenu = ConfigInteger(default=50, limits=(0, 200))
 config.misc.CSFD.PosterBasicSlide = ConfigYesNo(default=True)
 config.misc.CSFD.PosterBasicSlideTime = ConfigInteger(default=10, limits=(2, 50))
@@ -158,11 +155,10 @@ config.misc.CSFD.DownloadTimeOut = ConfigInteger(default=25, limits=(5, 120))
 config.misc.CSFD.TechnicalDownloadTimeOut = ConfigInteger(default=10, limits=(5, 120))
 config.misc.CSFD.InternetTest = ConfigYesNo(default=True)
 config.misc.CSFD.AntiFreeze = ConfigYesNo(default=True)
-config.misc.CSFD.AntiFreezeLimit = ConfigInteger(default=30, limits=(10, 60))
+config.misc.CSFD.AntiFreezeLimit = ConfigInteger(default=10, limits=(10, 30))
 config.misc.CSFD.PlayerSubtDelayPlus = ConfigInteger(default=0, limits=(0, 60000))
 config.misc.CSFD.PlayerSubtDelayMinus = ConfigInteger(default=0, limits=(0, 60000))
 config.misc.CSFD.BackCSFDCompatibility = ConfigYesNo(default=True)
-config.misc.CSFD.TVCache = ConfigYesNo(default=False)
 config.misc.CSFD.DirectoryVideoDownload = CSFDConfigText('/hdd/movie/', fixed_size=False)
 config.misc.CSFD.Skinxml = ConfigYesNo(default=False)
 config.misc.CSFD.SkinOLEDxml = ConfigYesNo(default=True)
@@ -215,7 +211,6 @@ def ResetParams():
 	config.misc.CSFD.ShowInExtensionMenu.saved_value = None
 	config.misc.CSFD.ShowInATV.saved_value = None
 	config.misc.CSFD.ShowInInfoBar.saved_value = None
-	config.misc.CSFD.FindAllItems.saved_value = None
 	config.misc.CSFD.FindInclYear.saved_value = None
 	config.misc.CSFD.CompareInclYear.saved_value = None
 	config.misc.CSFD.ReadDetailBasedOnScore.saved_value = None
@@ -228,9 +223,7 @@ def ResetParams():
 	config.misc.CSFD.ShowInEPGListBlueButton.saved_value = None
 	config.misc.CSFD.ShowInEPGDetail.saved_value = None
 	config.misc.CSFD.ShowInMovieSelection.saved_value = None
-	config.misc.CSFD.ShowSimpleInfo.saved_value = None
 	config.misc.CSFD.CSFDreplaceIMDB.saved_value = None
-	config.misc.CSFD.SortEPG_CZ_SK.saved_value = None
 	config.misc.CSFD.PriorityInMenu.saved_value = None
 	config.misc.CSFD.PosterBasicSlide.saved_value = None
 	config.misc.CSFD.PosterBasicSlideTime.saved_value = None
@@ -253,7 +246,6 @@ def ResetParams():
 	config.misc.CSFD.PlayerSubtDelayPlus.saved_value = None
 	config.misc.CSFD.PlayerSubtDelayMinus.saved_value = None
 	config.misc.CSFD.BackCSFDCompatibility.saved_value = None
-	config.misc.CSFD.TVCache.saved_value = None
 	config.misc.CSFD.DirectoryVideoDownload.saved_value = None
 	config.misc.CSFD.Skinxml.saved_value = None
 	config.misc.CSFD.SkinOLEDxml.saved_value = None
@@ -320,7 +312,6 @@ def ResetParams():
 	config.misc.CSFD.ShowInExtensionMenu.load()
 	config.misc.CSFD.ShowInATV.load()
 	config.misc.CSFD.ShowInInfoBar.load()
-	config.misc.CSFD.FindAllItems.load()
 	config.misc.CSFD.FindInclYear.load()
 	config.misc.CSFD.CompareInclYear.load()
 	config.misc.CSFD.ReadDetailBasedOnScore.load()
@@ -333,9 +324,7 @@ def ResetParams():
 	config.misc.CSFD.ShowInEPGListBlueButton.load()
 	config.misc.CSFD.ShowInEPGDetail.load()
 	config.misc.CSFD.ShowInMovieSelection.load()
-	config.misc.CSFD.ShowSimpleInfo.load()
 	config.misc.CSFD.CSFDreplaceIMDB.load()
-	config.misc.CSFD.SortEPG_CZ_SK.load()
 	config.misc.CSFD.PriorityInMenu.load()
 	config.misc.CSFD.PosterBasicSlide.load()
 	config.misc.CSFD.PosterBasicSlideTime.load()
@@ -358,7 +347,6 @@ def ResetParams():
 	config.misc.CSFD.PlayerSubtDelayPlus.load()
 	config.misc.CSFD.PlayerSubtDelayMinus.load()
 	config.misc.CSFD.BackCSFDCompatibility.load()
-	config.misc.CSFD.TVCache.load()
 	config.misc.CSFD.DirectoryVideoDownload.load()
 	config.misc.CSFD.Skinxml.load()
 	config.misc.CSFD.SkinOLEDxml.load()

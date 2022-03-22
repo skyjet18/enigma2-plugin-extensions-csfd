@@ -25,7 +25,7 @@ from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 from .CSFDSettings1 import CSFDGlobalVar
 from .CSFDSettings2 import _, config
 from .CSFDMovieCache import TVMovieCache
-from .CSFDParser import GetCSFDNumberFromChannel, ParserCSFD
+from .CSFDParser import ParserCSFD
 from .CSFDSkinLoader import *
 import datetime, time, traceback
 from .CSFDAndroidClient import csfdAndroidClient
@@ -41,135 +41,6 @@ except:
 
 		def loadSubs(self, fl):
 			pass
-
-isFirstGetMovies = True
-
-def GetMoviesForTVChannels(t_channName, t_typechannName=0, t_downlTimeout=3, t_ignoreNetErr=False):
-	global isFirstGetMovies
-	channName = t_channName
-	typechannName = t_typechannName
-	downlTimeout = t_downlTimeout
-	ignoreNetErr = t_ignoreNetErr
-	LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - zacatek\n', 20)
-	LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - channName: ' + channName + '\n', 20)
-	if isFirstGetMovies:
-		isFirstGetMovies = False
-		LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - prvni nacteni se ignoruje\n', 20)
-		LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - konec\n', 20)
-		return
-	if channName == '':
-		LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - neni kanal\n', 20)
-		LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - konec\n', 20)
-		return
-	if not ignoreNetErr and int(time.time()) - config.misc.CSFD.LastLanError.getValue() < config.misc.CSFD.LanErrorWaiting.getValue() * 60:
-		LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - jeste nevyprsel casovy limit z duvodu lan chyby\n', 20)
-		LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - konec\n', 20)
-		return
-
-	def GetMovies(s_channName, s_typechannName=0, s_downlTimeout=3, s_ignoreNetErr=False):
-		channName = s_channName
-		typechannName = s_typechannName
-		ignoreNetErr = s_ignoreNetErr
-		LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies - zacatek\n', 20)
-		stations = ''
-		if typechannName == 0:
-			channels = GetCSFDNumberFromChannel(channName)
-			for channel in channels:
-				if stations == '':
-					stations += channel
-				else:
-					stations += '%2C' + channel
-
-		else:
-			stations = channName
-		if stations != '':
-			LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies - stations: ' + stations + '\n', 20)
-			t_stations = stations
-			if not TVMovieCache.IsChannelInCache(t_stations):
-				page = ''
-				page_tomm = ''
-				page_yest = ''
-				LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies set station list\n', 20)
-				if csfdAndroidClient.is_logged():
-					ret = csfdAndroidClient.set_tv_stations(t_stations)
-					if 'http_error' in ret or 'internal_error' in ret:
-						LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies set station list - chyba - konec\n', 20)
-						chyba = True
-					else:
-						chyba = False
-				else:
-					LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies set station list - chyba - not logged in\n', 20)					
-					chyba = True
-				
-				today = datetime.date.today()
-				
-				general_chyba = chyba
-				if not chyba:
-					LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies today\n', 20)
-					page = csfdAndroidClient.get_tv_schedule( str(today) )
-					if 'http_error' in ret or 'internal_error' in ret:
-						page = {}
-						chyba = True
-						general_chyba = True
-						config.misc.CSFD.LastLanError.setValue(int(time.time()))
-						config.misc.CSFD.LastLanError.save()
-						LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies today - chyba - konec\n', 20)
-
-				if not chyba:
-					LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies tommorow\n', 20)
-					page_tomm = csfdAndroidClient.get_tv_schedule( str(today + datetime.timedelta(days=1)) )
-					if 'http_error' in ret or 'internal_error' in ret:
-						page_tomm = {}
-						chyba = True
-						general_chyba = True
-						config.misc.CSFD.LastLanError.setValue(int(time.time()))
-						config.misc.CSFD.LastLanError.save()
-						err = traceback.format_exc()
-						LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies tommorow - chyba - konec\n', 20)
-						LogCSFD.WriteToFile(err)
-
-				if not chyba:
-					LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies yesterday\n', 20)
-					page_yest = csfdAndroidClient.get_tv_schedule( str(today + datetime.timedelta(days=-1)) )
-					if 'http_error' in ret or 'internal_error' in ret:
-						page_yest = {}
-						chyba = True
-						general_chyba = True
-						config.misc.CSFD.LastLanError.setValue(int(time.time()))
-						config.misc.CSFD.LastLanError.save()
-						err = traceback.format_exc()
-						LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies yesterday - chyba - konec\n', 20)
-						LogCSFD.WriteToFile(err)
-
-				if not chyba:
-					searchresults = []
-					searchresults += ParserCSFD.parserListOfTVMovies(page, True)
-					searchresults += ParserCSFD.parserListOfTVMovies(page_tomm, True)
-					searchresults += ParserCSFD.parserListOfTVMovies(page_yest, True)
-
-					if len(searchresults) > 0:
-						TVMovieCache.addMovieToCache(t_stations, searchresults)
-					else:
-						TVMovieCache.delChannelFromMovieCache(t_stations)
-				elif general_chyba:
-					LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies - zapis LastLanError\n', 20)
-					config.misc.CSFD.LastLanError.setValue(int(time.time()))
-					config.misc.CSFD.LastLanError.save()
-				else:
-					LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies - vynulovani LastLanError\n', 20)
-					config.misc.CSFD.LastLanError.setValue(int(0))
-					config.misc.CSFD.LastLanError.save()
-		LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - GetMovies - konec\n', 20)
-
-	try:
-		GetMovies(channName, typechannName, downlTimeout, ignoreNetErr)
-	except:
-		LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - chyba\n')
-		err = traceback.format_exc()
-		LogCSFD.WriteToFile(err)
-
-	LogCSFD.WriteToFile('[CSFD] GetMoviesForTVChannels - konec\n', 20)
-
 
 class CSFDChannelSelection(SimpleChannelSelection):
 	if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
@@ -622,14 +493,14 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list0.append(getConfigListEntry(_('Položka 10 pro rotaci v BOUQUETech'), config.misc.CSFD.Bouquet10))
 		self.list1 = []
 		self.list1.append(getConfigListEntry(_('Rozlišení'), config.misc.CSFD.Resolution))
-		self.list1.append(getConfigListEntry(_('Povolit změnit CSFD ve skinu'), config.misc.CSFD.Skinxml))
+		self.list1.append(getConfigListEntry(_('Zobrazovat CSFD přímo ve skinu přijímače'), config.misc.CSFD.Skinxml))
 		self.list1.append(getConfigListEntry(_('Povolit změnit OLED displej ve skinu'), config.misc.CSFD.SkinOLEDxml))
 		self.list1.append(getConfigListEntry(_('Design CSFD obrazovek'), config.misc.CSFD.Design))
 		self.list1.append(getConfigListEntry(_('Velikost fontu pro SD a HD rozlišení'), config.misc.CSFD.FontHeight))
 		self.list1.append(getConfigListEntry(_('Velikost fontu pro FullHD rozlišení'), config.misc.CSFD.FontHeightFullHD))
 		self.list1.append(getConfigListEntry(_('Preferovaná kvalita stahovaných posterů'), config.misc.CSFD.QualityPoster))
-		self.list1.append(getConfigListEntry(_('Preferovaná kvalita stahovaných fotek z filmů'), config.misc.CSFD.QualityGallery))
-		self.list1.append(getConfigListEntry(_('Preferovaná kvalita stahovaných fotek z videí'), config.misc.CSFD.QualityVideoPoster))
+		self.list1.append(getConfigListEntry(_('Preferovaná kvalita náhledu filmů'), config.misc.CSFD.QualityGallery))
+		self.list1.append(getConfigListEntry(_('Preferovaná kvalita náhledu videí'), config.misc.CSFD.QualityVideoPoster))
 		self.list1.append(getConfigListEntry(_('Preferované rozlišení videa?'), config.misc.CSFD.VideoResolution))
 		self.list1.append(getConfigListEntry(_('Oddělovač tisíců'), config.misc.CSFD.ThousandsSeparator))
 		self.list1.append(getConfigListEntry(_('Načítat poster?'), config.misc.CSFD.PosterBasic))
@@ -652,7 +523,6 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list2.append(getConfigListEntry(_('Jak dlouho se nepřihlašovat po chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LoginErrorWaiting))
 		self.list2.append(getConfigListEntry(_('Při plné shodě ihned načíst detail?'), config.misc.CSFD.Detail100))
 		self.list2.append(getConfigListEntry(_('Vyhledané výsledky třídit defaultně podle'), config.misc.CSFD.Default_Sort))
-		self.list2.append(getConfigListEntry(_('Vyhledat defaultně všechny podobné pořady?'), config.misc.CSFD.FindAllItems))
 		self.list2.append(getConfigListEntry(_('Vyhledávat včetně roku natáčení?'), config.misc.CSFD.FindInclYear))
 		self.list2.append(getConfigListEntry(_('Porovnávat včetně roku natáčení?'), config.misc.CSFD.CompareInclYear))
 		self.list2.append(getConfigListEntry(_('Načíst detail na základě skóre podobnosti?'), config.misc.CSFD.ReadDetailBasedOnScore))
@@ -660,8 +530,6 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list2.append(getConfigListEntry(_('Vyhledávat včetně diakritiky pro pořady z ostatních zdrojů?'), config.misc.CSFD.FindInclDiacrOth))
 		self.list2.append(getConfigListEntry(_('Vyhledávat epizody?'), config.misc.CSFD.SearchEpisodes))
 		self.list2.append(getConfigListEntry(_('Zobrazovat výsledky s nízkou prioritou?'), config.misc.CSFD.ShowLowPriorityResults))
-		self.list2.append(getConfigListEntry(_('Načíst seznam pořadů z CSFD pro daný kanál do cache?'), config.misc.CSFD.TVCache))
-		self.list2.append(getConfigListEntry(_('Automaticky načíst seznam pořadů z CSFD při přepínání?'), config.misc.CSFD.ShowSimpleInfo))
 		self.list2.append(getConfigListEntry(_('Jak dlouho nenačítat cache po net chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LanErrorWaiting))
 		self.list2.append(getConfigListEntry(_('Třídící algoritmus pro vyhledané položky?'), config.misc.CSFD.SortFindItems))
 		self.list2.append(getConfigListEntry(_('Zadávání znaků'), config.misc.CSFD.Input_Type))
@@ -679,8 +547,7 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list2.append(getConfigListEntry(_('Testovat funkčnost internetu?'), config.misc.CSFD.InternetTest))
 		self.list2.append(getConfigListEntry(_('Timeout pro stahování') + _(' - def.15 (5 až 120)'), config.misc.CSFD.DownloadTimeOut))
 		self.list2.append(getConfigListEntry(_('Ochrana před kompletním "zamrznutím" aplikace?'), config.misc.CSFD.AntiFreeze))
-		self.list2.append(getConfigListEntry(_('Za jak dlouho se má ochrana aktivovat') + _(' - def.30s (20 až 60s)'), config.misc.CSFD.AntiFreezeLimit))
-		self.list2.append(getConfigListEntry(_('Třídit EPG podle CZ&SK abecedy?'), config.misc.CSFD.SortEPG_CZ_SK))
+		self.list2.append(getConfigListEntry(_('Za jak dlouho se má ochrana aktivovat') + _(' - def.10s (10 až 30s)'), config.misc.CSFD.AntiFreezeLimit))
 		self.list2.append(getConfigListEntry(_('Logovat do systémové konzole?'), config.misc.CSFD.LogConsole))
 		self.list2.append(getConfigListEntry(_('Logovat do konzole i čas?'), config.misc.CSFD.LogConsoleTime))
 		self.list2.append(getConfigListEntry(_('Logovat do <adr.>CSFDlog.txt ?'), config.misc.CSFD.Log))
@@ -985,7 +852,7 @@ class CSFDAbout(Screen):
 		self['label4'] = Label(_('Verze: ') + str(verze) + ' (' + str(datum_verze) + ')')
 		self['label5'] = Label('© Autor pluginu: petrkl12	  email: petrkl12@tvplugins.cz')
 		self['label6'] = Label('')
-		self['label7'] = Label(_('Pokračování ve vývoji od 12/2021 jako komunitní projekt'))
+		self['label7'] = Label(_('Pokračování ve vývoji od 12/2021 jako open source projekt'))
 		self['label8'] = Label('na https://github.com/skyjet18/enigma2-plugin-extensions-csfd')
 		self['label9'] = Label('')
 		self['label10'] = Label('© ' + _('Název, grafické logo') + ' "CSFD - Česko-Slovenská filmová')

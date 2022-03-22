@@ -146,46 +146,6 @@ def channel_name_normalise( name ):
 	name = name.replace("&", " and ").replace("'", "").replace(".", "").replace(" ", "")
 	return name
 
-tv_stations = {}
-
-def load_tv_stations():
-	LogCSFD.WriteToFile('[CSFD] load_tv_stations - zacatek\n')
-	
-	if csfdAndroidClient.is_logged():
-		global tv_stations
-		
-		tv_stations = {}
-		stations = csfdAndroidClient.get_tv_stations()
-		if 'http_error' in stations or 'internal_error' in stations:
-			LogCSFD.WriteToFile('[CSFD] load_tv_stations - chyba\n')
-		else:
-			LogCSFD.WriteToFile('[CSFD] load_tv_stations - nacteno %d stanic\n' % len( stations['stations']))
-			
-			for station in stations['stations']:
-				tv_stations[ channel_name_normalise( station['name']) ] = str(station['id'])
-			
-	LogCSFD.WriteToFile('[CSFD] load_tv_stations - konec\n')
-	
-def GetCSFDNumberFromChannel(nameChannel=''):
-	LogCSFD.WriteToFile('[CSFD] GetCSFDNumberFromChannel - zacatek\n')
-	results = []
-	global tv_stations
-	
-	if len(tv_stations) == 0:
-		load_tv_stations()
-	
-	name = channel_name_normalise( nameChannel )
-	LogCSFD.WriteToFile('[CSFD] GetCSFDNumberFromChannel - normalised name: %s\n' % name)
-
-	try:
-		results.append( tv_stations[name] )
-		LogCSFD.WriteToFile('[CSFD] GetCSFDNumberFromChannel - found\n')
-	except:
-		pass
-
-	LogCSFD.WriteToFile('[CSFD] GetCSFDNumberFromChannel - konec\n')
-	
-	return results
 
 def GetItemColourRateN(rate=-1):
 	if rate >= 70:
@@ -196,32 +156,6 @@ def GetItemColourRateN(rate=-1):
 		typn = 3
 	else:
 		typn = 0
-	return typn
-
-
-def GetItemColourRateC(rate=-1):
-	if rate >= 70:
-		typc = '1'
-	elif rate >= 30:
-		typc = '2'
-	elif rate >= 0:
-		typc = '3'
-	else:
-		typc = '0'
-	return typc
-
-
-def GetItemColourN(typ=''):
-	if typ == 'c0':
-		typn = '0'
-	elif typ == 'c1':
-		typn = '1'
-	elif typ == 'c2':
-		typn = '2'
-	elif typ == 'c3':
-		typn = '3'
-	else:
-		typn = '0'
 	return typn
 
 
@@ -254,8 +188,7 @@ def NameMovieCorrectionsForCTChannels(name_s):
 		else:
 			name2 += ',' + slovo
 
-	return (
-	 name1, name2)
+	return (name1.strip(), name2.strip())
 
 
 def NameMovieCorrections(name_s, corr1_enable=True):
@@ -353,7 +286,7 @@ def NameMovieCorrections(name_s, corr1_enable=True):
 	if len(name_s) > 2 and (name_s[-1] == '1' or name_s[-1] == 'i') and name_s[-2] in ('I', 'V', 'X'):
 		name_s = name_s[:-1] + 'I'
 	
-	return name_s
+	return name_s.strip()
 
 
 def NameMovieCorrectionsForCompare(name_s):
@@ -387,9 +320,13 @@ class CSFDConstParser():
 		self.parserRomanNumerals = re.compile('\\b(?!LLC)(?=[MDCLXVI]+\\b)M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\\b', re.DOTALL)
 		self.parserPositionCode1 = re.compile( '\(S[0-9]+E[0-9]+\)', re.DOTALL )
 		self.parserPositionCode2 = re.compile( '\(S[0-9]+E[0-9]+[/-][0-9]+\)', re.DOTALL )
+		
+		self.parserNameEpisode = re.compile( ' \([0-9]+[-/]?[0-9]?\)$', re.DOTALL )
+		self.parserNameSerie = re.compile( ' [IVX]{1,5}\.?$', re.DOTALL )
 
-		self.parserEpisode = re.compile( '\(E[0-9]+\)', re.DOTALL )
-		self.parserSerie = re.compile( '\(S[0-9]+\)', re.DOTALL )
+		self.parserEpgEpisode = re.compile( '\(E([0-9]+)\)', re.DOTALL )
+		self.parserEpgEpisode2 = re.compile( '([0-9]+)/[0-9]+ ', re.DOTALL )
+		self.parserEpgSerie = re.compile( '\(S[0-9]+\)', re.DOTALL )
 
 		LogCSFD.WriteToFile('[CSFD] CSFDConstParser - init - konec\n')
 
@@ -427,11 +364,11 @@ class CSFDConstParser():
 		if results is not None:
 			if delim == '':
 				for value in results:
-					LogCSFD.WriteToFile('[CSFD] parserGetYears - have year %s\n' % value[1:-1])
+#					LogCSFD.WriteToFile('[CSFD] parserGetYears - have year %s\n' % value[1:-1])
 					searchresults.append(int(value))
 			else:
 				for value in results:
-					LogCSFD.WriteToFile('[CSFD] parserGetYears - have year %s\n' % value)
+#					LogCSFD.WriteToFile('[CSFD] parserGetYears - have year %s\n' % value)
 					searchresults.append(int(value[1:-1]))
 
 		LogCSFD.WriteToFile('[CSFD] parserGetYears - konec\n')
@@ -455,21 +392,41 @@ class CSFDConstParser():
 
 		return None, None
 
-	def parserGetEpisode(self, name ):
-		results = self.parserEpisode.findall(name)
+	def parserGetEpgEpisode(self, name, simple_search=False ):
+		if simple_search:
+			results = self.parserEpgEpisode2.findall(name)
+		else:
+			results = self.parserEpgEpisode.findall(name)
+		
+		if results is not None and len(results) == 1:
+			return int(results[0])
+
+		return None
+
+	def parserGetEpgSerie(self, name ):
+		results = self.parserEpgSerie.findall(name)
 		
 		if results is not None and len(results) == 1:
 			return int(results[0][2:-1])
 
 		return None
 
-	def parserGetSerie(self, name ):
-		results = self.parserSerie.findall(name)
+	def parserGetNameEpisode(self, name ):
+		results = self.parserNameEpisode.findall(name)
 		
 		if results is not None and len(results) == 1:
-			return int(results[0][2:-1])
+			e = re.compile( '\(([0-9]+)[-/]?[0-9]?\)$', re.DOTALL ).findall( results[0] )[0]
+			return int(e), name[:-len(results[0])]
 
-		return None
+		return None, name
+
+	def parserGetNameSerie(self, name ):
+		results = self.parserNameSerie.findall(name)
+		
+		if results is not None and len(results) == 1:
+			return self.rimskeArabske(results[0][1:]), name[:-len(results[0])]
+
+		return None, name
 
 	def najdi(self, retezec, celytext):
 		maska = re.compile(retezec, re.DOTALL)
@@ -495,11 +452,12 @@ class CSFDConstParser():
 		return arabska
 
 	def rozlozeniNazvu(self, upravovanytext):
+		LogCSFD.WriteToFile('[CSFD] rozlozeniNazvu - rozkladam: "%s"\n' % upravovanytext )
 		serialy = self.najdi('\s+([IVX]{0,7}\.?\s?\([0-9]?[0-9]?[0-9][,-/]?\s?[0-9]?[0-9]?[0-9]?\))', upravovanytext)
 		casti = self.najdi('\s+(\(?[0-9]?[0-9]?[0-9]/[0-9]?[0-9]?[0-9]\)?)(?![0-9])', upravovanytext)
 		rimska_na_konci = self.najdi('\s+([IVX]{1,5}\.?)\s*$', upravovanytext)
 		arabska_na_konci = self.najdi('\s+([0-9]?[0-9]?[0-9])\s*$', upravovanytext)
-		kompletnazev = upravovanytext.replace(serialy, '').replace(" "+casti, ' ').replace(" "+rimska_na_konci, ' ').replace(" "+arabska_na_konci, ' ')
+		kompletnazev = upravovanytext.replace(serialy, '').replace(" "+casti, ' ').replace(" "+rimska_na_konci, ' ').replace(" "+arabska_na_konci, ' ').strip()
 		rimska_na_konci = rimska_na_konci.replace(".","")
 		rozlozenynazev = re.split('[:,;]', kompletnazev)
 		nazev1 = rozlozenynazev[0].rstrip(' ')
@@ -510,8 +468,9 @@ class CSFDConstParser():
 		
 		if len(rozlozenynazev) > 1:
 			nazev2 = rozlozenynazev[1].lstrip(' ').rstrip(' ')
+			
 		if serialy:
-#			print("X_Serialy: %s" % serialy)
+			LogCSFD.WriteToFile('[CSFD] rozlozeniNazvu - serialy: "%s"\n' % serialy )
 			serie = self.najdi('([IVX]{1,5})', serialy)
 			if serie:
 				seria_num = self.rimskeArabske(serie)
@@ -519,11 +478,11 @@ class CSFDConstParser():
 			epizoda = self.najdi('\(([0-9]?[0-9]?[0-9])', serialy)
 			epizoda_num = int(epizoda)
 		elif casti:
-#			print("X_Casti: %s" % casti)
+			LogCSFD.WriteToFile('[CSFD] rozlozeniNazvu - casti: "%s"\n' % casti )
 			epizoda = self.najdi('([0-9]?[0-9]?[0-9])/', casti)
 			epizoda_num = int(epizoda)
 		elif rimska_na_konci:
-#			print("X_RNK: %s" % rimska_na_konci)
+			LogCSFD.WriteToFile('[CSFD] rozlozeniNazvu - rimska_na_konci: "%s"\n' % rimska_na_konci )
 			seria_num = self.rimskeArabske(rimska_na_konci)
 	
 		serialy = self.najdi('\s+([IVX]{0,7}\.?\s?\([0-9]?[0-9]?[0-9][,-]?\s?[0-9]?[0-9]?[0-9]?\))', nazev1)
@@ -538,6 +497,9 @@ class CSFDConstParser():
 		arabska_na_konci = self.najdi('([0-9]?[0-9]?[0-9])\s*$', nazev2)
 		nazev2 = nazev2.replace(serialy, '').replace(" "+casti, ' ').replace(" "+rimska_na_konci, ' ').replace(" "+arabska_na_konci, ' ')
 	
+		LogCSFD.WriteToFile('[CSFD] rozlozeniNazvu - nazev1: "%s"\n' % nazev1 )
+		LogCSFD.WriteToFile('[CSFD] rozlozeniNazvu - nazev2: "%s"\n' % nazev2 )
+		
 		return kompletnazev, nazev1, nazev2, seria_num, epizoda_num
 
 ParserConstCSFD = CSFDConstParser()
@@ -807,18 +769,6 @@ class CSFDParser():
 		ostjmenatext = self.parserOrigMovieTitle()
 		LogCSFD.WriteToFile('[CSFD] parserOtherMovieTitle - konec\n')
 		return ostjmenatext
-
-	def parserOtherMovieTitleWOCountry(self):
-		LogCSFD.WriteToFile('[CSFD] parserOtherMovieTitleWOCountry - zacatek\n')
-		searchresults = None
-		
-		orig_name = self.parserOrigMovieTitle()
-		
-		if orig_name != None:
-			searchresults = [ orig_name ]
-		
-		LogCSFD.WriteToFile('[CSFD] parserOtherMovieTitleWOCountry - konec\n')
-		return searchresults
 
 	def parserOrigMovieTitle(self, json_data = None):
 		LogCSFD.WriteToFile('[CSFD] parserOrigMovieTitle - zacatek\n')

@@ -10,7 +10,6 @@ class CSFDGlobalVarDef:
 		self.AudioSelectionexist = False
 		self.OpenSSLexist = False
 		self.OpenSSLcontext = False
-		self.TVTimer_channName = ''
 		self.EventName = ''
 		self.CallBackNeeded = False
 		self.EPG = ''
@@ -29,12 +28,6 @@ class CSFDGlobalVarDef:
 		self.ParalelDownloadProcedure = None
 		self.ParalelDownloadPage = ''
 		return
-
-	def getTVTimer_channName(self):
-		return self.TVTimer_channName
-
-	def setTVTimer_channName(self, TVTimer_channName):
-		self.TVTimer_channName = TVTimer_channName
 
 	def getOpenSSLexist(self):
 		return self.OpenSSLexist

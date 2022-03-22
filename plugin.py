@@ -32,8 +32,6 @@ try:
 except:
 	CSFDGlobalVar.setAudioSelectionexist(False)
 
-TVTimer = None
-TVTimerConn = None
 InitIMDBchanges()
 if config.misc.CSFD.BackCSFDCompatibility.getValue():
 	LogCSFD.WriteToFile('[CSFD] CSFD - zapnuta zpetna kompatibilita volani CSFD\n')
@@ -84,21 +82,6 @@ def CallCSFD(session, eventName='', callbackNeeded=False, EPG='', sourceEPG=Fals
 	LogCSFD.WriteToFile('[CSFD] Externi volani CSFD pluginu - konec\n')
 	return ret
 
-def TimerEventGetMoviesForTVChannels():
-	global TVTimer
-	LogCSFD.WriteToFile('[CSFD] TimerEventGetMoviesForTVChannels - zacatek\n', 20)
-	if TVTimer is not None:
-		if TVTimer.isActive():
-			TVTimer.stop()
-	from .CSFDClasses import GetMoviesForTVChannels
-	GetMoviesForTVChannels(CSFDGlobalVar.getTVTimer_channName())
-	LogCSFD.WriteToFile('[CSFD] TimerEventGetMoviesForTVChannels - konec\n', 20)
-	return
-
-
-TVTimer = eTimer()
-TVTimerConn = eConnectCallback( TVTimer.timeout, TimerEventGetMoviesForTVChannels )
-	
 if CSFDGlobalVar.getCSFDImageType() == 'openatv' or CSFDGlobalVar.getCSFDImageType() == 'openvix':
 	LogCSFD.WriteToFile('[CSFD] CSFDEventViewEPGSelect - ATV/VIX image\n')
 	try:
@@ -663,78 +646,6 @@ else:
 		config.misc.CSFD.ShowInEPGList.save()
 		configfile.save()
 
-try:
-	if config.misc.CSFD.ShowSimpleInfo.getValue():
-		old_InfoBar_show = InfoBar.show
-
-	def CSFD_InfoBar_show(self, *args, **kwargs):
-		LogCSFD.WriteToFile('[CSFD] InfoBar - show - zacatek\n')
-		try:
-			old_InfoBar_show(self)
-		except:
-			LogCSFD.WriteToFile('[CSFD] ShowSimpleInfo - old_InfoBar_show - chyba\n')
-			err = traceback.format_exc()
-			LogCSFD.WriteToFile(err)
-
-		try:
-			if config.misc.CSFD.TVCache.getValue():
-				service = self.session.nav.getCurrentService()
-				if service is not None:
-					info = service and service.info()
-					if info is not None:
-						name = info.getName()
-						if name is not None:
-							if TVTimer is not None:
-								if TVTimer.isActive():
-									TVTimer.stop()
-							CSFDGlobalVar.setTVTimer_channName(name)
-							TVTimer.start(1000, False)
-		except:
-			LogCSFD.WriteToFile('[CSFD] ShowSimpleInfo - CSFD_InfoBar_show - chyba\n')
-			err = traceback.format_exc()
-			LogCSFD.WriteToFile(err)
-
-		LogCSFD.WriteToFile('[CSFD] InfoBar - show - konec\n')
-		return
-
-
-	if config.misc.CSFD.ShowSimpleInfo.getValue():
-		InfoBar.show = CSFD_InfoBar_show
-except:
-	LogCSFD.WriteToFile('[CSFD] ShowSimpleInfo - chyba\n')
-	err = traceback.format_exc()
-	LogCSFD.WriteToFile(err)
-	config.misc.CSFD.ShowSimpleInfo.setValue(False)
-	config.misc.CSFD.ShowSimpleInfo.save()
-	configfile.save()
-
-
-#try:
-#	def CSFD_EPGList_sortSingleEPG(self, typeP, *args, **kwargs):
-#		LogCSFD.WriteToFile('[CSFD] EPGList - sortSingleEPG - zacatek\n')
-#		listP = self.list
-#		if listP:
-#			event_id = self.getSelectedEventId()
-#			if typeP == 1:
-#				from .CSFDTools import char2DiacriticSort
-#				listP.sort(key=lambda x: (char2DiacriticSort(x[4]) and char2DiacriticSort(x[4]).lower(), x[2]))
-#			else:
-#				listP.sort(key=lambda x: x[2])
-#			self.l.invalidate()
-#			self.moveToEventId(event_id)
-#		LogCSFD.WriteToFile('[CSFD] EPGList - sortSingleEPG - konec\n')
-#
-#
-#	if config.misc.CSFD.SortEPG_CZ_SK.getValue() and 'sortSingleEPG' in dir(EPGList):
-#		EPGList.sortSingleEPG = CSFD_EPGList_sortSingleEPG
-#except:
-#	LogCSFD.WriteToFile('[CSFD] SortEPG_CZ_SK - chyba\n')
-#	err = traceback.format_exc()
-#	LogCSFD.WriteToFile(err)
-#	config.misc.CSFD.SortEPG_CZ_SK.setValue(False)
-#	config.misc.CSFD.SortEPG_CZ_SK.save()
-#	configfile.save()
-
 def eventinfo(session, eventName='', **kwargs):
 	LogCSFD.WriteToFile('[CSFD] eventinfo called: eventName: %s, kwargs: %s\n' %(eventName, str(kwargs)) )
 	CSFDGlobalVar.setCSFDcur(1)
@@ -763,7 +674,12 @@ def eventinfo(session, eventName='', **kwargs):
 			EPG=''
 			eventMovieSourceOfDataEPG = False
 
-		RunCSFD(session, eventName, False, EPG, eventMovieSourceOfDataEPG)
+		try:
+			DVBchannel = kwargs['service'].getServiceName()
+		except:
+			DVBchannel = ''
+			
+		RunCSFD(session, eventName, False, EPG, eventMovieSourceOfDataEPG, DVBchannel)
 	elif config.misc.CSFD.Info_EPG.getValue() == '1':
 		ref = session.nav.getCurrentlyPlayingServiceReference()
 		from .CSFDClasses import CSFDEPGSelection
@@ -778,7 +694,47 @@ def main(session, eventName='', **kwargs):
 	CSFDGlobalVar.setCSFDcur(1)
 	CSFDGlobalVar.setCSFDeventID_EPG(0)
 	CSFDGlobalVar.setCSFDeventID_REF('')
-	RunCSFD(session, eventName)
+	
+	EPG = ''
+	DVBchannel = ''
+	eventMovieSourceOfDataEPG = False
+	
+	if eventName is '':
+		CSFDGlobalVar.setCSFDcur(1)
+		CSFDGlobalVar.setCSFDeventID_EPG(0)
+		CSFDGlobalVar.setCSFDeventID_REF('')
+		EPG = ''
+		DVBchannel = ''
+		eventMovieSourceOfDataEPG = False
+		LogCSFD.WriteToFile('[CSFD] main - getServiceName\n')
+		try:
+			serviceref = session.nav.getCurrentlyPlayingServiceReference()
+			if serviceref is not None:
+				serviceHandler = eServiceCenter.getInstance()
+				info = serviceHandler.info(serviceref)
+				event = info.getEvent(serviceref)
+				if event is not None:
+					eventName = event.getEventName()
+					short = event.getShortDescription()
+					ext = event.getExtendedDescription()
+					if short and short != eventName:
+						EPG = short
+					if ext:
+						EPG += ext
+					if EPG != '':
+						EPG = eventName + ' - ' + EPG
+					eventMovieSourceOfDataEPG = True
+				DVBchannel = ServiceReference(serviceref).getServiceName()
+		except:
+			eventName = ''
+			EPG = ''
+			DVBchannel = ''
+			eventMovieSourceOfDataEPG = False
+			LogCSFD.WriteToFile('[CSFD] getCSFD - getServiceName - chyba\n')
+			err = traceback.format_exc()
+			LogCSFD.WriteToFile(err)
+
+	RunCSFD(session, eventName, False, EPG, eventMovieSourceOfDataEPG, DVBchannel)
 
 
 def startViaMenu(menuid, **kwargs):

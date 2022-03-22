@@ -104,9 +104,6 @@ def SKIN_Setup():
 #Zobrazit CSFD v menu Extension?
 #	config.misc.CSFD.ShowInExtensionMenu.setValue(False)
 
-#Vyhledat defaultně všechny podobné pořady?
-#	config.misc.CSFD.FindAllItems.setValue(False)
-
 #Zobrazit CSFD v EPG místo MultiEPG?
 #	config.misc.CSFD.ShowEPGMulti.setValue(True)
 
@@ -124,9 +121,6 @@ def SKIN_Setup():
 
 #Volat místo IMDB plugin CSFD?
 #	config.misc.CSFD.CSFDreplaceIMDB.setValue(True)
-
-#Třídit EPG podle CZ&SK abecedy?
-#	config.misc.CSFD.SortEPG_CZ_SK.setValue(True)
 
 #Priorita pluginu v menu: od 0 do 200
 #	config.misc.CSFD.PriorityInMenu.setValue(100)

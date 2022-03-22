@@ -387,42 +387,6 @@ def intWithSeparator(x):
 	return '%d%s' % (x, result)
 
 
-dictonaryDiacritic = {'Á': 'A', 'Ä': 'A', 'Ą': 'A', 'À': 'A', 'Â': 'A', 'Č': 'C', 'Ć': 'C', 'Ç': 'C', 'Ď': 'D', 'É': 'E', 'Ě': 'E', 'Ë': 'E', 'Ę': 'E', 'È': 'E', 'Ê': 'E', 'Í': 'I', 'Ï': 'I', 'Î': 'I', 'Ĺ': 'L', 'Ľ': 'L', 'Ł': 'L', 'Ň': 'N', 'Ń': 'N', 'Ó': 'O', 'Ô': 'O', 'Ö': 'O', 'Ő': 'O', 'Œ': 'O', 'Ŕ': 'R', 'Ř': 'R', 'Š': 'S', 
-   'Ś': 'S', 'Ť': 'T', 'Ú': 'U', 'Ů': 'U', 'Ü': 'U', 'Ű': 'U', 'Ù': 'U', 'Û': 'U', 'Ý': 'Y', 'Ÿ': 'Y', 'Ž': 'Z', 'Ż': 'Z', 'Ź': 'Z', 'á': 'a', 'ä': 'a', 'ą': 'a', 'à': 'a', 'â': 'a', 'č': 'c', 'ć': 'c', 'ç': 'c', 'ď': 'd', 'é': 'e', 'ě': 'e', 'ë': 'e', 'ę': 'e', 'è': 'e', 'ê': 'e', 'í': 'i', 'ï': 'i', 'î': 'i', 'ĺ': 'l', 'ľ': 'l', 'ł': 'l', 'ň': 'n', 'ń': 'n', 'ó': 'o', 
-   'ö': 'o', 'ô': 'o', 'ő': 'o', 'œ': 'o', 'ř': 'r', 'ŕ': 'r', 'š': 's', 'ś': 's', 'ť': 't', 'ú': 'u', 'ů': 'u', 'ü': 'u', 'ű': 'u', 'ù': 'u', 'û': 'u', 'ý': 'y', 'ÿ': 'y', 'ž': 'z', 'ż': 'z', 'ź': 'z'}
-
-def char2Diacritic(line):
-	if sys.version_info[0] < 3 and isinstance(line, str):
-		line = unicode(line, 'utf-8')
-	if unicodedataExist:
-		line = unicodedata.normalize('NFKD', line)
-		output = ''
-		for c in line:
-			if not unicodedata.combining(c):
-				output += c
-
-	else:
-		for i, j in list(dictonaryDiacritic.items()):
-			line = line.replace(i, j)
-
-		output = line
-	return output
-
-
-dictonarySortCZ = {'ch': 'h|', 'CH': 'H|', 'Ch': 'H|', 'Ch': 'h|', 'Á': 'A|', 'Ä': 'A}', 'Č': 'C|', 'Ď': 'D|', 'É': 'E|', 'Ě': 'E}', 'Ë': 'E~', 'Í': 'I|', 'Ï': 'I}', 'Ĺ': 'L|', 'Ľ': 'L}', 'Ł': 'L~', 'Ň': 'N|', 'Ó': 'O|', 
-   'Ô': 'O}', 'Ö': 'O~', 'Ŕ': 'R|', 'Ř': 'R}', 'Š': 'S|', 'Ť': 'T|', 'Ú': 'U|', 'Ů': 'U}', 'Ü': 'U~', 'Ý': 'Y|', 'Ÿ': 'Y}', 'Ž': 'Z|', 'á': 'a|', 'ä': 'a}', 'č': 'c|', 'ď': 'd|', 
-   'é': 'e|', 'ě': 'e}', 'ë': 'e~', 'í': 'i|', 'ï': 'i}', 'ĺ': 'l|', 'ľ': 'l}', 'ł': 'l~', 'ň': 'n|', 'ó': 'o|', 'ö': 'o}', 'ô': 'o~', 'ř': 'r|', 'ŕ': 'r}', 'š': 's|', 'ť': 't|', 'ú': 'u|', 
-   'ů': 'u}', 'ü': 'u~', 'ý': 'y|', 'ÿ': 'y}', 'ž': 'z|'}
-
-def char2DiacriticSort(text):
-	if sys.version_info[0] < 3 and isinstance(text, str):
-		text = unicode(text, 'utf-8')
-	for i, j in list(dictonarySortCZ.items()):
-		text = text.replace(i, j)
-
-	return text
-
-
 charAllowed = '1234567890QWERTZUIOPASDFGHJKLYXCVBNMqwertzuiopasdfghjklyxcvbnm?:./\\+ -()!@;*#$^&[]\'%|;{}",<>=»«_ÁÄĄÀÂČĆÇĎÉĚËĘÈÊÍÏÎĹĽŁŇŃÓÔÖŐŒŔŘŠŚŤÚŮÜŰÙÛÝŸŽŻŹáäąàâčćçďéěëęèêíïîĺľłňńóöôőœřŕšśťúůüűùûýÿžżź\n'
 bigChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄĄÀÂČĆÇĎÉĚËĘÈÊÍÏÎĹĽŁŇŃÓÔÖŐŒŔŘŠŚŤÚŮÜŰÙÛÝŸŽŻŹ'
 
