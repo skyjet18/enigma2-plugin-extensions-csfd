@@ -499,7 +499,7 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list1.append(getConfigListEntry(_('Velikost fontu pro SD a HD rozlišení'), config.misc.CSFD.FontHeight))
 		self.list1.append(getConfigListEntry(_('Velikost fontu pro FullHD rozlišení'), config.misc.CSFD.FontHeightFullHD))
 		self.list1.append(getConfigListEntry(_('Preferovaná kvalita stahovaných posterů'), config.misc.CSFD.QualityPoster))
-		self.list1.append(getConfigListEntry(_('Preferovaná kvalita náhledu filmů'), config.misc.CSFD.QualityGallery))
+		self.list1.append(getConfigListEntry(_('Preferovaná kvalita fotek v galerii'), config.misc.CSFD.QualityGallery))
 		self.list1.append(getConfigListEntry(_('Preferovaná kvalita náhledu videí'), config.misc.CSFD.QualityVideoPoster))
 		self.list1.append(getConfigListEntry(_('Preferované rozlišení videa?'), config.misc.CSFD.VideoResolution))
 		self.list1.append(getConfigListEntry(_('Oddělovač tisíců'), config.misc.CSFD.ThousandsSeparator))

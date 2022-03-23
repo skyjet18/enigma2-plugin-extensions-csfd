@@ -28,20 +28,6 @@ correction_const04 = ['The', 'Der', 'Die', 'Das', 'Le', 'La']
 correction_const05 = ['A', 'The', 'Der', 'Die', 'Das', 'Le', 'La']
 correction_const10 = [(',', ' '), (';', ' '), (':', ' '), ('-', ' '), ('"', ' '), ("'", ' '), ('(', ' '), (')', ' '), ('\\[', ' '), ('\\]', ' '), ('.', ' '), ('?', ' '), ('!', ' '), ('&', ' '), ('	  ', ' '), ('  ', ' ')]
 
-typeOfMovie = {
-	'video film': _('Video film'),
-	'TV film': _('TV film'),
-	'seriál': _('TV seriál'),
-	'pořad': _('TV pořad'),
-	'divadelní záznam': _('Divadelní záznam'),
-	'koncert': _('Koncert'),
-	'studentský film': _('Studentský film'),
-	'amatérský film': _('Amatérský film'),
-	'hudební videoklip': _('Hudební videoklip'),
-	'série': _('Seriál - série'),
-	'epizoda': _('Seriál - epizoda')
-}
-
 class MovieType():
 	UNUSED = 0
 	VIDEO_MOVIE = 1
@@ -104,10 +90,16 @@ class MovieType():
 			self.movie_type_map_rev[ Uni8( self.movie_type_map2[movie_type] ) ] = movie_type
 	
 	def idToStr(self, type_id ):
-		return self.movie_type_map[type_id]
+		try:
+			return self.movie_type_map[type_id]
+		except:
+			return ""
 	
 	def strToId(self, type_str ):
 		return self.movie_type_map_rev[type_str] if type_str in self.movie_type_map_rev else 0
+
+	def strToStr(self, type_str ):
+		return self.idToStr( self.strToId( type_str ) )
 	
 	def isEpisode(self, movie_type ):
 		return movie_type == self.EPISODE
@@ -747,7 +739,7 @@ class CSFDParser():
 			typeMovie = movie_info["type"]
 			
 			try:
-				typeMovie = typeOfMovie[typeMovie]
+				typeMovie = movieType.strToStr(typeMovie)
 			except:
 				pass
 			

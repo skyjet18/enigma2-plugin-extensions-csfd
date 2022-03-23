@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enigma2-plugin-extension-csfd \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-20 13:37+0100\n"
+"POT-Creation-Date: 2022-03-23 10:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,14 +31,8 @@ msgstr " - def.10min.(1 až 240)"
 msgid " - def.15 (5 až 120)"
 msgstr " - def.15 (5 až 120)"
 
-msgid " - def.30s (20 až 60s)"
-msgstr " - def.30s (20 až 60s)"
-
-msgid " def.2 (0 až 4)"
-msgstr " def.2 (0 až 4)"
-
-msgid " of "
-msgstr " z "
+msgid " - def.10s (10 až 30s)"
+msgstr " - def.10s (10 až 30s)"
 
 #, python-format
 msgid "(Aktuální hodnocení: %s)"
@@ -52,9 +46,6 @@ msgstr "-def.10 (02 až 50)*0,5s"
 
 msgid "-def.15 (02 až 50)*0,5s"
 msgstr "-def.15 (02 až 50)*0,5s"
-
-msgid "0"
-msgstr "0"
 
 msgid "1280"
 msgstr "1280"
@@ -134,15 +125,12 @@ msgid ""
 "Tento stav mohl nastat z důvodu dlouhého stahování nebo došlo k nějaké chybě v programu\n"
 "Zkuste zadat nebo vybrat z EPG pořad znovu"
 msgstr ""
-"Bola aktivovaná OCHRANA voči \"zamrznutie\"! \n"
+"Bola aktivovaná OCHRANA voči \"zamrznutiu\"! \n"
 "Tento stav mohol nastať z dôvodu dlhého sťahovania alebo došlo k nejakej chybe v programe\n"
 "Skúste zadať alebo vybrať z EPG reláciu znova"
 
 msgid "CSFD"
 msgstr "CSFD"
-
-msgid "CSFD - Chyba při stahování"
-msgstr "CSFD - Chyba pri sťahovaní"
 
 msgid "CSFD - chyba dotazu! - film: "
 msgstr "CSFD - chyba dotazu! - film: "
@@ -183,26 +171,11 @@ msgstr "CSFD.cz :"
 msgid "CSFD:"
 msgstr "CSFD:"
 
-msgid "Cancel"
-msgstr "Zrušiť"
-
-msgid "Cannot decode subtitles. Try another encoding group"
-msgstr "Nemôžem dekódovať titulky. Skúste použiť inú skupinu kódovaní"
-
-msgid "Cannot parse subtitles"
-msgstr "Chyba načítania tituliek"
-
-msgid "Central and Eastern Europe"
-msgstr "Stredná a východná Európa"
-
 msgid "Cesta <adr.> pro download videa (def.: /hdd/movie/ ) "
 msgstr "Cesta <adr.> pre download videa (def.: /hdd/movie/ ) "
 
 msgid "Cesta <adr.> pro dočasné soubory a logy (def.: /tmp/ ) "
 msgstr "Cesta <adr.> pre dočasné súbory a logy (def.: /tmp/) "
-
-msgid "Change encoding"
-msgstr "Zmeniť kódovanie"
 
 msgid "Chcete ji stáhnout a nainstalovat?"
 msgstr "Chcete ju stiahnuť a nainštalovať?"
@@ -218,12 +191,6 @@ msgstr "Chcete plugin napriek tomu znova stiahnuť a nainštalovať?"
 
 msgid "Chcete přesto stáhnout a nainstalovat tuto starší verzi?"
 msgstr "Chcete napriek tomu stiahnuť a nainštalovať túto staršiu verziu?"
-
-msgid "Choose Subtitles"
-msgstr "Vybrať titulky"
-
-msgid "Choose subtitles"
-msgstr "Vybrať titulky"
 
 msgid "Chyba - zamrznutí pluginu"
 msgstr "Chyba - zamrznutie pluginu"
@@ -248,12 +215,6 @@ msgstr "Chyba streamovanie: %s"
 
 msgid "Chyba v pluginu!"
 msgstr "Chyba v plugine!"
-
-msgid "Color"
-msgstr "Farba"
-
-msgid "Currently choosed subtitles"
-msgstr "Momentálne vybraté titulky"
 
 msgid "Další"
 msgstr "Ďalšia"
@@ -282,9 +243,6 @@ msgstr "Divadelný záznam"
 msgid "Email:"
 msgstr "Email:"
 
-msgid "Encoding"
-msgstr "Skupina kódovaní"
-
 msgid "Epizody v seriálu"
 msgstr "Epizódy v seriáli"
 
@@ -309,15 +267,6 @@ msgstr "Filmová databáza CSFD"
 msgid "Filmová databáze CSFD.cz"
 msgstr "Filmová databáza CSFD.cz"
 
-msgid "Font size"
-msgstr "Velkosť písma"
-
-msgid "Font size for FullHD"
-msgstr "Velkosť písma pre FullHD"
-
-msgid "Font type"
-msgstr "Font"
-
 msgid "Galerie"
 msgstr "Galéria"
 
@@ -330,9 +279,6 @@ msgstr "Galéria č.%s"
 
 msgid "Galerie: "
 msgstr "Galéria: "
-
-msgid "HD"
-msgstr "HD"
 
 msgid "Heslo pro CSFD:"
 msgstr "Heslo pre CSFD:"
@@ -428,9 +374,6 @@ msgstr "Koncert"
 msgid "Kostýmy: "
 msgstr "Kostýmy: "
 
-msgid "List of Storage Devices"
-msgstr "Zoznam zariadení pre ukladanie"
-
 msgid "Logovat do <adr.>CSFDlog.txt ?"
 msgstr "Logovať do <adr.>CSFDlog.txt ?"
 
@@ -445,15 +388,6 @@ msgstr "Dlhé Stlačenie"
 
 msgid "Masky: "
 msgstr "Masky: "
-
-msgid "Maximální kvalita stahovaných fotek z filmů"
-msgstr "Maximálna kvalita sťahovaných fotiek z filmov"
-
-msgid "Maximální kvalita stahovaných fotek z videí"
-msgstr "Maximálna kvalita sťahovaných fotiek z videí"
-
-msgid "Maximální kvalita stahovaných posterů"
-msgstr "Maximálna kvalita sťahovaných posterov"
 
 msgid "Maximální velikost logu?"
 msgstr "Maximálna veľkosť logu?"
@@ -479,14 +413,8 @@ msgstr "Máte nainštalovanú novšiu verziu pluginu než je aktuálne online do
 msgid "Můžete hodnotit filmy na CSFD"
 msgstr "Môžete hodnotiť filmy na CSFD"
 
-msgid "Nacitam dalsi informace ..."
-msgstr "Načítavam dalsie informácie ..."
-
 msgid "Nastavení"
 msgstr "Nastavenie"
-
-msgid "Načíst další názvy z detailu kolika filmů?"
-msgstr "Načítať ďalšie názvy z detailu koľkých filmov?"
 
 msgid "Načíst detail na základě skóre podobnosti?"
 msgstr "Načítať detail na základe skóre podobnosti?"
@@ -523,9 +451,6 @@ msgstr "Nie je funkčný internet!"
 
 msgid "Nominován:"
 msgstr "Nominovaný:"
-
-msgid "None"
-msgstr "Žiadne"
 
 msgid "Nová verze byla úspěšně nainstalována!"
 msgstr "Nová verzia bola úspešne nainštalovaná!"
@@ -569,15 +494,6 @@ msgstr "Ovládanie"
 msgid "Ověřuji přihlášení na CSFD"
 msgstr "Overujem prihlásenie na CSFD"
 
-msgid "Page "
-msgstr "Strana "
-
-msgid "Parent Directory"
-msgstr "Vyberte adresár"
-
-msgid "Parsing XML Feeds ..."
-msgstr "Analýza XML Feeds ..."
-
 msgid "Po některých změnách je nutné znovu spustit plugin nebo restartartovat GUI!"
 msgstr "Po niektorých zmenách je nutné znovu spustiť plugin alebo restartartovat GUI!"
 
@@ -617,9 +533,6 @@ msgstr "Položka 10 pre rotáciu v BOUQUETech"
 msgid "Porovnávat včetně roku natáčení?"
 msgstr "Porovnávať vrátane roku natáčania?"
 
-msgid "Position"
-msgstr "Pozícia"
-
 msgid "Poster"
 msgstr "Poster"
 
@@ -651,9 +564,6 @@ msgstr "Povoliť slideshow pre poster v detaily?"
 msgid "Povolit slideshow pro poster v základu?"
 msgstr "Povoliť slideshow pre poster v základe?"
 
-msgid "Povolit změnit CSFD ve skinu"
-msgstr "Povoliť zmeniť CSFD vo skine"
-
 msgid "Povolit změnit OLED displej ve skinu"
 msgstr "Povoliť zmeniť OLED displej vo skine"
 
@@ -668,9 +578,6 @@ msgstr "Premiéry"
 
 msgid "Priorita pluginu v menu"
 msgstr "Priorita pluginu v menu"
-
-msgid "Probíhá vyhledávání v TV databázi CSFD ... ("
-msgstr "Prebieha vyhľadávanie v TV databáze CSFD ... ("
 
 msgid "Probíhá vyhledávání v databázi CSFD ... ("
 msgstr "Prebieha vyhľadávanie v databáze CSFD ... ("
@@ -735,17 +642,8 @@ msgstr "Rotovať ratingy?"
 msgid "Rozlišení"
 msgstr "Rozlíšenie"
 
-msgid "Russia"
-msgstr "Rusko"
-
 msgid "Různé"
 msgstr "Rôzne"
-
-msgid "SD"
-msgstr "SD"
-
-msgid "Save"
-msgstr "Uložiť"
 
 msgid "Scénografie: "
 msgstr "Scénografia: "
@@ -776,9 +674,6 @@ msgstr "Zotriediť položky podľa vhodnosti názva"
 
 msgid "Setříděno podle "
 msgstr "Zoradené podľa "
-
-msgid "Show subtitles"
-msgstr "Zobraziť titulky"
 
 msgid "Single EPG"
 msgstr "Single EPG"
@@ -820,15 +715,6 @@ msgstr "Stiahnuť novú verziu pluginu"
 msgid "Střih: "
 msgstr "Strih: "
 
-msgid "Subtitles"
-msgstr "Titulky"
-
-msgid "Subtitles setting"
-msgstr "Nastavenia tituliek"
-
-msgid "Subtitles settings"
-msgstr "Nastavenie tituliek"
-
 msgid "TEST BOHUŽEL NEPROBĚHL ÚSPĚŠNĚ"
 msgstr "TEST BOHUŽIAĹ NEPREBEHOL ÚSPEŠNE"
 
@@ -843,9 +729,6 @@ msgstr "TV relácia"
 
 msgid "TV seriál"
 msgstr "TV seriál"
-
-msgid "Tagy: "
-msgstr "Tagy: "
 
 #, python-format
 msgid "Tento box nemmůže dekódovat videostream: %s"
@@ -870,9 +753,6 @@ msgstr "Test prihlásenia na CSFD.cz - ZAČIATOK"
 msgid "Test přihlášení na CSFD.cz ..."
 msgstr "Test prihlásenia na CSFD.cz ..."
 
-msgid "Testovací položka"
-msgstr "Testovacia položka"
-
 msgid "Testovat funkčnost internetu?"
 msgstr "Testovať funkčnosť internetu?"
 
@@ -885,14 +765,8 @@ msgstr "Tipy:"
 msgid "Titulky: "
 msgstr "Titulky: "
 
-msgid "Třídit EPG podle CZ&SK abecedy?"
-msgstr "Triediť EPG podľa CZ & SK abecedy?"
-
 msgid "Třídící algoritmus pro vyhledané položky?"
 msgstr "Triediaci algoritmus pre vyhľadané položky?"
-
-msgid "Uknown error when processing subtitles"
-msgstr "Neznáma chyba pri spracovaní titulkov"
 
 msgid "Ukončení nastavování - bez uložení"
 msgstr "Ukončenie nastavovania - bez uloženia"
@@ -962,17 +836,11 @@ msgstr "Vyhľadané výsledky triediť defaultne podľa"
 msgid "Vyhledat akt. pořad v CSFD"
 msgstr "Vyhľadať akt. reláciu v CSFD"
 
-msgid "Vyhledat defaultně všechny podobné pořady?"
-msgstr "Vyhľadať defaultne všetky podobné relácie?"
-
 msgid "Vyhledat pořad v IMDB"
 msgstr "Vyhľadať reláciu v IMDB"
 
 msgid "Vyhledat v CSFD"
 msgstr "Vyhľadať v CSFD"
-
-msgid "Vyhledat všechny položky"
-msgstr "Vyhľadať všetky položky"
 
 msgid "Vyhledávat včetně diakritiky pro pořady z EPG?"
 msgstr "Vyhľadávať vrátane diakritiky pre relácie z EPG?"
@@ -1007,9 +875,6 @@ msgid ""
 msgstr ""
 "Všetky parametre boli nastavené na prednastavené hodnoty!\n"
 "Spusťte znova plugin!"
-
-msgid "Western Europe"
-msgstr "Západná Európa"
 
 msgid "Za jak dlouho se má ochrana aktivovat"
 msgstr "Za ako dlho sa má ochrana aktivovať"
@@ -1200,32 +1065,14 @@ msgstr "farby rovnaké + zvýraznenie kategórií"
 msgid "barvy stejné bez ohledu na hodnocení"
 msgstr "farby rovnaké bez ohľadu na hodnotenie"
 
-msgid "blue"
-msgstr "modrá"
-
-msgid "cannot decode"
-msgstr "nemôžem dekódovať"
-
 msgid "celkový počet zajímavostí:"
 msgstr "celkový počet zaujímavostí:"
 
 msgid "data vydání"
 msgstr "dátumu vydania"
 
-msgid "decrease subtitles delay"
-msgstr "zníženie oneskorenia titulkov"
-
-msgid "encoding"
-msgstr "kódovanie"
-
-msgid "green"
-msgstr "zelená"
-
 msgid "i obsahová část jsou vlastnictvím společnosti"
 msgstr "i obsahová časť sú vlastníctvom spoločnosti"
-
-msgid "increase subtitles delay"
-msgstr "zvýšenie oneskorenia titulkov"
 
 msgid "ještě nehodnoceno"
 msgstr "ešte nehodnotené"
@@ -1290,20 +1137,11 @@ msgstr "počet fanúšikov:"
 msgid "počet hodnocení:"
 msgstr "počet hodnotení:"
 
-msgid "purple"
-msgstr "fialová"
-
-msgid "red"
-msgstr "červená"
-
 msgid "rotace po jednotlivých informacích o pořadu"
 msgstr "rotácia po jednotlivých informáciách o relácii"
 
 msgid "rovnou vyhledat aktuální pořad"
 msgstr "ihneď vyhľadať aktuálnu reláciu"
-
-msgid "show subtitles menu"
-msgstr "zobraziť titulky"
 
 msgid "slovensky"
 msgstr "slovensky"
@@ -1355,9 +1193,6 @@ msgstr "v menu môžete uložiť video ukážku do definovaného adresára"
 
 msgid "v menu můžete vyhledat aktuální pořad v mezinárodní filmové databázi IMDB"
 msgstr "v menu môžete vyhľadať aktuálnu reláciu v medzinárodnej filmovej databázi IMDB"
-
-msgid "v menu můžete vyhledat všechny podobné názvy k danému pořadu"
-msgstr "v menu môžete vyhľadať všetky podobné názvy k danej relácii"
 
 msgid "v menu můžete zjistit, zda je dostupná nová verze pluginu"
 msgstr "v menu môžete zistiť, či je dostupná nová verzia pluginu"
@@ -1424,12 +1259,6 @@ msgstr "výber hľadanej relácie zo všetkých kanálov"
 
 msgid "výběrem znaků opakovaným stiskem klávesy"
 msgstr "výberom znakov opakovaným stlačením klávesy"
-
-msgid "white"
-msgstr "biela"
-
-msgid "yellow"
-msgstr "žltá"
 
 msgid "zastaví slideshow"
 msgstr "zastaví slideshow"
@@ -1614,21 +1443,45 @@ msgstr "Resetujem prihlasovací token - skúste spustiť tento test ešte raz"
 msgid "Opětovné přihlášení budete muset povolit v nastaveních."
 msgstr "Opätovné prihlásenie budete musieť povoliť v nastaveniach."
 
-msgid "Pokračování ve vývoji od 12/2021 jako komunitní projekt"
-msgstr "Pokračovanie ve vývoji od 12/2021 ako komunitný projekt"
-
 #, python-format
 msgid "Je dostupná nová verze CSFD pluginu %s na githubu"
 msgstr "Je dostupná nová verzia CSFD pluginu %s na githube"
-
-msgid "Načíst seznam pořadů z CSFD pro daný kanál do cache?"
-msgstr "Načítať zoznam programov z CSFD pre daný kanál do cache?"
-
-msgid "Automaticky načíst seznam pořadů z CSFD při přepínání?"
-msgstr "Automaticky načítať zoznam programov z CSFD pri prepínaní?"
 
 msgid "Jak dlouho nenačítat cache po net chybě"
 msgstr "Ako dlho nenačítavať cache po net chybe"
 
 msgid "Žádné další zajímavosti v databázi."
 msgstr "Žiadne ďalšie zaujímavosti v databáze"
+
+msgid "Zobrazovat CSFD přímo ve skinu přijímače"
+msgstr "Zobrazovať CSFD priamo v skinu prijímača"
+
+msgid "Preferovaná kvalita stahovaných posterů"
+msgstr "Preferovaná kvalita zobrazovaných posterov"
+
+msgid "Vyhledávat epizody?"
+msgstr "Vyhľadávať epizódy u seriálov?"
+
+msgid "Zobrazovat výsledky s nízkou prioritou?"
+msgstr "Zobrazovať výsledky s nízkou prioritou?"
+
+msgid "Pokračování ve vývoji od 12/2021 jako open source projekt"
+msgstr "Pokračovanie vo vývoji od 12/2021 ako open source projekt"
+
+msgid "Video kompilace"
+msgstr "Video kompilácia"
+
+msgid "Na internetu:"
+msgstr "Na internete:"
+
+msgid "Účinkují: "
+msgstr "Účinkujú: "
+
+msgid "Maximální"
+msgstr "Maximálna"
+
+msgid "Preferovaná kvalita náhledu videí"
+msgstr "Preferovaná kvalita náhľadu videí"
+
+msgid "Preferovaná kvalita fotek v galerii"
+msgstr "Preferovaná kvalita fotiek v galérii"
