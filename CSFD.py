@@ -5799,7 +5799,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		if CSFDGlobalVar.getCSFDInstallCommand() == 'dpkg':
 			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' --install --force-all ' + str(self.UpdateFile) + ' && apt-get -y update && apt-get -f -y install')
 		else:
-			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install --force-overwrite --force-depends --force-downgrade ' + str(self.UpdateFile))
+			cmd.append(CSFDGlobalVar.getCSFDInstallCommand() + ' install --force-overwrite --force-depends --force-downgrade --force-reinstall ' + str(self.UpdateFile))
 		self.session.openWithCallback(self.finishedPluginDownloadAndUpdate, CSFDConsole, title=_('Online update pluginu ...'), cmdlist=cmd, closeOnSuccess=False, startText=_('Stažení a instalace nové verze pluginu - ZAČÁTEK'), endText=_('Stažení a instalace nové verze pluginu - KONEC'))
 		
 		LogCSFD.WriteToFile('[CSFD] startPluginDownloadAndUpdate - konec\n', 10)

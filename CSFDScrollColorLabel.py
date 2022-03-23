@@ -421,10 +421,11 @@ class CSFDScrollColorLabel(HTMLComponent, GUIComponent):
 
 	def lastPage(self):
 		i = 1
-		while i < self.pages:
-			self.pageDown()
-			i += 1
-			self.updateScrollbar()
+		if self.pages is not None:
+			while i < self.pages:
+				self.pageDown()
+				i += 1
+				self.updateScrollbar()
 
 	def produceHTML(self):
 		return self.getText()

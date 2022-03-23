@@ -248,7 +248,7 @@ def substr(data, start, end):
 def GetInstallCommand():
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - GetInstallCommand - zacatek\n')
 
-	if config.misc.CSFD.InstallCommand.getValue() == 'default':
+	if config.misc.CSFD.InstallCommand.getValue() != 'default':
 		inst_c = config.misc.CSFD.InstallCommand.getValue()
 	elif os_path.exists('/usr/bin/opkg'):
 		inst_c = 'opkg'

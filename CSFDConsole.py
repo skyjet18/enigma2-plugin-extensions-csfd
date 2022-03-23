@@ -198,6 +198,10 @@ class CSFDConsole(Screen):
 		return
 
 	def dataAvail(self, string):
+		try:
+			string = string.decode( 'utf-8' )
+		except:
+			pass
 		self.container_output += string
 		self.container_output_all += string
 		self['text'].setText(self.container_output_all)
