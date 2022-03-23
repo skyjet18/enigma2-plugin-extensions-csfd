@@ -518,6 +518,7 @@ def CreateCSFDAndroidClient( ignore_checks=False, try_new_login=True ):
 		try:
 			# check if login token is ok
 			csfdAndroidClient.get_user_identity()
+			csfdAndroidClient.set_all_tv_stations()
 		except:
 			# clean old login token
 			config.misc.CSFD.TokenCSFD.setValue('')

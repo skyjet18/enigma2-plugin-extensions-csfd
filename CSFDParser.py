@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from .CSFDLog import LogCSFD
-from .CSFDTools import char2Allowchar, strUni, ExtractNumbers, isBigCharInFirst, CheckValidValue, CreateNameSurname, CreateNameSurnameList, Uni8, StripAccents
+from .CSFDTools import strUni, ExtractNumbers, isBigCharInFirst, CheckValidValue, CreateNameSurname, CreateNameSurnameList, Uni8, StripAccents
 from .CSFDSettings1 import CSFDGlobalVar
 from datetime import datetime
 import re, traceback
@@ -9,15 +9,6 @@ from itertools import islice
 
 from .CSFDAndroidClient import csfdAndroidClient
 
-try:
-	# py2
-	from .htmlentitydefs import name2codepoint
-except:
-	# py3
-	from html.entities import name2codepoint
-	unichr = chr
-	unicode = str
-	
 correction_const02a = [
  ' pt1', ' part 1', ' part1', ' pt2', ' part 2', ' part2', ' pt3', ' part 3', ' part3']
 correction_const02b = [', Pro pamětníky...', ', Pro pamětníky', ' Pro pamětníky', ' 1 část', ' 1. část', ' 1.část', ' 2 část', ' 2. část', ' 2.část', ' 3 část', ' 3. část', ' 3.část', ' část', ' díl']
@@ -320,6 +311,15 @@ class CSFDConstParser():
 		self.parserEpgEpisode2 = re.compile( '([0-9]+)/[0-9]+ ', re.DOTALL )
 		self.parserEpgSerie = re.compile( '\(S[0-9]+\)', re.DOTALL )
 
+		self.parserSerieEpisodeInName = re.compile('\s+([IVX]{0,7}\.?\s?\([0-9]?[0-9]?[0-9][,-/]?\s?[0-9]?[0-9]?[0-9]?\))', re.DOTALL)
+		self.parserEpisodeInName = re.compile('\s+(\(?[0-9]?[0-9]?[0-9]/[0-9]?[0-9]?[0-9]\)?)(?![0-9])', re.DOTALL)
+		self.parserRomanAtEnd = re.compile('\s+([IVX]{1,5}\.?)\s*$', re.DOTALL)
+		self.parserArabicAtEnd = re.compile('\s+([0-9]?[0-9]?[0-9])\s*$', re.DOTALL)
+		self.parserRomanSerie = re.compile('([IVX]{1,5})', re.DOTALL)
+
+		self.parserEpisode1 = re.compile('\(([0-9]?[0-9]?[0-9])' )
+		self.parserEpisode2 = re.compile('([0-9]?[0-9]?[0-9])/' )
+						
 		LogCSFD.WriteToFile('[CSFD] CSFDConstParser - init - konec\n')
 
 	def parserGetRomanNumbers(self, name):
@@ -403,15 +403,6 @@ class CSFDConstParser():
 
 		return None
 
-	def parserGetNameEpisode(self, name ):
-		results = self.parserNameEpisode.findall(name)
-		
-		if results is not None and len(results) == 1:
-			e = re.compile( '\(([0-9]+)[-/]?[0-9]?\)$', re.DOTALL ).findall( results[0] )[0]
-			return int(e), name[:-len(results[0])]
-
-		return None, name
-
 	def parserGetNameSerie(self, name ):
 		results = self.parserNameSerie.findall(name)
 		
@@ -419,12 +410,6 @@ class CSFDConstParser():
 			return self.rimskeArabske(results[0][1:]), name[:-len(results[0])]
 
 		return None, name
-
-	def najdi(self, retezec, celytext):
-		maska = re.compile(retezec, re.DOTALL)
-		vysledek = maska.findall(celytext)
-		vysledek = vysledek[0] if vysledek else ""
-		return vysledek
 
 	def rimskeArabske(self, vstupnirimska):
 		definicecislic = {'I':1, 'V':5, 'X':10, 'L':50, 'C':100, 'D':500, 'M':1000}
@@ -445,54 +430,37 @@ class CSFDConstParser():
 
 	def rozlozeniNazvu(self, upravovanytext):
 		LogCSFD.WriteToFile('[CSFD] rozlozeniNazvu - rozkladam: "%s"\n' % upravovanytext )
-		serialy = self.najdi('\s+([IVX]{0,7}\.?\s?\([0-9]?[0-9]?[0-9][,-/]?\s?[0-9]?[0-9]?[0-9]?\))', upravovanytext)
-		casti = self.najdi('\s+(\(?[0-9]?[0-9]?[0-9]/[0-9]?[0-9]?[0-9]\)?)(?![0-9])', upravovanytext)
-		rimska_na_konci = self.najdi('\s+([IVX]{1,5}\.?)\s*$', upravovanytext)
-		arabska_na_konci = self.najdi('\s+([0-9]?[0-9]?[0-9])\s*$', upravovanytext)
+		serialy = self.parserSerieEpisodeInName.findall( upravovanytext )
+		serialy = serialy[0] if serialy else ""
+		casti = self.parserEpisodeInName.findall( upravovanytext )
+		casti = casti[0] if casti else ""
+		rimska_na_konci = self.parserRomanAtEnd.findall( upravovanytext )
+		rimska_na_konci = rimska_na_konci[0] if rimska_na_konci else ""
+		arabska_na_konci = self.parserArabicAtEnd.findall( upravovanytext )
+		arabska_na_konci = arabska_na_konci[0] if arabska_na_konci else ""
 		kompletnazev = upravovanytext.replace(serialy, '').replace(" "+casti, ' ').replace(" "+rimska_na_konci, ' ').replace(" "+arabska_na_konci, ' ').strip()
 		rimska_na_konci = rimska_na_konci.replace(".","")
-		rozlozenynazev = re.split('[:,;]', kompletnazev)
-		nazev1 = rozlozenynazev[0].rstrip(' ')
-		nazev2 = ""
 		
 		seria_num = None
 		epizoda_num = None
 		
-		if len(rozlozenynazev) > 1:
-			nazev2 = rozlozenynazev[1].lstrip(' ').rstrip(' ')
-			
 		if serialy:
 			LogCSFD.WriteToFile('[CSFD] rozlozeniNazvu - serialy: "%s"\n' % serialy )
-			serie = self.najdi('([IVX]{1,5})', serialy)
+			serie = self.parserRomanSerie.findall(serialy)
 			if serie:
-				seria_num = self.rimskeArabske(serie)
+				seria_num = self.rimskeArabske(serie[0])
 				
-			epizoda = self.najdi('\(([0-9]?[0-9]?[0-9])', serialy)
+			epizoda = self.parserEpisode1.findall( serialy )[0]
 			epizoda_num = int(epizoda)
 		elif casti:
 			LogCSFD.WriteToFile('[CSFD] rozlozeniNazvu - casti: "%s"\n' % casti )
-			epizoda = self.najdi('([0-9]?[0-9]?[0-9])/', casti)
+			epizoda = self.parserEpisode2.findall( casti )[0]
 			epizoda_num = int(epizoda)
 		elif rimska_na_konci:
 			LogCSFD.WriteToFile('[CSFD] rozlozeniNazvu - rimska_na_konci: "%s"\n' % rimska_na_konci )
 			seria_num = self.rimskeArabske(rimska_na_konci)
 	
-		serialy = self.najdi('\s+([IVX]{0,7}\.?\s?\([0-9]?[0-9]?[0-9][,-]?\s?[0-9]?[0-9]?[0-9]?\))', nazev1)
-		casti = self.najdi('\s+(\(?[0-9]?[0-9]?[0-9]/[0-9]?[0-9]?[0-9]\)?)(?![0-9])', nazev1)
-		rimska_na_konci = self.najdi('([IVX]{1,5}\.?)\s*$', nazev1)
-		arabska_na_konci = self.najdi('([0-9]?[0-9]?[0-9])\s*$', nazev1)
-		nazev1 = nazev1.replace(serialy, '').replace(" "+casti, ' ').replace(" "+rimska_na_konci, ' ').replace(" "+arabska_na_konci, ' ')
-	
-		serialy = self.najdi('\s+([IVX]{0,7}\.?\s?\([0-9]?[0-9]?[0-9][,-]?\s?[0-9]?[0-9]?[0-9]?\))', nazev2)
-		casti = self.najdi('\s+(\(?[0-9]?[0-9]?[0-9]/[0-9]?[0-9]?[0-9]\)?)(?![0-9])', nazev2)
-		rimska_na_konci = self.najdi('([IVX]{1,5}\.?)\s*$', nazev2)
-		arabska_na_konci = self.najdi('([0-9]?[0-9]?[0-9])\s*$', nazev2)
-		nazev2 = nazev2.replace(serialy, '').replace(" "+casti, ' ').replace(" "+rimska_na_konci, ' ').replace(" "+arabska_na_konci, ' ')
-	
-		LogCSFD.WriteToFile('[CSFD] rozlozeniNazvu - nazev1: "%s"\n' % nazev1 )
-		LogCSFD.WriteToFile('[CSFD] rozlozeniNazvu - nazev2: "%s"\n' % nazev2 )
-		
-		return kompletnazev, nazev1, nazev2, seria_num, epizoda_num
+		return kompletnazev, seria_num, epizoda_num
 
 ParserConstCSFD = CSFDConstParser()
 

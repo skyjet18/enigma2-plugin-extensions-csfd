@@ -2552,7 +2552,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						event_pc = Uni8('S01') + self.event_info['position_code']
 
 				for movie_info in movie_infos:
-					LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - position code movie_info: %s\n' % movie_info['position_code'], 2)
+#					LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - position code movie_info: %s\n' % movie_info['position_code'], 2)
 					if movie_info['position_code'] == event_pc:
 						LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - found season/episode %s: %s\n' % (movie_info['position_code'], str(movie_info['id'])), 2)
 						data = csfdAndroidClient.get_json_by_uri( '#movie#' + str(movie_info['id']) )
@@ -2929,7 +2929,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		event_name = NameMovieCorrections( event_name, False )
 		LogCSFD.WriteToFile('[CSFD] eventInfoCreate - event_name_corrected: "%s"\n' % event_name)
 		
-		event_info['name_search'], _, event_info['episode_name'], s, e = ParserConstCSFD.rozlozeniNazvu( event_name )
+		event_info['name_search'], s, e = ParserConstCSFD.rozlozeniNazvu( event_name )
 		LogCSFD.WriteToFile('[CSFD] eventInfoCreate - name_search: "%s"\n' % event_info['name_search'])
 		event_info['name'] = NameMovieCorrections( event_name )
 
@@ -3250,7 +3250,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 					else:
 						vst_eventName_Corrected_WO_Diacr_WO_Roman = vst_eventName_Corrected_WO_Diacr[:vv].strip()
 						vst_eventName_Corrected_Diacr_WO_Roman = vst_eventName_Corrected_Diacr[:vv].strip()
-					vst_eventName_Corrected_WO_Diacr_CorrNumber = vst_eventName_Corrected_WO_Diacr_WO_Roman + ' ' + fromRomanStr(dodat)
+					vst_eventName_Corrected_WO_Diacr_CorrNumber = vst_eventName_Corrected_WO_Diacr_WO_Roman + ' ' + str(ParserConstCSFD.rimskeArabske( dodat )) # fromRomanStr(dodat)
 					LogCSFD.WriteToFile('[CSFD] CSFDMenuPreparation - korekce1 ' + vst_eventName_Corrected_WO_Diacr_CorrNumber + '\n')
 					lastRoman = True
 					

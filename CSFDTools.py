@@ -396,7 +396,7 @@ try:
 except:
 	pass
 
-def char2Allowchar(mystring, typeControl=0):
+def char2Allowchar(mystring, typeControl=1):
 #	if True:
 #		return mystring
 	if isinstance(mystring, str):
@@ -405,7 +405,7 @@ def char2Allowchar(mystring, typeControl=0):
 		except:
 			pass
 	if typeControl == 1:
-		mystring = mystring.replace('\xa0', ' ')
+		mystring = mystring.replace(u'\xa0', ' ')
 	else:
 		roz = set(mystring) - set(charAllowed)
 		if roz is not None:

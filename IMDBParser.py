@@ -5,10 +5,10 @@ from .CSFDSettings2 import config
 import re
 
 try:
-	from .htmlentitydefs import name2codepoint
-except:
 	from html.entities import name2codepoint
-	unichr = chr
+	unichr = chr	
+except:
+	from .htmlentitydefs import name2codepoint
 	
 class IMDBConstParser:
 
