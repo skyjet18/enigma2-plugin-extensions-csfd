@@ -678,8 +678,11 @@ def eventinfo(session, eventName='', **kwargs):
 			DVBchannel = kwargs['service'].getServiceName()
 		except:
 			DVBchannel = ''
-			
-		RunCSFD(session, eventName, False, EPG, eventMovieSourceOfDataEPG, DVBchannel)
+		
+		if eventName == '' or DVBchannel == '':
+			main( session )
+		else:
+			RunCSFD(session, eventName, False, EPG, eventMovieSourceOfDataEPG, DVBchannel)
 	elif config.misc.CSFD.Info_EPG.getValue() == '1':
 		ref = session.nav.getCurrentlyPlayingServiceReference()
 		from .CSFDClasses import CSFDEPGSelection
