@@ -705,19 +705,13 @@ class CSFDParser():
 		
 		try:	
 			typeMovie = movie_info["type"]
-			
-			try:
-				typeMovie = movieType.strToStr(typeMovie)
-			except:
-				pass
-			
-			typeMovie += ' '
+			typeMovie = movieType.strToStr(typeMovie)
 		except:
 			LogCSFD.WriteToFile('[CSFD] parserTypeOfMovie - Failed\n')
 			typeMovie = ''
 
 		try:	
-			typeMovie += movie_info["position_code"]
+			typeMovie += ' ' + movie_info["position_code"]
 		except:
 			pass
 		
