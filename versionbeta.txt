@@ -1,6 +1,12 @@
-17.00
-enigma2-plugin-extensions-csfd_17.00-20220323_all.ipk
+17.10
+enigma2-plugin-extensions-csfd_17.10-20220324_all.ipk
+!!! Automatická aktualizácia z ver. 16.00 kvôli chybe nefunguje !!!
+!!! Aktualizujte ručne nainštalovaním ipk/deb z príkazového riadku !!!
 Hlavné zmeny:
+17.10:
+- oprava spustenia pluginu cez voľbu "Vyhľadať v CSFD.cz"
+- oprava zobrazenia typu filmu/relácie 
+17.00:
 - vylepšené parsovanie názvu programu
 - pridané parsovanie série, epizódy a roku z názvu + EPG
 - pridanie priameho vyhľadávanie série/epizódy u seriálov
