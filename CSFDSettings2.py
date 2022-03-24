@@ -10,8 +10,8 @@ from .CSFDLog import LogCSFD
 from .CSFDSettings1 import CSFDGlobalVar
 import gettext, locale
 
-CSFDVersion='17.00'
-CSFDVersionData='23.03.2022'
+CSFDVersion='17.10'
+CSFDVersionData='24.03.2022'
 
 config.misc.CSFD = ConfigSubsection()
 config.misc.CSFD.Log = ConfigYesNo(default=True)

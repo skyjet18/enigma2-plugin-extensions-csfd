@@ -1,6 +1,11 @@
 HISTORIE  ZMĚN  V  PLUGINU  CSFD (autor: skyjet)
 $$$A¯
 $$$B_
+Verze 17.10  -  24.03.2022
+$$$A¯
+- oprava spustenia pluginu cez voľbu "Vyhľadať v CSFD.cz"
+- oprava zobrazenia typu filmu/relácie 
+$$$B_
 Verze 17.00  -  23.03.2022
 $$$A¯
 - vylepšené parsovanie názvu programu
