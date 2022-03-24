@@ -7,6 +7,7 @@ Plugin pre enigma2 pre zobrazenie informácií o filmoch z csfd.cz. Kompatibiln�
 - Zobrazenie galérie obrázkov a videii
 - Zobrazenie recenzií a hodnotenie
 - Vyhľadávanie podobných a súvisiacich filmov
+- Automatické vyhľadávanie série a epizódy u seriálov (ak sú dostupné potrebné informácie)
 - Zaujímavosti z filmu
 - Prihlásenie do csfd a možnosť hodnotenia filmov priamo z menu
 
@@ -19,5 +20,5 @@ Stiahnuť z release súbor `enigma2-plugin-extensions-csfd_XX-XX-XXXXXXXX_all.ip
 opkg install /tmp/enigma2-plugin-extensions-csfd_XX-XX-XXXXXXXX_all.ipk
 ```
 ```
-dpkg -i install /tmp/enigma2-plugin-extensions-csfd_XX-XX-XXXXXXXX_all.deb
+dpkg -i /tmp/enigma2-plugin-extensions-csfd_XX-XX-XXXXXXXX_all.deb
 ```
