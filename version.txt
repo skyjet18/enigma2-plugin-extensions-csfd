@@ -1,12 +1,21 @@
-16.00
-enigma2-plugin-extensions-csfd_16.00-20220120_all.ipk
+17.10
+enigma2-plugin-extensions-csfd_17.10-20220324_all.ipk
+!!! Automatická aktualizácia z ver. 16.00 kvôli chybe nefunguje !!!
+!!! Aktualizujte ručne nainštalovaním ipk/deb z príkazového riadku !!!
 Hlavné zmeny:
-- pridaná podpora behu pod python 3.x
-- knižnice pre oauth autorizáciu sú teraz priamo súčasťou pluginu
-- prechod na sťahovanie dát pomocou requests knižnice
-- pridaná možnosť prihlásenia a hodnotenia relácie
-- možnosť automatického načítavania zoznamu filmov do cache
-- oprava zobrazovania obrázkov pre qviart prijímače (thx baron.bb)
-- oprava pádu ak film neobsahuje videá
-- obnovenie inštalácie IMDb emulácie ako vo verziách <=12.50
-- oprava chýb v ipk/deb balíkoch, textoch, prekladoch, prečistenie kódu, ...
+17.10:
+- oprava spustenia pluginu cez voľbu "Vyhľadať v CSFD.cz"
+- oprava zobrazenia typu filmu/relácie 
+17.00:
+- vylepšené parsovanie názvu programu
+- pridané parsovanie série, epizódy a roku z názvu + EPG
+- pridanie priameho vyhľadávanie série/epizódy u seriálov
+- oprava spustenia pomocou EPG tlačidla v OpenPLi a podobných
+- možnosť nastavenia preferovanej kvality zobrazovaných obrázkov
+- možnosť nastavenia preferovanej kvality videí
+- odstránenie TV Cache a všetkého čo s tým súviselo
+- pridaná cache pre požiadavky na CSFD
+- prečistenie, sprehľadnenie a zjednodušenie kódu
+- odstránenie internej podpory pre titulky vo videách
+- pre podporu titulkov je teraz potrebný SubsSupport plugin
+- oprava inštalácie na VTI
