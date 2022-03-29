@@ -530,6 +530,7 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list2.append(getConfigListEntry(_('Vyhledávat včetně diakritiky pro pořady z ostatních zdrojů?'), config.misc.CSFD.FindInclDiacrOth))
 		self.list2.append(getConfigListEntry(_('Vyhledávat epizody?'), config.misc.CSFD.SearchEpisodes))
 		self.list2.append(getConfigListEntry(_('Zobrazovat výsledky s nízkou prioritou?'), config.misc.CSFD.ShowLowPriorityResults))
+		self.list2.append(getConfigListEntry(_('Povolit nastavení seznamu TV stanic?'), config.misc.CSFD.SetTvStations))
 		self.list2.append(getConfigListEntry(_('Jak dlouho nenačítat cache po net chybě') + _(' - def.10min.(1 až 240)'), config.misc.CSFD.LanErrorWaiting))
 		self.list2.append(getConfigListEntry(_('Třídící algoritmus pro vyhledané položky?'), config.misc.CSFD.SortFindItems))
 		self.list2.append(getConfigListEntry(_('Zadávání znaků'), config.misc.CSFD.Input_Type))

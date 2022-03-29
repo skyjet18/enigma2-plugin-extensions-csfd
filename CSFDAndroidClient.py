@@ -390,9 +390,11 @@ class CSFDAndroidClient:
 					need_set = True
 			
 			if need_set:
-				self.set_tv_station( sl )
+				self.set_tv_stations( sl )
+				LogCSFD.WriteToFile( "Set all TV stations done\n"  )
 				
 		except:
+			LogCSFD.WriteToFile( "Failed to set TV stations:\n%s\n" % traceback.format_exc() )
 			pass
 
 		return
@@ -518,7 +520,6 @@ def CreateCSFDAndroidClient( ignore_checks=False, try_new_login=True ):
 		try:
 			# check if login token is ok
 			csfdAndroidClient.get_user_identity()
-			csfdAndroidClient.set_all_tv_stations()
 		except:
 			# clean old login token
 			config.misc.CSFD.TokenCSFD.setValue('')
@@ -526,14 +527,20 @@ def CreateCSFDAndroidClient( ignore_checks=False, try_new_login=True ):
 			
 			# create anonymous session
 			csfdAndroidClient = CSFDAndroidClient()
-
+		
 			# try new login
 			if try_new_login:
 				CreateCSFDAndroidClient(True, False)
 			else:
 				LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - login failed\n', 1)
 		
-		LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - mam prihlasovaci token\n', 1)
+		else:
+			LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - mam prihlasovaci token\n', 1)
+			
+			if config.misc.CSFD.SetTvStations.getValue():
+				LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - nastavuji seznam TV stanic\n', 1)
+				csfdAndroidClient.set_all_tv_stations()
+
 
 	LogCSFD.WriteToFile('[CSFD] CreateCSFDAndroidClient - konec\n', 1)
 	return
