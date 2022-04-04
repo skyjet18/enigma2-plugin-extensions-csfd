@@ -380,7 +380,7 @@ class CSFDConstParser():
 		
 		if results is not None and len(results) == 1:
 			pc = results[0][1:-1].split('E')
-			return int(pc[0][1:]), int(pc[1].split('/')[0].pc[1].split('-')[0])
+			return int(pc[0][1:]), int(pc[1].split('/')[0].split('-')[0])
 
 		return None, None
 
