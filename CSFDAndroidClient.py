@@ -83,51 +83,81 @@ class CSFDAndroidClient:
 		if password == None or password == '':
 			raise ValueError("Password is empty")
 
-		data = 'Y3NmZHJvaWQ6Ly9vYXV0aC1jYWxsYmFja1VzZXItQWdlbnRBcGFjaGUtSHR0cENsaWVudC9VTkFWQUlMQUJMRSAoamF2YSAxLjQpTW96aWxsYS81LjAgKExpbnV4OyBBbmRyb2lkIDYuMDsgU2Ftc3VuZyBHYWxheHkgUzcgQnVpbGQvTVJBNThLOyB3dikgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgVmVyc2lvbi80LjAgQ2hyb21lLzc0LjAuMzcyOS4xODYgTW9iaWxlIFNhZmFyaS81MzcuMzZBY2NlcHR0ZXh0L2h0bWwsYXBwbGljYXRpb24veGh0bWwreG1sLGFwcGxpY2F0aW9uL3htbDtxPTAuOSxpbWFnZS93ZWJwLGltYWdlL2FwbmcsKi8qO3E9MC44LGFwcGxpY2F0aW9uL3NpZ25lZC1leGNoYW5nZTt2PWIzWC1SZXF1ZXN0ZWQtV2l0aGN6LmNzZmQuY3NmZHJvaWQvb2F1dGgvcmVxdWVzdC10b2tlbi9vYXV0aC9hdXRob3JpemUvb2F1dGgvYWNjZXNzLXRva2VuaHR0cHM6Ly93d3cuY3NmZC5jei9jc2Zkcm9pZC9mYi9pbml0'
-		data = bd( data.encode( 'utf-8' ) ).decode('utf-8')
-		
-		# Init oauth with oauth callback
-		self.oauth = OAuth1Session( self.client_key, client_secret=self.client_secret, callback_uri=data[0:25] )
+		data = b'Y3NmZHJvaWQ6Ly9vYXV0aC1jYWxsYmFja1VzZXItQWdlbnRBcGFjaGUtSHR0cENsaWVudC9VTkFWQUlMQUJMRSAoamF2YSAxLjQpTW96aWxsYS81LjAgKExpbnV4OyBBbmRyb2lkIDYuMDsgU2Ftc3VuZyBHYWxheHkgUzcgQnVpbGQvTVJBNThLOyB3dikgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgVmVyc2lvbi80LjAgQ2hyb21lLzc0LjAuMzcyOS4xODYgTW9iaWxlIFNhZmFyaS81MzcuMzZBY2NlcHR0ZXh0L2h0bWwsYXBwbGljYXRpb24veGh0bWwreG1sLGFwcGxpY2F0aW9uL3htbDtxPTAuOSxpbWFnZS93ZWJwLGltYWdlL2FwbmcsKi8qO3E9MC44LGFwcGxpY2F0aW9uL3NpZ25lZC1leGNoYW5nZTt2PWIzWC1SZXF1ZXN0ZWQtV2l0aGN6LmNzZmQuY3NmZHJvaWQvb2F1dGgvcmVxdWVzdC10b2tlbi9vYXV0aC9hdXRob3JpemUvb2F1dGgvYWNjZXNzLXRva2VuaHR0cHM6Ly93d3cuY3NmZC5jei9jc2Zkcm9pZC9mYi9pbml0'
+		data = bd(data).decode('utf-8')
 
-		# Step 1 - fetch request token
-		self.oauth.fetch_request_token( self.api_url + data[392:412], headers={ data[25:35]: data[35:75] } )
-
-		# Step 2 - create authorization url, and do login
-		auth_url = self.oauth.authorization_url( self.api_url + data[412:428], None, oauth_callback=data[0:25], fb_callback=data[447:483] )
-
-		# Step 3 - download login page
-		headers = { data[25:35]: data[75:236], data[236:242]: data[242:360], data[360:376]: data[376:392] }
-		login_page = requests.get(auth_url, headers=headers)
+		# init state machine
+		state = 'st_init'
+		login_fill_cnt = 0
 		
-		if login_page.status_code != 200:
-			raise ValueError("Wrong status code for login page: %d" % login_page.status_code)
+		# create new login session
+		ls = requests.Session()
 		
-		# Step 4 - extract login url + login form data
-		login_url, form_data = self.process_login_page( login_page.text, username, password )
-
-		headers['Origin'] = self.api_url
-		headers['Referer'] = auth_url
+		while state != 'st_end':
+			if state == 'st_init':
+				# Init oauth with oauth callback
+				self.oauth = OAuth1Session( self.client_key, client_secret=self.client_secret, callback_uri=data[0:25] )
 		
-		# Step 5 - submit login form, handle redirects and extract login response
-		with requests.Session() as ls:
-			r = ls.post(login_url, headers=headers, data=form_data, allow_redirects=False, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
+				# Step 1 - fetch request token
+				self.oauth.fetch_request_token( self.api_url + data[392:412], headers={ data[25:35]: data[35:75] } )
+		
+				# Step 2 - create authorization url, and do login
+				auth_url = self.oauth.authorization_url( self.api_url + data[412:428], None, oauth_callback=data[0:25], fb_callback=data[447:483] )
+	
+				# Step 3 - download login page
+				headers = { data[25:35]: data[75:236], data[236:242]: data[242:360], data[360:376]: data[376:392] }
+				r = ls.get(auth_url, headers=headers, allow_redirects=False, timeout=config.misc.CSFD.DownloadTimeOut.getValue() )
+				state = 'st_handle_response'
+				state_next = 'st_fill_login'
+				
+			elif state == 'st_fill_login':
+				if r.status_code != 200:
+					raise ValueError("Wrong status code for login page: %d" % r.status_code)
+				
+				# Step 4 - extract login url + login form data
+				login_url, form_data = self.process_login_page( r.text, username, password )
+				login_fill_cnt += 1
+		
+				headers['Origin'] = self.api_url
+				headers['Referer'] = auth_url
 			
-			while True:
-				if r.status_code == 200:
-					login_response = r.text
-					break
-				elif r.status_code >= 400 and r.status_code < 500:
-					raise ValueError("Unauthorized: %d" % r.status_code)
-				elif r.status_code >= 300 and r.status_code < 400:
-					login_url = r.headers['Location']
-					
-					if r.headers['Location'].startswith( data[0:25] ):
-						login_response = login_url
+				# Step 5 - submit login form, handle redirects and extract login response
+				r = ls.post(login_url, headers=headers, data=form_data, allow_redirects=False, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
+				state = 'st_handle_response'
+				state_next = 'st_end'
+			
+			elif state == 'st_handle_response':
+				# manualy handle redirects and callback response
+				redirects_count = 0
+				
+				while True:
+					if r.status_code == 200:
+						login_response = r.text
+						state = state_next
 						break
-					
-					r = ls.get(login_url, headers=headers, allow_redirects=False, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
-				else:
-					raise ValueError("Wrong status code for login request received: %d" % r.status_code)
+					elif r.status_code >= 400 and r.status_code < 500:
+						if login_fill_cnt == 1:
+							# there is a problem on csfd, that first login attempt fails, so let's start the second round and hope the best
+							state = 'st_init'
+							break
+						else:
+							raise ValueError("Unauthorized: %d (%s)" % (r.status_code, r.text))
+					elif r.status_code >= 300 and r.status_code < 400:
+						redirects_count += 1
+						
+						if redirects_count > 10:
+							raise ValueError("Too many HTTP redirects - giving up")
+						
+						login_url = r.headers['Location']
+						
+						if r.headers['Location'].startswith( data[0:25] ):
+							login_response = login_url
+							state = 'st_end'
+							break
+						
+						r = ls.get(login_url, headers=headers, allow_redirects=False, timeout=config.misc.CSFD.DownloadTimeOut.getValue())
+					else:
+						raise ValueError("Wrong status code for login request received: %d" % r.status_code)
 		
 		# Step 6 - extract data from login response
 		self.oauth.parse_authorization_response(login_response)
