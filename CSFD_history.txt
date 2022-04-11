@@ -1,6 +1,15 @@
 HISTORIE  ZMĚN  V  PLUGINU  CSFD (autor: skyjet)
 $$$A¯
 $$$B_
+Verze 17.30  -  11.04.2022
+$$$A¯
+- oprava prihlásenia po zmenách na csfd
+- oprava pádu pri parsovaní série/epizódy z epg
+$$$B_
+Verze 17.20  -  29.03.2022
+$$$A¯
+- oprava nastavovania zoznamu TV staníc + voľba pre povolenie/zakázanie
+$$$B_
 Verze 17.10  -  24.03.2022
 $$$A¯
 - oprava spustenia pluginu cez voľbu "Vyhľadať v CSFD.cz"
