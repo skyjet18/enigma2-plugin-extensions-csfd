@@ -2,7 +2,11 @@
 
 from Components.GUIComponent import GUIComponent
 from enigma import eListboxPythonMultiContent, eListbox, gFont
-from Tools.KeyBindings import getKeyDescription
+try:
+	from Tools.KeyBindings import getKeyDescription
+except:
+	from .CSFDKeyBindings import getKeyDescription
+
 try:
 	from Tools.KeyBindings import queryKeyBinding
 except:
