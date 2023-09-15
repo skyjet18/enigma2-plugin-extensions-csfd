@@ -14,16 +14,20 @@ class CSFDConsole(Screen):
 		skin = Screen_CSFDConsoleSD
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 		skin = Screen_CSFDConsoleHD
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		skin = Screen_CSFDConsoleFullHD
+	else:
+		skin = Screen_CSFDConsoleWQHD
 
 	def __init__(self, session, title='CSFDConsole', cmdlist=None, finishedCallback=None, startCallback=None, closeOnSuccess=False, startText='', endText='', startNow=True):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
 			self.skin = Screen_CSFDConsoleSD
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			self.skin = Screen_CSFDConsoleHD
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			self.skin = Screen_CSFDConsoleFullHD
+		else:
+			self.skin = Screen_CSFDConsoleWQHD
 		Screen.__init__(self, session)
 		LogCSFD.WriteToFile('[CSFD] CSFDConsole - Init - zacatek\n')
 		if config.misc.CSFD.Skinxml.getValue():
@@ -33,9 +37,12 @@ class CSFDConsole(Screen):
 			elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 				self.skinName = [
 				 'CSFDConsoleHD', 'CSFDConsole']
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				self.skinName = [
 				 'CSFDConsoleFullHD', 'CSFDConsole']
+			else:
+				self.skinName = [
+				 'CSFDConsoleWQHD', 'CSFDConsole']
 		else:
 			self.skinName = 'CSFDConsole__'
 		self.finishedCallback = finishedCallback

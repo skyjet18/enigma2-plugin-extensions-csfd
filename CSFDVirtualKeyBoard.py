@@ -34,10 +34,16 @@ class VirtualKeyBoardList(MenuList):
 					self.l.setFont(0, gFont('Regular', 28))
 				else:
 					LogCSFD.WriteToFile('[CSFD] VirtualKeyBoardList - nelze nastavit velikost fontu - stara verze enigma2)\n')
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				self.l.setItemHeight(65)
 				if 'setFont' in dir(self.l):
 					self.l.setFont(0, gFont('Regular', 36))
+				else:
+					LogCSFD.WriteToFile('[CSFD] VirtualKeyBoardList - nelze nastavit velikost fontu - stara verze enigma2)\n')
+			else:
+				self.l.setItemHeight(87)
+				if 'setFont' in dir(self.l):
+					self.l.setFont(0, gFont('Regular', 48))
 				else:
 					LogCSFD.WriteToFile('[CSFD] VirtualKeyBoardList - nelze nastavit velikost fontu - stara verze enigma2)\n')
 		except:
@@ -56,8 +62,19 @@ def VirtualKeyBoardEntryComponent(keys, selectedKey, shiftMode=False):
 		key_shift = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_shift.png'))
 		key_shift_sel = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_shift_sel.png'))
 		key_space = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_space.png'))
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		h = 65
+		key_backspace = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_backspace_fhd.png'))
+		key_bg = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_bg_fhd.png'))
+		key_clr = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_clr_fhd.png'))
+		key_esc = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_esc_fhd.png'))
+		key_ok = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_ok_fhd.png'))
+		key_sel = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_sel_fhd.png'))
+		key_shift = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_shift_fhd.png'))
+		key_shift_sel = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_shift_sel_fhd.png'))
+		key_space = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_space_fhd.png'))
+	else:
+		h = 87
 		key_backspace = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_backspace_fhd.png'))
 		key_bg = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_bg_fhd.png'))
 		key_clr = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_clr_fhd.png'))
@@ -120,9 +137,12 @@ class CSFDVirtualKeyBoard(Screen):
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 		from .CSFDSkinLoader import Screen_CSFDVirtualKeyBoardHD
 		skin = Screen_CSFDVirtualKeyBoardHD
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		from .CSFDSkinLoader import Screen_CSFDVirtualKeyBoardFullHD
 		skin = Screen_CSFDVirtualKeyBoardFullHD
+	else:
+		from .CSFDSkinLoader import Screen_CSFDVirtualKeyBoardWQHD
+		skin = Screen_CSFDVirtualKeyBoardWQHD
 
 	def __init__(self, session, title='', text=''):
 		from .CSFDSettings2 import config
@@ -133,9 +153,12 @@ class CSFDVirtualKeyBoard(Screen):
 			if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 				from .CSFDSkinLoader import Screen_CSFDVirtualKeyBoardHD
 				self.skin = Screen_CSFDVirtualKeyBoardHD
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				from .CSFDSkinLoader import Screen_CSFDVirtualKeyBoardFullHD
 				self.skin = Screen_CSFDVirtualKeyBoardFullHD
+			else:
+				from .CSFDSkinLoader import Screen_CSFDVirtualKeyBoardWQHD
+				self.skin = Screen_CSFDVirtualKeyBoardWQHD
 			Screen.__init__(self, session)
 			if config.misc.CSFD.Skinxml.getValue():
 				if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
@@ -144,9 +167,12 @@ class CSFDVirtualKeyBoard(Screen):
 				elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 					self.skinName = [
 					 'CSFDVirtualKeyBoardHD', 'CSFDVirtualKeyBoard']
-				else:
+				elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 					self.skinName = [
 					 'CSFDVirtualKeyBoardFullHD', 'CSFDVirtualKeyBoard']
+				else:
+					self.skinName = [
+					 'CSFDVirtualKeyBoardWQHD', 'CSFDVirtualKeyBoard']
 			else:
 				self.skinName = 'CSFDVirtualKeyBoard__'
 			self.keys_list = []

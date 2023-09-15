@@ -54,8 +54,10 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		skin = Screen_CSFD_SD % (config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue())
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 		skin = Screen_CSFD_HD % (config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue())
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		skin = Screen_CSFD_FullHD % (config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeightFullHD.getValue())
+	else:
+		skin = Screen_CSFD_WQHD % (config.misc.CSFD.FontHeightWQHD.getValue(), config.misc.CSFD.FontHeightWQHD.getValue(), config.misc.CSFD.FontHeightWQHD.getValue())
 
 	def __init__(self, session, eventName='', callbackNeeded=False, EPG='', sourceEPG=False, DVBchannel='', *args, **kwargs):
 		LogCSFD.WriteToFile('[CSFD] CSFDClass - init - zacatek\n')
@@ -63,8 +65,10 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self.skin = Screen_CSFD_SD % (config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue())
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			self.skin = Screen_CSFD_HD % (config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue())
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			self.skin = Screen_CSFD_FullHD % (config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeightFullHD.getValue())
+		else:
+			self.skin = Screen_CSFD_WQHD % (config.misc.CSFD.FontHeightWQHD.getValue(), config.misc.CSFD.FontHeightWQHD.getValue(), config.misc.CSFD.FontHeightWQHD.getValue())
 		Screen.__init__(self, session)
 		CSFDHelpableScreen.__init__(self, session, self.getHelpKeyDescr)
 		if config.misc.CSFD.Skinxml.getValue():
@@ -74,9 +78,12 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 				self.skinName = [
 				 'CSFD_HD', 'CSFD']
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				self.skinName = [
 				 'CSFD_FullHD', 'CSFD']
+			else:
+				self.skinName = [
+				 'CSFD_WQHD', 'CSFD']
 		else:
 			self.skinName = 'CSFD__'
 		localeInit()
@@ -657,8 +664,10 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			from enigma import BT_SCALE, BT_KEEP_ASPECT_RATIO
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			h = int(config.misc.CSFD.FontHeight.getValue()) + 2
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			h = int(config.misc.CSFD.FontHeightFullHD.getValue()) + 3
+		else:
+			h = int(config.misc.CSFD.FontHeightWQHD.getValue()) + 4
 		mainServiceMenu = []
 		if self.Page == 0:
 			if self.resultlist is not None and len(self.resultlist) > 0:
@@ -2272,8 +2281,10 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			h = int(config.misc.CSFD.FontHeight.getValue()) + 2
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			h = int(config.misc.CSFD.FontHeightFullHD.getValue()) + 3
+		else:
+			h = int(config.misc.CSFD.FontHeightWQHD.getValue()) + 4
 		h1 = (h - 10) // 2
 		for movie_info in self.resultlist:
 			res = [ movie_info ]
@@ -2412,9 +2423,13 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						if len(sss) > 25:
 							sss = sss[0:25] + ' ...'
 						self['titellabel'].setText(strUni(char2Allowchar(sss)))
-					else:
+					elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 						if len(sss) > 50:
 							sss = sss[0:50] + ' ...'
+						self['titellabel'].setText(_('Pořad: ') + strUni(char2Allowchar(sss)))
+					else:
+						if len(sss) > 100:
+							sss = sss[0:100] + ' ...'
 						self['titellabel'].setText(_('Pořad: ') + strUni(char2Allowchar(sss)))
 					LogCSFD.WriteToFile('[CSFD] showMenu - podobne k filmu: ' + sss + '\n')
 					self['titellabel'].show()
@@ -2427,9 +2442,13 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						if len(sss) > 25:
 							sss = sss[0:25] + ' ...'
 						self['titellabel'].setText(strUni(char2Allowchar(sss)))
-					else:
+					elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 						if len(sss) > 50:
 							sss = sss[0:50] + ' ...'
+						self['titellabel'].setText(_('Pořad: ') + strUni(char2Allowchar(sss)))
+					else:
+						if len(sss) > 100:
+							sss = sss[0:100] + ' ...'
 						self['titellabel'].setText(_('Pořad: ') + strUni(char2Allowchar(sss)))
 					LogCSFD.WriteToFile('[CSFD] showMenu - souvisejici k filmu: ' + sss + '\n')
 					self['titellabel'].show()
@@ -2442,9 +2461,13 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						if len(sss) > 25:
 							sss = sss[0:25] + ' ...'
 						self['titellabel'].setText(strUni(char2Allowchar(sss)))
-					else:
+					elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 						if len(sss) > 50:
 							sss = sss[0:50] + ' ...'
+						self['titellabel'].setText(_('Seriál: ') + strUni(char2Allowchar(sss)))
+					else:
+						if len(sss) > 100:
+							sss = sss[0:100] + ' ...'
 						self['titellabel'].setText(_('Seriál: ') + strUni(char2Allowchar(sss)))
 					LogCSFD.WriteToFile('[CSFD] showMenu - serie k serialu: ' + sss + '\n')
 					self['titellabel'].show()
@@ -2457,9 +2480,13 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						if len(sss) > 25:
 							sss = sss[0:25] + ' ...'
 						self['titellabel'].setText(strUni(char2Allowchar(sss)))
-					else:
+					elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 						if len(sss) > 50:
 							sss = sss[0:50] + ' ...'
+						self['titellabel'].setText(_('Seriál: ') + strUni(char2Allowchar(sss)))
+					else:
+						if len(sss) > 100:
+							sss = sss[0:100] + ' ...'
 						self['titellabel'].setText(_('Seriál: ') + strUni(char2Allowchar(sss)))
 					LogCSFD.WriteToFile('[CSFD] showMenu - epizody k serialu: ' + sss + '\n')
 					self['titellabel'].show()
@@ -2473,9 +2500,13 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 						if len(sss) > 25:
 							sss = sss[0:25] + ' ...'
 						self['titellabel'].setText(strUni(char2Allowchar(sss)))
-					else:
+					elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 						if len(sss) > 50:
 							sss = sss[0:50] + ' ...'
+						self['titellabel'].setText(_('Hledaný film: ') + strUni(char2Allowchar(sss)))
+					else:
+						if len(sss) > 100:
+							sss = sss[0:100] + ' ...'
 						self['titellabel'].setText(_('Hledaný film: ') + strUni(char2Allowchar(sss)))
 					LogCSFD.WriteToFile('[CSFD] showMenu - film: ' + sss + '\n')
 					self['titellabel'].show()
@@ -3496,6 +3527,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			elif len(Titeltext) > 60:
 				PridejText = Titeltext
 				Titeltext = Titeltext[0:60] + ' ...'
+			elif len(Titeltext) > 95:
+				PridejText = Titeltext
+				Titeltext = Titeltext[0:95] + ' ...'
 				
 		self['titellabel'].setText(strUni(char2Allowchar(Titeltext)))
 		self['sortlabel'].setText('')

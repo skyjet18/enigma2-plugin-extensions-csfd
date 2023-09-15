@@ -62,8 +62,10 @@ class CSFDHelpMenuList(GUIComponent):
 
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			h = int(config.misc.CSFD.FontHeight.getValue())
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			h = int(config.misc.CSFD.FontHeightFullHD.getValue())
+		else:
+			h = int(config.misc.CSFD.FontHeightWQHD.getValue())
 		self.l.setList(l)
 		try:
 			if self.extendedHelp is True:

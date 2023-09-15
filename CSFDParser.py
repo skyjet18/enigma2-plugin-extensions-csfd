@@ -1099,7 +1099,7 @@ class CSFDParser():
 		if len( json_data["videos"] ) > 0:
 			searchresults = []
 			
-			quality = ( '1080', '720', '480', '360' )
+			quality = ( '1440', '1080', '720', '480', '360' )
 			try:
 				# update max available quality based on settings
 				quality = quality[quality.index(video_resolution):]

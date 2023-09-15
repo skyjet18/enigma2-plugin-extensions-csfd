@@ -40,9 +40,12 @@ class ItemList(MenuList):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			h = int(config.misc.CSFD.FontHeight.getValue())
 			h1 = h + 2
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			h = int(config.misc.CSFD.FontHeightFullHD.getValue())
 			h1 = h + 3
+		else:
+			h = int(config.misc.CSFD.FontHeightWQHD.getValue())
+			h1 = h + 4
 		try:
 			self.l.setItemHeight(h1)
 			if 'setFont' in dir(self.l):
@@ -60,9 +63,12 @@ class ItemListServiceMenu(MenuList):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			h = int(config.misc.CSFD.FontHeight.getValue())
 			h1 = h + 2
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			h = int(config.misc.CSFD.FontHeightFullHD.getValue())
 			h1 = h + 3
+		else:
+			h = int(config.misc.CSFD.FontHeightWQHD.getValue())
+			h1 = h + 4
 		try:
 			self.l.setItemHeight(h1)
 			if 'setFont' in dir(self.l):
@@ -80,9 +86,12 @@ class ItemListTypeSpecial(CSFDMenuList):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			h = int(config.misc.CSFD.FontHeight.getValue())
 			h1 = h + 2
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			h = int(config.misc.CSFD.FontHeightFullHD.getValue())
 			h1 = h + 3
+		else:
+			h = int(config.misc.CSFD.FontHeightWQHD.getValue())
+			h1 = h + 4
 		try:
 			self.l.setItemHeight(h1)
 			if 'setFont' in dir(self.l):
@@ -495,8 +504,10 @@ def CSFD_Desktop_Width():
 				tt = 720
 			if tt > 720 and tt < 1280:
 				tt = 1280
-			if tt > 1280:
+			if tt > 1280 and tt < 1920:
 				tt = 1920
+			if tt > 1920:
+				tt = 2560
 		except:
 			tt = getDesktop(0).size().width()
 
@@ -505,8 +516,10 @@ def CSFD_Desktop_Width():
 			tt = 720
 		if tt > 720 and tt < 1280:
 			tt = 1280
-		if tt > 1280:
+		if tt > 1280 and tt < 1920:
 			tt = 1920
+		if tt > 1920:
+			tt = 2560
 	else:
 		tt = 720
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - CSFD_Desktop_Width: ' + str(tt) + '\n')

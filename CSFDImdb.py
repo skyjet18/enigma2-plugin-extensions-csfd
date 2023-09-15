@@ -40,9 +40,12 @@ class CSFD_IMDBcalls(puvIMDB):
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			from .CSFDSkinLoader import Screen_CSFDIMDB_HD
 			skin = Screen_CSFDIMDB_HD % (config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue())
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			from .CSFDSkinLoader import Screen_CSFDIMDB_FullHD
 			skin = Screen_CSFDIMDB_FullHD % (config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeight.getValue())
+		else:
+			from .CSFDSkinLoader import Screen_CSFDIMDB_WQHD
+			skin = Screen_CSFDIMDB_WQHD % (config.misc.CSFD.FontHeightWQHD.getValue(), config.misc.CSFD.FontHeightWQHD.getValue(), config.misc.CSFD.FontHeightWQHD.getValue(), config.misc.CSFD.FontHeight.getValue())
 	except:
 		err = traceback.format_exc()
 		LogCSFD.WriteToFile('[CSFD] CSFDImdb - IMDBcalls2 init skin 1 - chyba - konec\n')
@@ -67,9 +70,12 @@ class CSFD_IMDBcalls(puvIMDB):
 				elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 					from .CSFDSkinLoader import Screen_CSFDIMDB_HD
 					self.skin = Screen_CSFDIMDB_HD % (config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue(), config.misc.CSFD.FontHeight.getValue())
-				else:
+				elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 					from .CSFDSkinLoader import Screen_CSFDIMDB_FullHD
 					self.skin = Screen_CSFDIMDB_FullHD % (config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeightFullHD.getValue(), config.misc.CSFD.FontHeight.getValue())
+				else:
+					from .CSFDSkinLoader import Screen_CSFDIMDB_WQHD
+					self.skin = Screen_CSFDIMDB_WQHD % (config.misc.CSFD.FontHeightWQHD.getValue(), config.misc.CSFD.FontHeightWQHD.getValue(), config.misc.CSFD.FontHeightWQHD.getValue(), config.misc.CSFD.FontHeight.getValue())
 			except:
 				err = traceback.format_exc()
 				LogCSFD.WriteToFile('[CSFD] CSFDImdb - IMDBcalls2 - init skin 2 - chyba - konec\n')
@@ -85,9 +91,12 @@ class CSFD_IMDBcalls(puvIMDB):
 					elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 						self.skinName = [
 						 'CSFDIMDB_HD', 'CSFDIMDB']
-					else:
+					elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 						self.skinName = [
 						 'CSFDIMDB_FullHD', 'CSFDIMDB']
+					else:
+						self.skinName = [
+						 'CSFDIMDB_WQHD', 'CSFDIMDB']
 				else:
 					self.skinName = 'CSFDIMDB__'
 				LogCSFD.WriteToFile('[CSFD] CSFDImdb - IMDBcalls2 - init - konec\n')

@@ -47,16 +47,20 @@ class CSFDChannelSelection(SimpleChannelSelection):
 		skin = Screen_CSFDSimpleChannelSelectionSD
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 		skin = Screen_CSFDSimpleChannelSelectionHD
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		skin = Screen_CSFDSimpleChannelSelectionFullHD
+	else:
+		skin = Screen_CSFDSimpleChannelSelectionWQHD
 
 	def __init__(self, session, openPlugin=False):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
 			self.skin = Screen_CSFDSimpleChannelSelectionSD
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			self.skin = Screen_CSFDSimpleChannelSelectionHD
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			self.skin = Screen_CSFDSimpleChannelSelectionFullHD
+		else:
+			self.skin = Screen_CSFDSimpleChannelSelectionWQHD
 		SimpleChannelSelection.__init__(self, session, _('Výběr kanálu'))
 		if config.misc.CSFD.Skinxml.getValue():
 			if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
@@ -65,9 +69,12 @@ class CSFDChannelSelection(SimpleChannelSelection):
 			elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 				self.skinName = [
 				 'CSFDSimpleChannelSelectionHD', 'SimpleChannelSelection']
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				self.skinName = [
 				 'CSFDSimpleChannelSelectionFullHD', 'SimpleChannelSelection']
+			else:
+				self.skinName = [
+				 'CSFDSimpleChannelSelectionWQHD', 'SimpleChannelSelection']
 		else:
 			self.skinName = 'CSFDSimpleChannelSelection__'
 		self['ChannelSelectEPGActions'] = ActionMap(['ChannelSelectEPGActions'], {'showEPGList': self.channelSelected})
@@ -96,16 +103,20 @@ class CSFDEPGSelection(EPGSelection):
 		skin = Screen_CSFDEPGSelectionSD
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 		skin = Screen_CSFDEPGSelectionHD
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		skin = Screen_CSFDEPGSelectionFullHD
+	else:
+		skin = Screen_CSFDEPGSelectionWQHD
 
 	def __init__(self, session, ref, openPlugin=True):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
 			self.skin = Screen_CSFDEPGSelectionSD
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			self.skin = Screen_CSFDEPGSelectionHD
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			self.skin = Screen_CSFDEPGSelectionFullHD
+		else:
+			self.skin = Screen_CSFDEPGSelectionWQHD
 		EPGSelection.__init__(self, session, ref)
 		if config.misc.CSFD.Skinxml.getValue():
 			if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
@@ -114,9 +125,12 @@ class CSFDEPGSelection(EPGSelection):
 			elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 				self.skinName = [
 				 'CSFDEPGSelectionHD', 'EPGSelection']
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				self.skinName = [
 				 'CSFDEPGSelectionFullHD', 'EPGSelection']
+			else:
+				self.skinName = [
+				 'CSFDEPGSelectionWQHD', 'EPGSelection']
 		else:
 			self.skinName = 'CSFDEPGSelection__'
 		CSFDGlobalVar.setCSFDeventID_REF(ref)
@@ -153,9 +167,12 @@ class CSFDEPGSelection(EPGSelection):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			h = int(config.misc.CSFD.FontHeight.getValue())
 			h1 = h + 2
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			h = int(config.misc.CSFD.FontHeightFullHD.getValue())
 			h1 = h + 3
+		else:
+			h = int(config.misc.CSFD.FontHeightWQHD.getValue())
+			h1 = h + 4
 		try:
 			self['list'].l.setItemHeight(h1)
 			if 'setFont' in dir(self['list'].l):
@@ -303,16 +320,20 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		skin = Screen_CSFDSetupSD
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 		skin = Screen_CSFDSetupHD
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		skin = Screen_CSFDSetupFullHD
+	else:
+		skin = Screen_CSFDSetupWQHD
 
 	def __init__(self, session, procTestLogin=None, procResetParam=None):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
 			self.skin = Screen_CSFDSetupSD
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			self.skin = Screen_CSFDSetupHD
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			self.skin = Screen_CSFDSetupFullHD
+		else:
+			self.skin = Screen_CSFDSetupWQHD
 		Screen.__init__(self, session)
 		if config.misc.CSFD.Skinxml.getValue():
 			if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
@@ -321,9 +342,12 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 			elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 				self.skinName = [
 				 'CSFDSetupHD', 'CSFDSetup']
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				self.skinName = [
 				 'CSFDSetupFullHD', 'CSFDSetup']
+			else:
+				self.skinName = [
+				 'CSFDSetupWQHD', 'CSFDSetup']
 		else:
 			self.skinName = 'CSFDSetup__'
 		self.setup_title = _('CSFD Nastavení')
@@ -408,9 +432,12 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			h = int(config.misc.CSFD.FontHeight.getValue())
 			h1 = h + 2
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			h = int(config.misc.CSFD.FontHeightFullHD.getValue())
 			h1 = h + 3
+		else:
+			h = int(config.misc.CSFD.FontHeightWQHD.getValue())
+			h1 = h + 4
 		self['config'].instance.setItemHeight(h1)
 		try:
 			if 'setFont' in dir(self['config'].instance):
@@ -498,6 +525,7 @@ class CSFDSetup(Screen, CSFDConfigListScreen, CSFDHelpableScreen1):
 		self.list1.append(getConfigListEntry(_('Design CSFD obrazovek'), config.misc.CSFD.Design))
 		self.list1.append(getConfigListEntry(_('Velikost fontu pro SD a HD rozlišení'), config.misc.CSFD.FontHeight))
 		self.list1.append(getConfigListEntry(_('Velikost fontu pro FullHD rozlišení'), config.misc.CSFD.FontHeightFullHD))
+		self.list1.append(getConfigListEntry(_('Velikost fontu pro WQHD rozlišení'), config.misc.CSFD.FontHeightWQHD))
 		self.list1.append(getConfigListEntry(_('Preferovaná kvalita stahovaných posterů'), config.misc.CSFD.QualityPoster))
 		self.list1.append(getConfigListEntry(_('Preferovaná kvalita fotek v galerii'), config.misc.CSFD.QualityGallery))
 		self.list1.append(getConfigListEntry(_('Preferovaná kvalita náhledu videí'), config.misc.CSFD.QualityVideoPoster))
@@ -742,16 +770,20 @@ class CSFDInputText(Screen, CSFDConfigListScreen):
 		skin = Screen_CSFDInputTextSD
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 		skin = Screen_CSFDInputTextHD
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		skin = Screen_CSFDInputTextFullHD
+	else:
+		skin = Screen_CSFDInputTextWQHD
 
 	def __init__(self, session, args=None):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
 			self.skin = Screen_CSFDInputTextSD
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			self.skin = Screen_CSFDInputTextHD
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			self.skin = Screen_CSFDInputTextFullHD
+		else:
+			self.skin = Screen_CSFDInputTextWQHD
 		Screen.__init__(self, session)
 		if config.misc.CSFD.Skinxml.getValue():
 			if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
@@ -760,9 +792,12 @@ class CSFDInputText(Screen, CSFDConfigListScreen):
 			elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 				self.skinName = [
 				 'CSFDInputTextHD', 'CSFDInputText']
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				self.skinName = [
 				 'CSFDInputTextFullHD', 'CSFDInputText']
+			else:
+				self.skinName = [
+				 'CSFDInputTextWQHD', 'CSFDInputText']
 		else:
 			self.skinName = 'CSFDInputText__'
 		self.setup_title = _('CSFD')
@@ -782,9 +817,12 @@ class CSFDInputText(Screen, CSFDConfigListScreen):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			h = int(config.misc.CSFD.FontHeight.getValue())
 			h1 = h + 2
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			h = int(config.misc.CSFD.FontHeightFullHD.getValue())
 			h1 = h + 3
+		else:
+			h = int(config.misc.CSFD.FontHeightWQHD.getValue())
+			h1 = h + 4
 		try:
 			self['config'].instance.setItemHeight(h1)
 			if 'setFont' in dir(self['config'].instance):
@@ -818,16 +856,20 @@ class CSFDAbout(Screen):
 		skin = Screen_CSFDAboutSD
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 		skin = Screen_CSFDAboutHD
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		skin = Screen_CSFDAboutFullHD
+	else:
+		skin = Screen_CSFDAboutWQHD
 
 	def __init__(self, session, verze, datum_verze):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
 			self.skin = Screen_CSFDAboutSD
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			self.skin = Screen_CSFDAboutHD
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			self.skin = Screen_CSFDAboutFullHD
+		else:
+			self.skin = Screen_CSFDAboutWQHD
 		Screen.__init__(self, session)
 		if config.misc.CSFD.Skinxml.getValue():
 			if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
@@ -836,9 +878,12 @@ class CSFDAbout(Screen):
 			elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 				self.skinName = [
 				 'CSFDAboutHD', 'CSFDAbout']
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				self.skinName = [
 				 'CSFDAboutFullHD', 'CSFDAbout']
+			else:
+				self.skinName = [
+				 'CSFDAboutWQHD', 'CSFDAbout']
 		else:
 			self.skinName = 'CSFDAbout__'
 		self['actions'] = ActionMap(['OkCancelActions', 'ColorActions'], {'ok': self.keyOK, 
@@ -1043,16 +1088,20 @@ class CSFDHistory(Screen):
 		skin = Screen_CSFDHistorySD
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 		skin = Screen_CSFDHistoryHD
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		skin = Screen_CSFDHistoryFullHD
+	else:
+		skin = Screen_CSFDHistoryWQHD
 
 	def __init__(self, session):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
 			self.skin = Screen_CSFDHistorySD
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			self.skin = Screen_CSFDHistoryHD
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			self.skin = Screen_CSFDHistoryFullHD
+		else:
+			self.skin = Screen_CSFDHistoryWQHD
 		Screen.__init__(self, session)
 		if config.misc.CSFD.Skinxml.getValue():
 			if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
@@ -1061,9 +1110,12 @@ class CSFDHistory(Screen):
 			elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 				self.skinName = [
 				 'CSFDHistoryHD', 'CSFDHistory']
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				self.skinName = [
 				 'CSFDHistoryFullHD', 'CSFDHistory']
+			else:
+				self.skinName = [
+				 'CSFDHistoryWQHD', 'CSFDHistory']
 		else:
 			self.skinName = 'CSFDHistory__'
 		self['CSFDHistoryActions'] = ActionMap(['CSFDHistoryActions'], {'ok': self.keyOK, 
@@ -1080,9 +1132,12 @@ class CSFDHistory(Screen):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			self.velRadku = int(config.misc.CSFD.FontHeight.getValue())
 			self.meziRadky = 2
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			self.velRadku = int(config.misc.CSFD.FontHeightFullHD.getValue())
 			self.meziRadky = 3
+		else:
+			self.velRadku = int(config.misc.CSFD.FontHeightWQHD.getValue())
+			self.meziRadky = 4
 		self.list = []
 		self.velx = 0
 		self.session = session
@@ -1181,16 +1236,20 @@ class CSFDVideoInfoScreen(Screen):
 		skin = Screen_CSFDVideoInfoScreenSD
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 		skin = Screen_CSFDVideoInfoScreenHD
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		skin = Screen_CSFDVideoInfoScreenFullHD
+	else:
+		skin = Screen_CSFDVideoInfoScreenWQHD
 
 	def __init__(self, session, aktvideo, video_url='', titulky_url='', eventNameLocal='', colorOLED='10'):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
 			self.skin = Screen_CSFDVideoInfoScreenSD
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			self.skin = Screen_CSFDVideoInfoScreenHD
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			self.skin = Screen_CSFDVideoInfoScreenFullHD
+		else:
+			self.skin = Screen_CSFDVideoInfoScreenWQHD
 		Screen.__init__(self, session)
 		if config.misc.CSFD.Skinxml.getValue():
 			if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
@@ -1199,9 +1258,12 @@ class CSFDVideoInfoScreen(Screen):
 			elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 				self.skinName = [
 				 'CSFDVideoInfoScreenHD', 'CSFDVideoInfoScreen']
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				self.skinName = [
 				 'CSFDVideoInfoScreenFullHD', 'CSFDVideoInfoScreen']
+			else:
+				self.skinName = [
+				 'CSFDVideoInfoScreenWQHD', 'CSFDVideoInfoScreen']
 		else:
 			self.skinName = 'CSFDVideoInfoScreen__'
 		self['actions'] = ActionMap(['OkCancelActions', 'ColorActions'], {'ok': self.keyOK, 
@@ -1257,8 +1319,10 @@ class CSFDPlayer(Screen, SubsSupport, InfoBarNotifications, InfoBarSubtitleSuppo
 		skin = Screen_CSFDPlayerSD
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 		skin = Screen_CSFDPlayerHD
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		skin = Screen_CSFDPlayerFullHD
+	else:
+		skin = Screen_CSFDPlayerWQHD
 	LogCSFD.WriteToFile('[CSFD] CSFDPlayer - konec\n')
 
 	def __init__(self, session, service, lastservice, subtitles, infoCallback=None, nextCallback=None, prevCallback=None, exitCallback=None, existPrevOrNextCallback=None, downloadVideo=None, colorOLED='10'):
@@ -1267,8 +1331,10 @@ class CSFDPlayer(Screen, SubsSupport, InfoBarNotifications, InfoBarSubtitleSuppo
 			self.skin = Screen_CSFDPlayerSD
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			self.skin = Screen_CSFDPlayerHD
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			self.skin = Screen_CSFDPlayerFullHD
+		else:
+			self.skin = Screen_CSFDPlayerWQHD
 		Screen.__init__(self, session)
 		InfoBarNotifications.__init__(self)
 		InfoBarSubtitleSupport.__init__(self)
@@ -1279,9 +1345,12 @@ class CSFDPlayer(Screen, SubsSupport, InfoBarNotifications, InfoBarSubtitleSuppo
 			elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 				self.skinName = [
 				 'CSFDPlayerHD', 'CSFDPlayer']
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				self.skinName = [
 				 'CSFDPlayerFullHD', 'CSFDPlayer']
+			else:
+				self.skinName = [
+				 'CSFDPlayerWQHD', 'CSFDPlayer']
 		else:
 			self.skinName = 'CSFDPlayer__'
 		LogCSFD.WriteToFile('[CSFD] CSFDPlayer - subtitles ' + Uni8(subtitles) + '\n')
