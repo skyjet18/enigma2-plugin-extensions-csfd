@@ -75,15 +75,15 @@ def VirtualKeyBoardEntryComponent(keys, selectedKey, shiftMode=False):
 		key_space = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_space_fhd.png'))
 	else:
 		h = 87
-		key_backspace = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_backspace_fhd.png'))
-		key_bg = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_bg_fhd.png'))
-		key_clr = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_clr_fhd.png'))
-		key_esc = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_esc_fhd.png'))
-		key_ok = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_ok_fhd.png'))
-		key_sel = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_sel_fhd.png'))
-		key_shift = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_shift_fhd.png'))
-		key_shift_sel = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_shift_sel_fhd.png'))
-		key_space = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_space_fhd.png'))
+		key_backspace = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_backspace_wqhd.png'))
+		key_bg = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_bg_wqhd.png'))
+		key_clr = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_clr_wqhd.png'))
+		key_esc = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_esc_wqhd.png'))
+		key_ok = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_ok_wqhd.png'))
+		key_sel = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_sel_wqhd.png'))
+		key_shift = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_shift_wqhd.png'))
+		key_shift_sel = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_shift_sel_wqhd.png'))
+		key_space = LoadPixmap(cached=True, path=resolveFilename(SCOPE_CURRENT_SKIN, '/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_space_wqhd.png'))
 	res = [
 	 keys]
 	x = 0
