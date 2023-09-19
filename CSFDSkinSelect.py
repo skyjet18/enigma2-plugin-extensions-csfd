@@ -23,16 +23,20 @@ class CSFDSkinSelect(Screen):
 		skin = Screen_CSFDSkinSelectSD
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 		skin = Screen_CSFDSkinSelectHD
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		skin = Screen_CSFDSkinSelectFullHD
+	else:
+		skin = Screen_CSFDSkinSelectWQHD
 
 	def __init__(self, session):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
 			self.skin = Screen_CSFDSkinSelectSD
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			self.skin = Screen_CSFDSkinSelectHD
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			self.skin = Screen_CSFDSkinSelectFullHD
+		else:
+			self.skin = Screen_CSFDSkinSelectWQHD
 		Screen.__init__(self, session)
 		if config.misc.CSFD.Skinxml.getValue():
 			if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
@@ -41,9 +45,12 @@ class CSFDSkinSelect(Screen):
 			elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 				self.skinName = [
 				 'CSFDSkinSelectHD', 'CSFDSkinSelect']
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				self.skinName = [
 				 'CSFDSkinSelectFullHD', 'CSFDSkinSelect']
+			else:
+				self.skinName = [
+				 'CSFDSkinSelectWQHD', 'CSFDSkinSelect']
 		else:
 			self.skinName = 'CSFDSkinSelect__'
 		self['actions'] = ActionMap(['CSFDSkinSelection'], {'ok': self.keyOK, 
@@ -77,9 +84,12 @@ class CSFDSkinSelect(Screen):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			h = int(config.misc.CSFD.FontHeight.getValue())
 			h1 = h + 2
-		else:
+		if CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			h = int(config.misc.CSFD.FontHeightFullHD.getValue())
 			h1 = h + 3
+		else:
+			h = int(config.misc.CSFD.FontHeightWQHD.getValue())
+			h1 = h + 4
 		try:
 			self['menu'].instance.setItemHeight(h1)
 			if 'setFont' in dir(self['menu'].instance):

@@ -31,6 +31,7 @@ def SKIN_DefaultSetup():
 	config.misc.CSFD.Design.setValue("0")
 	config.misc.CSFD.FontHeight.setValue("22")
 	config.misc.CSFD.FontHeightFullHD.setValue("33")
+	config.misc.CSFD.FontHeightWQHD.setValue("44")
 	config.misc.CSFD.PosterBasicSlide.setValue(True)
 	config.misc.CSFD.PosterBasicSlideInclGallery.setValue(True)
 	config.misc.CSFD.GallerySlide.setValue(True)
@@ -53,7 +54,7 @@ def SKIN_Setup():
 #PARAMETRY, KTERE LZE NASTAVIT VE SKIN_DefaultSetup a SKIN_Setup
 #Nakopirujte prislusny radek do dane procedury, odstrante krizek na zacatku radku a nastavte vasi pozadovanou hodnotu
 
-#Rozlišení? "0" = automaticky, "720" = SD rozliseni, "1280" = HD rozliseni, "1920" = FullHD rozliseni
+#Rozlišení? "0" = automaticky, "720" = SD rozliseni, "1280" = HD rozliseni, "1920" = FullHD rozliseni, "2560" = WQHD rozliseni
 #	config.misc.CSFD.Resolution.setValue("0")
 
 #Při plné shodě ihned načíst detail? True=Ano, False=Ne
@@ -85,6 +86,9 @@ def SKIN_Setup():
 
 #Velikost fontu pro FullHD rozlišení
 #	config.misc.CSFD.FontHeightFullHD.setValue("33")
+
+#Velikost fontu pro WQHD rozlišení
+#	config.misc.CSFD.FontHeightWQHD.setValue("44")
 
 #Oddělovač tisíců: "" = žádný, " " = mezera, "." = tečka, "," = čárka
 #	config.misc.CSFD.ThousandsSeparator.setValue("")
@@ -377,6 +381,56 @@ Screen_CSFD_FullHD = """
 		<eLabel text="Menu" position="1510,885" size="100,30" font="Regular;21" foregroundColor="#cccccc" backgroundColor="#31000000" halign="left" valign="center" zPosition="3" transparent="1" />
 	</screen>"""
 
+#hlavni obrazovka CSFD pluginu pro WQHD rozliseni
+#self.skinName = ["CSFD_WQHD", "CSFD"]
+Screen_CSFD_WQHD = """
+	<screen name="CSFD_WQHD" position="center,140" size="2180,1227" zPosition="0" backgroundColor="#31000000" title="Filmová databáze CSFD" >
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="96,1107" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="641,1107" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="1187,1107" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="1732,1107" size="353,59" zPosition="1" alphatest="on" />
+		<widget name="key_red" position="96,1107" size="353,59" font="Regular;37" valign="center" halign="center" foregroundColor="red" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_green" position="641,1107" size="353,59" font="Regular;37" valign="center" halign="center" foregroundColor="green" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_yellow" position="1187,1107" size="353,59" font="Regular;37" valign="center" halign="center" foregroundColor="#f0b400" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_blue" position="1732,1107" size="353,59" font="Regular;37" valign="center" halign="center" foregroundColor="blue" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="titellabel" position="20,4" size="1707,52" valign="center" font="Regular;43" foregroundColor="#f0b400" backgroundColor="#31000000" transparent="1" />
+		<widget name="sortlabel" position="20,60" size="693,56" font="Regular;29" foregroundColor="#f0b400" backgroundColor="#31000000" transparent="1" />
+		<widget name="detailslabel" position="633,107" size="1520,460" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
+		<widget name="line" position="633,565" zPosition="1" size="1480,3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/line.png" />
+		<widget name="contentlabel" position="633,580" size="1520,457" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
+		<widget name="extralabel" position="20,107" size="2133,872" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
+		<widget name="photolabel" position="20,107" size="2133,872" backgroundColor="#31000000" zPosition="1" alphatest="on" />
+		<widget name="playbutton" position="1040,492" size="67,67" zPosition="2" transparent="1" alphatest="on" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/play_button.png"/>
+		<widget name="statusbar" position="20,1047" size="2133,35" font="Regular;28" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="4" transparent="1" />
+		<widget name="poster" position="8,107" size="613,920" backgroundColor="#31000000" zPosition="1" alphatest="on" />
+		<widget name="menu" position="20,107" size="2133,907" zPosition="3" scrollbarMode="showOnDemand" transparent="1" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" itemHeight="53" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-wqhd.png" enableWrapAround="1" />
+		<widget name="servicemenuBackG" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/border_menu_520.png" position="627,100" size="880,693" zPosition="4" alphatest="on" />
+		<widget name="servicemenuTop" position="633,111" size="867,48" valign="center" halign="center" backgroundColor="black" foregroundColor="#f0b400" font="Regular;37" zPosition="4" />
+		<widget name="servicemenu" position="633,160" size="867,621" backgroundColor="black" foregroundColor="#cccccc" zPosition="4" transparent="1" scrollbarMode="showOnDemand" backgroundColorSelected="black" foregroundColorSelected="#006cbcf0" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu.png" enableWrapAround="1" />
+		<widget name="ratinglabel" position="1547,48" size="613,44" halign="right" font="Regular;37" foregroundColor="#f0b400" backgroundColor="#31000000" transparent="1" />
+		<widget name="starsbg" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_empty_150.png" position="1880,4" zPosition="2" size="280,28" transparent="1" alphatest="on" />
+		<widget name="stars" position="1880,5" size="280,28" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_filled_150.png" zPosition="1" transparent="1" />
+		<widget name="starsmtbg" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_empty_mt_150.png" position="1880,4" zPosition="2" size="280,28" transparent="1" alphatest="on" />
+		<widget name="starsmt" position="1880,5" size="280,28" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_filled_mt_150.png" zPosition="1" transparent="1" />
+		<widget name="starsbg0" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_empty_0_150.png" position="1880,4" zPosition="2" size="280,28" transparent="1" alphatest="on" />
+		<widget name="stars0" position="1880,5" size="280,28" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_filled_0_150.png" zPosition="1" transparent="1" />
+		<widget name="starsbg50" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_empty_50_150.png" position="1880,4" zPosition="2" size="280,28" transparent="1" alphatest="on" />
+		<widget name="stars50" position="1880,5" size="280,28" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_filled_50_150.png" zPosition="1" transparent="1" />
+		<widget name="starsbg100" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_empty_100_150.png" position="1880,4" zPosition="2" size="280,28" transparent="1" alphatest="on" />
+		<widget name="stars100" position="1880,5" size="280,28" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_filled_100_150.png" zPosition="1" transparent="1" />
+		<widget name="pagebg" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/pagebghd.png" position="780,985" size="573,60" zPosition="1" alphatest="on" />
+		<widget name="pageb1" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/key_1.png" position="805,1000" size="47,33" zPosition="3" alphatest="on" />
+		<widget name="pageb3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/key_3.png" position="1284,1000" size="47,33" zPosition="3" alphatest="on" />
+		<widget name="paget1" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/key_left.png" position="859,1000" size="47,33" zPosition="3" alphatest="on" />
+		<widget name="paget3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/key_right.png" position="1231,1000" size="47,33" zPosition="3" alphatest="on" />
+		<widget name="page" position="944,992" size="287,56" font="Regular;37" foregroundColor="#f0b400" backgroundColor="#31000000" valign="center" halign="center" zPosition="2" transparent="1" />
+		<widget name="tips_label" position="9,1180" size="100,40" font="Regular;30" foregroundColor="#cccccc" backgroundColor="#31000000" halign="left" valign="center" zPosition="3" transparent="1" />
+		<widget name="tips_detail" position="165,1180" size="1953,40" font="Regular;30" foregroundColor="#cccccc" backgroundColor="#31000000" halign="left" valign="center" zPosition="3" transparent="1" />
+		<widget name="tips_icon" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/key_help.png" position="110,1183" size="52,38" backgroundColor="#31000000" zPosition="3" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/key_menu.png" position="1960,1183" size="52,38" backgroundColor="#31000000" zPosition="3" alphatest="on" />
+		<eLabel text="Menu" position="2013,1180" size="133,40" font="Regular;30" foregroundColor="#cccccc" backgroundColor="#31000000" halign="left" valign="center" zPosition="3" transparent="1" />
+	</screen>"""
+
 #obrazovka pro vzhled IMDB pluginu volaneho z CSFD pro SD rozliseni
 #self.skinName = ["CSFDIMDB_SD", "CSFDIMDB"]
 Screen_CSFDIMDB_SD = """
@@ -450,6 +504,31 @@ Screen_CSFDIMDB_FullHD = """
 		<widget name="menu" position="15,80" size="1600,680" zPosition="3" foregroundColor="#cccccc" backgroundColor="#31000000" scrollbarMode="showOnDemand" transparent="1" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-fhd.png" enableWrapAround="1" />
 		<widget name="starsbg" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_empty.png" position="1410,3" zPosition="0" size="210,21" transparent="1" alphatest="on" />
 		<widget name="stars" position="1410,3" size="210,21" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_filled.png" transparent="1" />
+	</screen>"""
+
+#obrazovka pro vzhled IMDB pluginu volaneho z CSFD pro WQHD rozliseni
+#self.skinName = ["CSFDIMDB_WQHD", "CSFDIMDB"]
+Screen_CSFDIMDB_WQHD = """
+	<screen name="CSFDIMDB_WQHD" position="center,center" size="2180,1227" zPosition="0" backgroundColor="#31000000" title="Internet Movie Database Details (IMDB)" >
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="96,1107" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="641,1107" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="1187,1107" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="1732,1107" size="353,59" zPosition="1" alphatest="on" />
+		<widget name="key_red" position="96,1107" size="353,59" font="Regular;37" valign="center" halign="center" foregroundColor="red" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_green" position="641,1107" size="353,59" font="Regular;37" valign="center" halign="center" foregroundColor="green" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_yellow" position="1187,1107" size="353,59" font="Regular;37" valign="center" halign="center" foregroundColor="#f0b400" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_blue" position="1732,1107" size="353,59" font="Regular;37" valign="center" halign="center" foregroundColor="blue" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="titlelabel" position="20,4" size="1707,52" valign="center" font="Regular;43" foregroundColor="#f0b400" backgroundColor="#31000000" transparent="1" />
+		<widget name="detailslabel" position="633,107" size="1520,460" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
+		<widget name="castlabel" position="633,580" size="757,460" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
+		<widget name="storylinelabel" position="1393,580" size="760,460" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
+		<widget name="extralabel" position="20,107" size="2133,872" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;%s" />
+		<widget name="statusbar" position="20,1047" size="2133,35" font="Regular;28" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="4" transparent="1" />
+		<widget name="poster" position="8,107" size="613,920" backgroundColor="#31000000" zPosition="1" alphatest="on" />
+		<widget name="ratinglabel" position="1547,48" size="613,44" halign="right" font="Regular;37" foregroundColor="#f0b400" backgroundColor="#31000000" transparent="1" />
+		<widget name="menu" position="20,107" size="2133,907" zPosition="3" foregroundColor="#cccccc" backgroundColor="#31000000" scrollbarMode="showOnDemand" transparent="1" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" itemHeight="53" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-wqhd.png" enableWrapAround="1" />
+		<widget name="starsbg" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_empty_150.png" position="1880,4" zPosition="0" size="280,28" transparent="1" alphatest="on" />
+		<widget name="stars" position="1880,4" size="280,28" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/starsbar_filled_150.png" transparent="1" />
 	</screen>"""
 
 #obrazovka pro vzhled LCD panelu pro DM 900
@@ -578,10 +657,38 @@ Screen_CSFDSetupFullHD = """
 		<widget name="info_menu" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/key_menu.png" position="1486,735" alphatest="on" size="35,25" backgroundColor="#31000000" zPosition="3" />
 		<widget name="tabbar"  position="8,2" size="480,38" alphatest="on" zPosition="1" pixmaps="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/setup1fhd.png,/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/setup2fhd.png,/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/setup3fhd.png" />
 		<widget name="config" position="30,39" size="1575,560" foregroundColor="#cccccc" scrollbarMode="showOnDemand" backgroundColor="#31000000" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-fhd.png" enableWrapAround="1" transparent="1" />
-		<widget name="info" position="0,618" size="1635,28" font="Regular;20" foregroundColor="#f0b400" backgroundColor="#31000000" shadowColor="#000000" shadowOffset="-2,-2" valign="center" halign="center" transparent="1" /> 
+		<widget name="info" position="0,618" size="1635,28" font="Regular;20" foregroundColor="#f0b400" backgroundColor="#31000000" shadowColor="#000000" shadowOffset="-2,-2" valign="center" halign="center" transparent="1" />
 		<widget name="config0" position="8,2" size="160,38" valign="center" transparent="1" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="2" halign="center" font="Regular;26" />
 		<widget name="config1" position="168,2" size="160,38" valign="center" transparent="1" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="2" halign="center" font="Regular;26" />
 		<widget name="config2" position="328,2" size="160,38" valign="center" transparent="1" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="2" halign="center" font="Regular;26" />
+	</screen>"""
+
+#obrazovka pro Nastaveni - WQHD rozliseni
+#self.skinName = ["CSFDSetupWQHD", "CSFDSetup"]
+Screen_CSFDSetupWQHD = """
+	<screen name="CSFDSetupWQHD" position="center,center" size="2180,1036" zPosition="0" backgroundColor="#31000000" title="CSFD - Nastavení">
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="96,880" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="641,880" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="1187,880" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="1732,880" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/setup_lfhd.png" position="651,43" size="1529,11" zPosition="2" alphatest="on" />
+		<widget name="key_red" position="96,880" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="red" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_green" position="641,880" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="green" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_blue" position="1187,880" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="blue" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_yellow" position="1732,880" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="#f0b400" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_info" position="155,980" size="693,37" font="Regular;32" halign="left" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="VKeyText" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/key_text.png" position="1813,980" alphatest="on" size="47,33" backgroundColor="#31000000" zPosition="3" />
+		<widget name="VKeyIcon" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/vkey_icon.png" position="1867,964" alphatest="on" size="80,64" backgroundColor="#31000000" zPosition="3" />
+		<widget name="info_icon" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/key_info.png" position="48,980" alphatest="on" size="47,33" backgroundColor="#31000000" zPosition="3" />
+		<widget name="info_epg" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/key_epg.png" position="101,980" alphatest="on" size="47,33" backgroundColor="#31000000" zPosition="3" />
+		<widget name="key_menu" position="2035,980" size="100,37" font="Regular;32" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="info_menu" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/key_menu.png" position="1981,980" alphatest="on" size="47,33" backgroundColor="#31000000" zPosition="3" />
+		<widget name="tabbar"  position="11,3" size="640,51" alphatest="on" zPosition="1" pixmaps="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/setup1wqhd.png,/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/setup2wqhd.png,/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/setup3wqhd.png" />
+		<widget name="config" position="40,52" size="2100,747" foregroundColor="#cccccc" scrollbarMode="showOnDemand" backgroundColor="#31000000" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" itemHeight="53" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-wqhd.png" enableWrapAround="1" transparent="1" />
+		<widget name="info" position="0,824" size="2180,37" font="Regular;27" foregroundColor="#f0b400" backgroundColor="#31000000" shadowColor="#000000" shadowOffset="-2,-2" valign="center" halign="center" transparent="1" />
+		<widget name="config0" position="11,3" size="213,51" valign="center" transparent="1" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="2" halign="center" font="Regular;35" />
+		<widget name="config1" position="224,3" size="213,51" valign="center" transparent="1" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="2" halign="center" font="Regular;35" />
+		<widget name="config2" position="437,3" size="213,51" valign="center" transparent="1" foregroundColor="#cccccc" backgroundColor="#31000000" zPosition="2" halign="center" font="Regular;35" />
 	</screen>"""
 
 #obrazovka pro Informace o pluginu - SD rozliseni
@@ -647,6 +754,27 @@ Screen_CSFDAboutFullHD = """
 		<widget name="label13" position="6,339" size="890,28" font="Regular;26" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
 	</screen>"""
 
+#obrazovka pro Informace o pluginu - WQHD rozliseni
+#self.skinName = ["CSFDAboutWQHD", "CSFDAbout"]
+Screen_CSFDAboutWQHD = """
+	<screen name="CSFDAboutWQHD" position="center,center" size="1200,667" zPosition="0" backgroundColor="#31000000" title="Informace o pluginu CSFD">
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="453,600" size="187,59" zPosition="1" alphatest="on" />
+		<widget name="oktext" position="453,600" size="187,59" font="Regular;37" halign="center" valign="center" foregroundColor="green" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="label1" position="8,4" size="1187,37" font="Regular;35" valign="center" foregroundColor="#f0b400" backgroundColor="#31000000" transparent="1" />
+		<widget name="label2" position="8,41" size="1187,37" font="Regular;35" valign="center" foregroundColor="#f0b400" backgroundColor="#31000000" transparent="1" />
+		<widget name="label3" position="8,79" size="1187,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label4" position="8,116" size="1187,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label5" position="8,153" size="1187,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label6" position="8,191" size="1187,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label7" position="8,228" size="1187,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label8" position="8,265" size="1187,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label9" position="8,303" size="1187,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label10" position="8,340" size="1187,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label11" position="8,377" size="1187,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label12" position="8,415" size="1187,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label13" position="8,452" size="1187,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+	</screen>"""
+
 #obrazovka pro Historii verzi pluginu - SD rozliseni
 #self.skinName = ["CSFDHistorySD", "CSFDHistory"]
 Screen_CSFDHistorySD = """
@@ -675,6 +803,16 @@ Screen_CSFDHistoryFullHD = """
 		<widget name="oktext" position="685,860" size="265,44" font="Regular;28" halign="center" valign="center" foregroundColor="green" backgroundColor="#31000000" zPosition="2" transparent="1" />
 		<widget name="text" position="15,20" size="1605,800" zPosition="3" foregroundColor="#cccccc" scrollbarMode="showOnDemand" backgroundColor="#31000000" transparent="1" />
 		<widget name="calc_text" position="15,20" size="1605,800" foregroundColor="#cccccc" zPosition="3" backgroundColor="#31000000" transparent="1" />
+	</screen>"""
+
+#obrazovka pro Historii verzi pluginu - WQHD rozliseni
+#self.skinName = ["CSFDHistoryWQHD", "CSFDHistory"]
+Screen_CSFDHistoryWQHD = """
+	<screen name="CSFDHistoryWQHD" position="center,center" size="2180,1227" zPosition="0" backgroundColor="#31000000" title="Historie změn v pluginu CSFD">
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="913,1147" size="353,59" zPosition="1" alphatest="on" />
+		<widget name="oktext" position="913,1147" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="green" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="text" position="20,27" size="2140,1067" zPosition="3" foregroundColor="#cccccc" scrollbarMode="showOnDemand" backgroundColor="#31000000" transparent="1" />
+		<widget name="calc_text" position="20,27" size="2140,1067" foregroundColor="#cccccc" zPosition="3" backgroundColor="#31000000" transparent="1" />
 	</screen>"""
 
 #obrazovka pro výběr skinu pro plugin CSFD - SD rozliseni
@@ -728,6 +866,23 @@ Screen_CSFDSkinSelectFullHD = """
 		<widget name="key_red" position="692,705" size="265,44" font="Regular;28" halign="center" valign="center" foregroundColor="red" backgroundColor="#31000000" zPosition="2" transparent="1" />
 	</screen>"""
 
+#obrazovka pro výběr skinu pro plugin CSFD - WQHD rozliseni
+#self.skinName = ["CSFDSkinSelectWQHD", "CSFDSkinSelect"]
+Screen_CSFDSkinSelectWQHD = """
+	<screen name="CSFDSkinSelectWQHD" position="center,center" size="1347,1036" zPosition="0" backgroundColor="#31000000" title="Výběr skinu pro plugin CSFD">
+		<widget name="menu" position="20,20" size="396,916" foregroundColor="#cccccc" scrollbarMode="showOnDemand" backgroundColor="#31000000" transparent="1" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-fhd.png" enableWrapAround="1" />
+		<widget name="author" position="435,20" size="871,37" font="Regular;35" valign="center" halign="left" foregroundColor="#f0b400" backgroundColor="#31000000" transparent="1" />
+		<widget name="email" position="435,60" size="871,37" font="Regular;35" valign="center" halign="left" foregroundColor="#f0b400" backgroundColor="#31000000" transparent="1" />
+		<widget name="description" position="435,100" size="871,248" font="Regular;35" valign="top" halign="left" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="preview" position="435,351" size="871,560" alphatest="on" backgroundColor="#31000000" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="72,940" size="353,59" zPosition="1" alphatest="on" />
+		<widget name="key_green" position="72,940" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="green" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="497,940" size="353,59" zPosition="1" alphatest="on" />
+		<widget name="key_blue" position="497,940" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="blue" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="923,940" size="353,59" zPosition="1" alphatest="on" />
+		<widget name="key_red" position="923,940" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="red" backgroundColor="#31000000" zPosition="2" transparent="1" />
+	</screen>"""
+
 #obrazovka pro Informace o prehravanem videu (stisk tl. INFO(EPG) během přehrávání videa) - SD rozliseni
 #self.skinName = ["CSFDVideoInfoScreenSD", "CSFDVideoInfoScreen"]
 Screen_CSFDVideoInfoScreenSD = """
@@ -774,6 +929,22 @@ Screen_CSFDVideoInfoScreenFullHD = """
 		<widget name="label6" position="6,143" size="742,28" font="Regular;26" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
 		<widget name="label7" position="6,171" size="742,28" font="Regular;26" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
 		<widget name="label8" position="6,199" size="742,28" font="Regular;26" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+	</screen>"""
+
+#obrazovka pro Informace o prehravanem videu (stisk tl. INFO(EPG) během přehrávání videa) - WQHD rozliseni
+#self.skinName = ["CSFDVideoInfoScreenWQHD", "CSFDVideoInfoScreen"]
+Screen_CSFDVideoInfoScreenWQHD = """
+	<screen name="CSFDVideoInfoScreenWQHD" position="center,center" size="997,540" zPosition="0" backgroundColor="#31000000" title="Video">
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="356,452" size="353,59" zPosition="1" alphatest="on" />
+		<widget name="oktext" position="356,452" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="green" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="label1" position="8,4" size="989,37" font="Regular;35" valign="center" foregroundColor="#f0b400" backgroundColor="#31000000" transparent="1" />
+		<widget name="label2" position="8,41" size="989,37" font="Regular;35" valign="center" foregroundColor="#f0b400" backgroundColor="#31000000" transparent="1" />
+		<widget name="label3" position="8,79" size="989,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label4" position="8,116" size="989,37" font="Regular;35" valign="top" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label5" position="8,153" size="989,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label6" position="8,191" size="989,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label7" position="8,228" size="989,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="label8" position="8,265" size="989,37" font="Regular;35" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
 	</screen>"""
 
 #obrazovka pro prehravac videi - SD rozliseni
@@ -865,6 +1036,39 @@ Screen_CSFDPlayerFullHD = """
 		</widget>
 	</screen>"""
 
+#obrazovka pro prehravac videi - WQHD rozliseni
+#self.skinName = ["CSFDPlayerWQHD", "CSFDPlayer"]
+Screen_CSFDPlayerWQHD = """
+	<screen name="CSFDPlayerWQHD" position="0,1087" size="2533,360" title="InfoBar" backgroundColor="#31000000" flags="wfNoBorder">
+		<ePixmap position="0,0" zPosition="-10" size="2533,360" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/back-media-dvd-wqhd.png" transparent="1" />
+		<widget source="global.CurrentTime" render="Label" position="1960,227" size="200,32" font="Regular;29" valign="top" halign="right" backgroundColor="#00333333" foregroundColor="#00cccccc" transparent="1">
+			<convert type="ClockToText">Default</convert>
+		</widget>
+		<widget source="global.CurrentTime" render="Label" position="2120,232" size="87,29" font="Regular;24" valign="top" halign="right" backgroundColor="#00333333" foregroundColor="#00cccccc" transparent="1">
+			<convert type="ClockToText">Format::%S</convert>
+		</widget>
+		<widget source="global.CurrentTime" render="Label" position="1860,168" size="549,32" font="Regular;29" halign="center" backgroundColor="#353e575e" foregroundColor="#00cccccc" transparent="1">
+			<convert type="ClockToText">Format:%d.%m. %Y</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="100,64" size="2333,45" font="Regular;37" halign="center" backgroundColor="#353e575e" shadowColor="#1A58A6" shadowOffset="-2,-1" transparent="1">
+			<convert type="ServiceName">Name</convert>
+		</widget>
+		<ePixmap position="220,164" size="205,80" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/csfdplayerlogo.png" zPosition="1" alphatest="on" />
+		<ePixmap position="673,180" size="1187,32" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/mpslider_wqhd.png" zPosition="3" alphatest="on" />
+		<widget source="session.CurrentService" render="PositionGauge" position="713,181" size="1107,28" zPosition="2" pointer="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/pointer.png:13,4">
+			<convert type="ServicePosition">Gauge</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="673,236" size="393,32" font="Regular;29" halign="left" valign="center" backgroundColor="#80000000" transparent="1">
+			<convert type="ServicePosition">Position</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="1467,236" size="393,32" font="Regular;29" halign="right" valign="center" backgroundColor="#80000000" transparent="1">
+			<convert type="ServicePosition">Remaining</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="1067,236" size="393,32" font="Regular;29" halign="center" valign="center" backgroundColor="#80000000" transparent="1">
+			<convert type="ServicePosition">Length</convert>
+		</widget>
+	</screen>"""
+
 #obrazovka pro vstup znaku z virtualni klavesnice - SD rozliseni
 #self.skinName = ["CSFDVirtualKeyBoardSD", "CSFDVirtualKeyBoard"]
 Screen_CSFDVirtualKeyBoardSD = """
@@ -898,6 +1102,17 @@ Screen_CSFDVirtualKeyBoardFullHD = """
 		<eLabel text="Žlutým tlačítkem změníte jazyk pro klávesnici" position="0,765" size="1070,26" font="Regular;24" foregroundColor="#f0b400" backgroundColor="#31000000" valign="center" halign="center" transparent="1"/>
 	</screen>"""
 
+#obrazovka pro vstup znaku z virtualni klavesnice - WQHD rozliseni
+#self.skinName = ["CSFDVirtualKeyBoardWQHD", "CSFDVirtualKeyBoard"]
+Screen_CSFDVirtualKeyBoardWQHD = """
+	<screen name="CSFDVirtualKeyBoardWQHD" position="center,center" size="1427,1120" zPosition="99"  backgroundColor="#31000000" title="Virtuální klávesnice pro CSFD">
+		<widget name="header" position="0,60" size="1427,60" font="Regular;35" foregroundColor="#cccccc" transparent="1" noWrap="1" halign="center" backgroundColor="#31000000" />
+		<widget name="text" position="180,180" size="1067,45" font="Regular;37" foregroundColor="#cccccc" transparent="1" noWrap="1" halign="right" backgroundColor="#31000000" />
+		<widget name="list" position="193,340" size="1040,433" selectionDisabled="1" foregroundColor="#cccccc" transparent="1" backgroundColor="#31000000" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-wqhd.png" />
+		<widget name="countryFlag" position="673,880" size="80,53" backgroundColor="#31000000" alphatest="on" />
+		<eLabel text="Žlutým tlačítkem změníte jazyk pro klávesnici" position="0,1020" size="1427,35" font="Regular;32" foregroundColor="#f0b400" backgroundColor="#31000000" valign="center" halign="center" transparent="1"/>
+	</screen>"""
+
 #obrazovka pro zadani textu - SD rozliseni
 #self.skinName = ["CSFDInputTextSD", "CSFDInputText"]
 Screen_CSFDInputTextSD = """
@@ -917,6 +1132,13 @@ Screen_CSFDInputTextHD = """
 Screen_CSFDInputTextFullHD = """
 	<screen name="CSFDInputTextFullHD" position="center,150" size="1010,150" zPosition="0" backgroundColor="#31000000" title="CSFD">
 		<widget name="config" position="30,15" size="950,75" foregroundColor="#cccccc" backgroundColor="#31000000" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-fhd.png" transparent="1" />
+	</screen>"""
+
+#obrazovka pro zadani textu - WQHD rozliseni
+#self.skinName = ["CSFDInputTextWQHD", "CSFDInputText"]
+Screen_CSFDInputTextWQHD = """
+	<screen name="CSFDInputTextWQHD" position="center,200" size="1347,200" zPosition="0" backgroundColor="#31000000" title="CSFD">
+		<widget name="config" position="40,20" size="1267,100" foregroundColor="#cccccc" backgroundColor="#31000000" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" itemHeight="53" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-wqhd.png" transparent="1" />
 	</screen>"""
 
 #obrazovka pro zadani textu - pro cast s napovedou resp. aktualne vybranym znakem - SD rozliseni
@@ -973,6 +1195,24 @@ Screen_CSFDNumericalTextInputHelpDialogFullHD = """
 		<widget name="help2" position="820,183" size="400,60" font="Regular;28" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
 	</screen>"""
 
+#obrazovka pro zadani textu - pro cast s napovedou resp. aktualne vybranym znakem - WQHD rozliseni
+#self.skinName = ["CSFDNumericalTextInputHelpDialogWQHD", "CSFDNumericalTextInputHelpDialog"]
+Screen_CSFDNumericalTextInputHelpDialogWQHD = """
+	<screen name="CSFDNumericalTextInputHelpDialogWQHD" position="center,600" size="1653,395" zPosition="20" backgroundColor="#00000000" flags="wfNoBorder" >
+		<widget name="key1" position="27,4" size="533,80" font="Regular;37" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="key2" position="560,4" size="533,80" font="Regular;37" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="key3" position="1093,4" size="533,80" font="Regular;37" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="key4" position="27,84" size="533,80" font="Regular;37" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="key5" position="560,84" size="533,80" font="Regular;37" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="key6" position="1093,84" size="533,80" font="Regular;37" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="key7" position="27,164" size="533,80" font="Regular;37" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="key8" position="560,164" size="533,80" font="Regular;37" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="key9" position="1093,164" size="533,80" font="Regular;37" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="help1" position="27,244" size="533,80" font="Regular;37" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="key0" position="560,244" size="533,80" font="Regular;37" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+		<widget name="help2" position="1093,244" size="533,80" font="Regular;37" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" />
+	</screen>"""
+
 #obrazovka pro vyber TV kanalu z pluginu (EPG) - SD rozliseni
 #self.skinName = ["CSFDSimpleChannelSelectionSD", "SimpleChannelSelection"]
 Screen_CSFDSimpleChannelSelectionSD = """
@@ -1016,6 +1256,21 @@ Screen_CSFDSimpleChannelSelectionFullHD = """
 		<widget name="key_green" position="481,762" size="265,44" font="Regular;28" halign="center" valign="center" foregroundColor="green" backgroundColor="#31000000" zPosition="2" transparent="1" />
 		<widget name="key_yellow" position="890,762" size="265,44" font="Regular;28" halign="center" valign="center" foregroundColor="#f0b400" backgroundColor="#31000000" zPosition="2" transparent="1" />
 		<widget name="key_blue" position="1299,762" size="265,44" font="Regular;28" halign="center" valign="center" foregroundColor="blue" backgroundColor="#31000000" zPosition="2" transparent="1" />
+	</screen>"""
+
+#obrazovka pro vyber TV kanalu z pluginu (EPG) - WQHD rozliseni
+#self.skinName = ["CSFDSimpleChannelSelectionWQHD", "SimpleChannelSelection"]
+Screen_CSFDSimpleChannelSelectionWQHD = """
+	<screen name="CSFDSimpleChannelSelectionWQHD" position="center,center" size="2180,1120" backgroundColor="#31000000" title="Channel Selection">
+		<widget name="list" position="20,40" size="2133,951" serviceItemHeight="41" serviceNameFont="Regular;37" serviceInfoFont="Regular;37" serviceNumberFont="Regular;37" scrollbarMode="showOnDemand" backgroundColor="#31000000" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" enableWrapAround="1" itemHeight="53" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-wqhd.png" transparent="1" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="96,1016" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="641,1016" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="1187,1016" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="1732,1016" size="353,59" zPosition="1" alphatest="on" />
+		<widget name="key_red" position="96,1016" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="red" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_green" position="641,1016" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="green" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_yellow" position="1187,1016" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="#f0b400" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_blue" position="1732,1016" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="blue" backgroundColor="#31000000" zPosition="2" transparent="1" />
 	</screen>"""
 
 #obrazovka pro vyber poradu z EPG - SD rozliseni
@@ -1065,6 +1320,22 @@ Screen_CSFDEPGSelectionFullHD = """
 		<widget name="key_blue" position="1299,762" size="265,44" font="Regular;28" halign="center" valign="center" foregroundColor="blue" backgroundColor="#31000000" zPosition="2" transparent="1" />
 	</screen>"""
 
+#obrazovka pro vyber poradu z EPG - WQHD rozliseni
+#self.skinName = ["CSFDEPGSelectionWQHD", "EPGSelection"]
+Screen_CSFDEPGSelectionWQHD = """
+	<screen name="CSFDEPGSelectionWQHD" position="center,center" size="2180,1120" zPosition="0" backgroundColor="#31000000" title="EPG Selection">
+		<eLabel backgroundColor="#31000000" position="1501,40" size="3,951" />
+		<widget name="list" position="40,40" size="1467,951" scrollbarMode="showOnDemand" backgroundColor="#31000000" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" enableWrapAround="1" itemHeight="53" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-wqhd.png" transparent="1" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="96,1016" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="641,1016" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="1187,1016" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="1732,1016" size="353,59" zPosition="1" alphatest="on" />
+		<widget name="key_red" position="96,1016" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="red" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_green" position="641,1016" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="green" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_yellow" position="1187,1016" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="#f0b400" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_blue" position="1732,1016" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="blue" backgroundColor="#31000000" zPosition="2" transparent="1" />
+	</screen>"""
+
 #obrazovka pro instalace a konzolove prikazy - SD rozliseni
 #self.skinName = ["CSFDConsoleSD", "CSFDConsole"]
 Screen_CSFDConsoleSD = """
@@ -1084,6 +1355,13 @@ Screen_CSFDConsoleHD = """
 Screen_CSFDConsoleFullHD = """
 	<screen name="CSFDConsoleFullHD" position="center,center" size="1635,920" title="Console" zPosition="0" backgroundColor="#31000000">
 		<widget name="text" position="0,0" size="1635,920" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;28" />
+	</screen>"""
+
+#obrazovka pro instalace a konzolove prikazy - WQHD rozliseni
+#self.skinName = ["CSFDConsoleWQHD", "CSFDConsole"]
+Screen_CSFDConsoleWQHD = """
+	<screen name="CSFDConsoleWQHD" position="center,center" size="2180,1227" title="Console" zPosition="0" backgroundColor="#31000000">
+		<widget name="text" position="0,0" size="2180,1227" zPosition="1" foregroundColor="#cccccc" backgroundColor="#31000000" transparent="1" font="Regular;37" />
 	</screen>"""
 
 #Help menu - SD rozliseni
@@ -1117,7 +1395,7 @@ Screen_CSFDHelpMenuHD = """
 #Help menu - FullHD rozliseni
 #self.skinName = ["CSFDHelpMenuFullHD", "CSFDHelpMenu"]
 Screen_CSFDHelpMenuFullHD = """
-	<screen name="CSFDHelpMenuFullHD" position="center,center" size="1635,920" title="Menu" backgroundColor="#31000000" flags="wfNoBorder"> 
+	<screen name="CSFDHelpMenuFullHD" position="center,center" size="1635,920" title="Menu" backgroundColor="#31000000" flags="wfNoBorder">
 		<eLabel text="help..." position="45,60" size="500,90" font="Regular;50" backgroundColor="#31000000" transparent="1" />
 		<widget name="list" position="45,150" size="1020,684" scrollbarMode="showOnDemand" backgroundColor="#31000000" transparent="1" />
 		<widget name="rc" pixmaps="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/rc0_fhd.png,/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/rc1_fhd.png,/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/rc2_fhd.png" position="1225,60" zPosition="10" size="231,750" alphatest="on" />
@@ -1126,6 +1404,20 @@ Screen_CSFDHelpMenuFullHD = """
 		<widget name="arrowup" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/arrowup.png" position="-100,-100" zPosition="11" size="37,70" alphatest="on" />
 		<widget name="arrowup2" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/arrowup.png" position="-100,-100" zPosition="11" size="37,70" alphatest="on" />
 		<widget name="long_key" position="1210,820" size="258,75" font="Regular;30" halign="center" foregroundColor="yellow" backgroundColor="#31000000" transparent="1" />
+	</screen>"""
+
+#Help menu - WQHD rozliseni
+#self.skinName = ["CSFDHelpMenuWQHD", "CSFDHelpMenu"]
+Screen_CSFDHelpMenuWQHD = """
+	<screen name="CSFDHelpMenuWQHD" position="center,center" size="2180,1227" title="Menu" backgroundColor="#31000000" flags="wfNoBorder">
+		<eLabel text="help..." position="60,80" size="667,120" font="Regular;67" backgroundColor="#31000000" transparent="1" />
+		<widget name="list" position="60,200" size="1360,912" scrollbarMode="showOnDemand" backgroundColor="#31000000" transparent="1" />
+		<widget name="rc" pixmaps="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/rc0_wqhd.png,/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/rc1_wqhd.png,/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/rc2_wqhd.png" position="1633,80" zPosition="10" size="308,1000" alphatest="on" />
+		<widget name="arrowdown" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/arrowdown.png" position="-100,-100" zPosition="11" size="49,93" alphatest="on" />
+		<widget name="arrowdown2" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/arrowdown.png" position="-100,-100" zPosition="11" size="49,93" alphatest="on" />
+		<widget name="arrowup" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/arrowup.png" position="-100,-100" zPosition="11" size="49,93" alphatest="on" />
+		<widget name="arrowup2" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/arrowup.png" position="-100,-100" zPosition="11" size="49,93" alphatest="on" />
+		<widget name="long_key" position="1613,1093" size="344,100" font="Regular;40" halign="center" foregroundColor="yellow" backgroundColor="#31000000" transparent="1" />
 	</screen>"""
 
 #Titulky - SD rozliseni
@@ -1150,6 +1442,14 @@ Screen_CSFDSubtitleDisplayFullHD = """
 	<screen name="CSFDSubtitleDisplayFullHD" position="0,0" size="%s,%s" zPosition="-1" backgroundColor="transparent" flags="wfNoBorder">
 		<widget name="delay" position="%s,%s" size="210,55" valign="center" halign="center" font="Regular;45" transparent="1" foregroundColor="yellow" backgroundColor="transparent" shadowColor="#40101010" shadowOffset="3,3" />
 		<widget name="subtitles" position="0,%s" size="%s,%s" valign="center" halign="center" font="%s;%s" transparent="1" foregroundColor="%s" backgroundColor="transparent" shadowColor="#40101010" shadowOffset="3,3" />
+	</screen>"""
+
+#Titulky - WQHD rozliseni
+#self.skinName = ["CSFDSubtitleDisplayWQHD", "CSFDSubtitleDisplay"]
+Screen_CSFDSubtitleDisplayWQHD = """
+	<screen name="CSFDSubtitleDisplayWQHD" position="0,0" size="%s,%s" zPosition="-1" backgroundColor="transparent" flags="wfNoBorder">
+		<widget name="delay" position="%s,%s" size="280,73" valign="center" halign="center" font="Regular;60" transparent="1" foregroundColor="yellow" backgroundColor="transparent" shadowColor="#40101010" shadowOffset="4,4" />
+		<widget name="subtitles" position="0,%s" size="%s,%s" valign="center" halign="center" font="%s;%s" transparent="1" foregroundColor="%s" backgroundColor="transparent" shadowColor="#40101010" shadowOffset="4,4" />
 	</screen>"""
 
 #Menu - titulky - SD rozliseni
@@ -1183,6 +1483,17 @@ Screen_CSFDSubsMenuFullHD = """
 		<widget name="enc_sub" position="0,135" size="150,38" valign="center" halign="left" font="Regular;26" transparent="1" foregroundColor="white" backgroundColor="#31000000" />
 		<widget name="enc_subfile" position="165,135" size="300,38" valign="center" halign="left" font="Regular;26" transparent="1" foregroundColor="#DAA520" backgroundColor="#31000000" />
 		<widget name="menu" position="5,210" size="730,350" transparent="1" scrollbarMode="showOnDemand" backgroundColor="#31000000" />
+	</screen>"""
+
+#Menu - titulky - WQHD rozliseni
+#self.skinName = ["CSFDSubsMenuWQHD", "CSFDSubsMenu"]
+Screen_CSFDSubsMenuWQHD = """
+	<screen name="CSFDSubsMenuWQHD" position="center,center" size="987,800" title="Main Menu" backgroundColor="#31000000">
+		<widget name="info_sub" position="0,9" size="987,80" valign="center" halign="center" font="Regular;51" transparent="1" foregroundColor="white" backgroundColor="#31000000" />
+		<widget name="info_subfile" position="0,111" size="987,80" valign="center" halign="center" font="Regular;44" transparent="1" foregroundColor="#DAA520" backgroundColor="#31000000" />
+		<widget name="enc_sub" position="0,180" size="200,51" valign="center" halign="left" font="Regular;35" transparent="1" foregroundColor="white" backgroundColor="#31000000" />
+		<widget name="enc_subfile" position="220,180" size="400,51" valign="center" halign="left" font="Regular;35" transparent="1" foregroundColor="#DAA520" backgroundColor="#31000000" />
+		<widget name="menu" position="7,280" size="973,467" transparent="1" scrollbarMode="showOnDemand" backgroundColor="#31000000" />
 	</screen>"""
 
 #Menu config - titulky - SD rozliseni
@@ -1228,6 +1539,21 @@ Screen_CSFDSubsSetupFullHD = """
 		<widget name="key_yellow" position="890,762" size="265,44" font="Regular;28" halign="center" valign="center" foregroundColor="#f0b400" backgroundColor="#31000000" zPosition="2" transparent="1" />
 		<widget name="key_blue" position="1299,762" size="265,44" font="Regular;28" halign="center" valign="center" foregroundColor="blue" backgroundColor="#31000000" zPosition="2" transparent="1" />
 		<widget name="config" position="15,30" size="1600,713" foregroundColor="#cccccc" scrollbarMode="showOnDemand" backgroundColor="#31000000" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-fhd.png" enableWrapAround="1" transparent="1" />
+	</screen>"""
+
+#Menu config - titulky - WQHD rozliseni
+#self.skinName = ["CSFDSubsSetupWQHD", "CSFDSubsSetup"]
+Screen_CSFDSubsSetupWQHD = """
+	<screen name="CSFDSubsSetupWQHD" position="center,center" size="2180,1120" backgroundColor="#31000000" >
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="96,1016" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="641,1016" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="1187,1016" size="353,59" zPosition="1" alphatest="on" />
+		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/select_tv.png" position="1732,1016" size="353,59" zPosition="1" alphatest="on" />
+		<widget name="key_red" position="96,1016" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="red" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_green" position="641,1016" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="green" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_yellow" position="1187,1016" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="#f0b400" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="key_blue" position="1732,1016" size="353,59" font="Regular;37" halign="center" valign="center" foregroundColor="blue" backgroundColor="#31000000" zPosition="2" transparent="1" />
+		<widget name="config" position="20,40" size="2133,951" foregroundColor="#cccccc" scrollbarMode="showOnDemand" backgroundColor="#31000000" backgroundColorSelected="#31000000" foregroundColorSelected="#006cbcf0" itemHeight="53" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/CSFD/icons/selected-menu-wqhd.png" enableWrapAround="1" transparent="1" />
 	</screen>"""
 
 

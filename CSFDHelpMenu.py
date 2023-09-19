@@ -15,16 +15,20 @@ class CSFDHelpMenu(Screen, CSFDRc):
 		skin = Screen_CSFDHelpMenuSD
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 		skin = Screen_CSFDHelpMenuHD
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		skin = Screen_CSFDHelpMenuFullHD
+	else:
+		skin = Screen_CSFDHelpMenuWQHD
 
 	def __init__(self, session, listP):
 		if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
 			self.skin = Screen_CSFDHelpMenuSD
 		elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 			self.skin = Screen_CSFDHelpMenuHD
-		else:
+		elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 			self.skin = Screen_CSFDHelpMenuFullHD
+		else:
+			self.skin = Screen_CSFDHelpMenuWQHD
 		Screen.__init__(self, session)
 		if config.misc.CSFD.Skinxml.getValue():
 			if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
@@ -33,9 +37,12 @@ class CSFDHelpMenu(Screen, CSFDRc):
 			elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 				self.skinName = [
 				 'CSFDHelpMenuHD', 'HelpMenu']
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				self.skinName = [
 				 'CSFDHelpMenuFullHD', 'HelpMenu']
+			else:
+				self.skinName = [
+				 'CSFDHelpMenuWQHD', 'HelpMenu']
 		else:
 			self.skinName = 'CSFDHelpMenu__'
 		self.onSelChanged = []

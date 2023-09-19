@@ -18,9 +18,12 @@ class CSFDNumericalTextInputHelpDialog(Screen):
 	elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 		from .CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogHD
 		skin = Screen_CSFDNumericalTextInputHelpDialogHD
-	else:
+	elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 		from .CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogFullHD
 		skin = Screen_CSFDNumericalTextInputHelpDialogFullHD
+	else:
+		from .CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogWQHD
+		skin = Screen_CSFDNumericalTextInputHelpDialogWQHD
 
 	def __init__(self, session, textinput):
 		from .CSFDSettings2 import config
@@ -31,9 +34,12 @@ class CSFDNumericalTextInputHelpDialog(Screen):
 			if CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 				from .CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogHD
 				self.skin = Screen_CSFDNumericalTextInputHelpDialogHD
-			else:
+			elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 				from .CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogFullHD
 				self.skin = Screen_CSFDNumericalTextInputHelpDialogFullHD
+			else:
+				from .CSFDSkinLoader import Screen_CSFDNumericalTextInputHelpDialogWQHD
+				self.skin = Screen_CSFDNumericalTextInputHelpDialogWQHD
 			Screen.__init__(self, session)
 			if config.misc.CSFD.Skinxml.getValue():
 				if CSFDGlobalVar.getCSFDDesktopWidth() < 1250:
@@ -42,9 +48,12 @@ class CSFDNumericalTextInputHelpDialog(Screen):
 				elif CSFDGlobalVar.getCSFDDesktopWidth() < 1900:
 					self.skinName = [
 					 'CSFDNumericalTextInputHelpDialogHD', 'CSFDNumericalTextInputHelpDialog']
-				else:
+				elif CSFDGlobalVar.getCSFDDesktopWidth() < 2540:
 					self.skinName = [
 					 'CSFDNumericalTextInputHelpDialogFullHD', 'CSFDNumericalTextInputHelpDialog']
+				else:
+					self.skinName = [
+					 'CSFDNumericalTextInputHelpDialogWQHD', 'CSFDNumericalTextInputHelpDialog']
 			else:
 				self.skinName = 'CSFDNumericalTextInputHelpDialog__'
 			self['help1'] = Label(text='<')
