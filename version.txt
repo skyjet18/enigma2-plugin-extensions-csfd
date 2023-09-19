@@ -1,7 +1,5 @@
-17.40
-enigma2-plugin-extensions-csfd_17.40-20220925_all.ipk
-!!! Automatická aktualizácia z ver. 16.00 kvôli chybe nefunguje !!!
-!!! Aktualizujte ručne nainštalovaním ipk/deb z príkazového riadku !!!
+18.00
+enigma2-plugin-extensions-csfd_18.00-20230919_all.ipk
 Hlavné zmeny:
-17.40:
-- pridanie chýbajúceho modulu po posledných zmenách v OpenATV 7.0/7.1
+18.00:
+- pridanie podpory pre WQHD skiny (thx durinov)
